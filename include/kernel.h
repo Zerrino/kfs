@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:48:23 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/05 18:41:05 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/06 14:37:56 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ enum vga_color {
  {
 	uint16_t	size;	// Size: One less than the size of the IDT in bytes.
 	uint32_t	offset;	// Offset: The linear address of the Interrupt Descriptor Table (not the physical address, paging applies).
- }	t_idt_descryptor;
+ }	__attribute__((packed)) t_idt_descryptor;
 
 typedef struct s_idt_entry
 {
@@ -81,15 +81,44 @@ typedef struct s_idt_entry
 	uint8_t  zero;            // unused, set to 0
 	uint8_t  type_attributes; // gate type, dpl, and p fields
 	uint16_t offset_2;        // offset bits 16..31
-}	t_idt_entry;
+}	__attribute__((packed)) t_idt_entry;
+
+typedef struct s_kernel
+{
+	t_idt_entry idt[IDT_ENTRIES];
+	size_t		terminal_row;
+	size_t		terminal_column;
+	uint8_t		terminal_color;
+	uint16_t	*terminal_buffer;
+}	t_kernel;
+
+extern t_kernel	kernel;
+
+/* src/keyboard.c */
+void	update_cursor(int scancode);
+void	set_idt_gate(int n, uint32_t handler);
+void	init_idt();
+void	pic_remap(void);
+void	keyboard_handler();
+
+/* src/utils.s */
+extern void load_idt(t_idt_descryptor *);
 
 
+/* src/inlinie_utils.c */
+uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg);
+uint16_t vga_entry(unsigned char uc, uint8_t color);
+void vga_set_cursor(size_t row, size_t col);
+void outb(uint16_t port, uint8_t val);
+uint8_t inb(uint16_t port);
+
+/* src/string_utilitary.c */
+size_t	strlen(const char* str);
+void	terminal_putentryat(char c, uint8_t color, size_t x, size_t y);
+void	terminal_putchar(char c);
+void	terminal_write(const char* data, size_t size);
+void	terminal_writestring(const char* data);
 void	printnbr(int nbr, int base);
-
-extern size_t   terminal_row;
-extern size_t   terminal_column;
-extern uint8_t  terminal_color;
-extern uint16_t *const terminal_buffer;
 
 
 #endif
