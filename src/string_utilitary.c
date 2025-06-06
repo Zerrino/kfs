@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:26:11 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/06 15:44:24 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/06 21:58:23 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void terminal_putentryat(char c, uint8_t color, size_t x, size_t y)
 {
 	const size_t index = y * VGA_WIDTH + x;
 	kernel.terminal_buffer[index] = vga_entry(c, color);
+	kernel.screens[kernel.screen_index].content[index] = vga_entry(c, color);
 }
 
 void terminal_putchar(char c)
@@ -32,39 +33,39 @@ void terminal_putchar(char c)
 		return ;
 	if (c == '\b')
 	{
-		if (kernel.terminal_column > 0)
-			kernel.terminal_column--;
+		if (kernel.screens[kernel.screen_index].column > 0)
+			kernel.screens[kernel.screen_index].column--;
 		else
 		{
-			if (kernel.terminal_row > 0)
+			if (kernel.screens[kernel.screen_index].row > 0)
 			{
-				kernel.terminal_row--;
-				kernel.terminal_column = VGA_WIDTH;
+				kernel.screens[kernel.screen_index].row--;
+				kernel.screens[kernel.screen_index].column = VGA_WIDTH;
 			}
 		}
-		terminal_putentryat(' ', kernel.terminal_color, kernel.terminal_column, kernel.terminal_row);
+		terminal_putentryat(' ', kernel.screens[kernel.screen_index].color, kernel.screens[kernel.screen_index].column, kernel.screens[kernel.screen_index].row);
 	}
 	else
 	{
 		if (c == '\n')
 		{
-			if (++kernel.terminal_row == VGA_HEIGHT)
-				kernel.terminal_row = 0;
-			kernel.terminal_column = 0;
+			if (++kernel.screens[kernel.screen_index].row == VGA_HEIGHT)
+				kernel.screens[kernel.screen_index].row = 0;
+			kernel.screens[kernel.screen_index].column = 0;
 		}
 		else
 		{
 			if (kernel.terminal_shift && c >= 'a' && c <= 'z')
 				c -= 32;
-			terminal_putentryat(c, kernel.terminal_color, kernel.terminal_column, kernel.terminal_row);
-			if (++kernel.terminal_column == VGA_WIDTH) {
-				kernel.terminal_column = 0;
-				if (++kernel.terminal_row == VGA_HEIGHT)
-					kernel.terminal_row = 0;
+			terminal_putentryat(c, kernel.screens[kernel.screen_index].color, kernel.screens[kernel.screen_index].column, kernel.screens[kernel.screen_index].row);
+			if (++kernel.screens[kernel.screen_index].column == VGA_WIDTH) {
+				kernel.screens[kernel.screen_index].column = 0;
+				if (++kernel.screens[kernel.screen_index].row == VGA_HEIGHT)
+					kernel.screens[kernel.screen_index].row = 0;
 			}
 		}
 	}
-	vga_set_cursor(kernel.terminal_row, kernel.terminal_column);
+	vga_set_cursor(kernel.screens[kernel.screen_index].row, kernel.screens[kernel.screen_index].column);
 }
 
 void terminal_write(const char* data, size_t size)

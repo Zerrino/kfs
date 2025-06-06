@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:48:23 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/06 15:31:48 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/06 21:36:43 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@
 # define ICW1_INIT 0x10
 # define ICW1_ICW4 0x01
 # define ICW4_8086 0x01
+
+# define NB_SCREEN 3
 
 # define N(x) (x >> ((sizeof(x) * 8) - 1))
 # define ABS(x) ((x + (1 * N(x))) ^ N(x))
@@ -84,18 +86,28 @@ typedef struct s_idt_entry
 	uint16_t offset_2;        // offset bits 16..31
 }	__attribute__((packed)) t_idt_entry;
 
+typedef struct s_screens
+{
+	size_t		row;
+	size_t		column;
+	uint8_t		color;
+	uint16_t	content[VGA_WIDTH * VGA_HEIGHT];
+	uint16_t	pos_cursor;
+}	t_screens;
+
 typedef struct s_kernel
 {
 	t_idt_entry idt[IDT_ENTRIES];
-	size_t		terminal_row;
-	size_t		terminal_column;
-	uint8_t		terminal_color;
+	t_screens	screens[NB_SCREEN];
 	uint8_t		terminal_ctrl;
 	uint8_t		terminal_shift;
+	uint8_t		screen_index;
 	uint16_t	*terminal_buffer;
 }	t_kernel;
 
 extern t_kernel	kernel;
+
+void		terminal_restore();
 
 /* src/keyboard.c */
 void		update_cursor(int scancode);
@@ -114,6 +126,7 @@ uint16_t	vga_entry(unsigned char uc, uint8_t color);
 void		vga_set_cursor(size_t row, size_t col);
 void		outb(uint16_t port, uint8_t val);
 uint8_t		inb(uint16_t port);
+void		vga_cursor_restore();
 
 /* src/string_utilitary.c */
 size_t		strlen(const char* str);

@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:23:39 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/06 14:40:42 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/06 21:55:53 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,19 @@ uint8_t inb(uint16_t port)
 
 void vga_set_cursor(size_t row, size_t col)
 {
+
     uint16_t pos = (uint16_t)(row * VGA_WIDTH + col);
+	kernel.screens[kernel.screen_index].pos_cursor = pos;
     outb(VGA_PORT_INDEX, VGA_CRSR_LOW);
     outb(VGA_PORT_DATA,  pos & 0xFF);
     outb(VGA_PORT_INDEX, VGA_CRSR_HIGH);
     outb(VGA_PORT_DATA,  pos >> 8);
+}
+
+void vga_cursor_restore()
+{
+    outb(VGA_PORT_INDEX, VGA_CRSR_LOW);
+    outb(VGA_PORT_DATA,  kernel.screens[kernel.screen_index].pos_cursor & 0xFF);
+    outb(VGA_PORT_INDEX, VGA_CRSR_HIGH);
+    outb(VGA_PORT_DATA,  kernel.screens[kernel.screen_index].pos_cursor >> 8);
 }

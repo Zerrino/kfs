@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:33:23 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/06 15:38:53 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/06 21:57:18 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,45 +24,66 @@ void	update_cursor(int scancode)
 	}
 	else if (scancode == 75)
 	{
-		if (kernel.terminal_column > 0)
-			kernel.terminal_column--;
+
+		if (kernel.terminal_ctrl && kernel.terminal_shift)
+		{
+			if (kernel.screen_index > 0)
+			{
+				kernel.screen_index--;
+				terminal_restore();
+				vga_cursor_restore();
+				return ;
+			}
+		}
+		else if (kernel.screens[kernel.screen_index].column > 0)
+			kernel.screens[kernel.screen_index].column--;
 		else
 		{
-			if (kernel.terminal_row > 0)
+			if (kernel.screens[kernel.screen_index].row > 0)
 			{
-				kernel.terminal_row--;
-				kernel.terminal_column = VGA_WIDTH;
+				kernel.screens[kernel.screen_index].row--;
+				kernel.screens[kernel.screen_index].column = VGA_WIDTH;
 			}
 		}
 	}
 	else if (scancode == 77)
 	{
-		if (kernel.terminal_column < VGA_WIDTH)
-			kernel.terminal_column++;
+		if (kernel.terminal_ctrl && kernel.terminal_shift)
+		{
+			if (kernel.screen_index < NB_SCREEN - 1)
+			{
+				kernel.screen_index++;
+				terminal_restore();
+				vga_cursor_restore();
+				return;
+			}
+		}
+		else if (kernel.screens[kernel.screen_index].column < VGA_WIDTH)
+		kernel.screens[kernel.screen_index].column++;
 		else
 		{
-			if (kernel.terminal_row < VGA_HEIGHT)
+			if (kernel.screens[kernel.screen_index].row < VGA_HEIGHT)
 			{
-				kernel.terminal_row++;
-				kernel.terminal_column = 0;
+				kernel.screens[kernel.screen_index].row++;
+				kernel.screens[kernel.screen_index].column = 0;
 			}
 		}
 	}
 	else if (scancode == 80)
 	{
-		if (kernel.terminal_row < VGA_HEIGHT)
-			kernel.terminal_row++;
+		if (kernel.screens[kernel.screen_index].row < VGA_HEIGHT)
+			kernel.screens[kernel.screen_index].row++;
 		else
-			kernel.terminal_row = 0;
+			kernel.screens[kernel.screen_index].row = 0;
 	}
 	else if (scancode == 72)
 	{
-		if (kernel.terminal_row > 0)
-			kernel.terminal_row--;
+		if (kernel.screens[kernel.screen_index].row > 0)
+			kernel.screens[kernel.screen_index].row--;
 		else
-			kernel.terminal_row = VGA_HEIGHT;
+			kernel.screens[kernel.screen_index].row = VGA_HEIGHT;
 	}
-	vga_set_cursor(kernel.terminal_row, kernel.terminal_column);
+	vga_set_cursor(kernel.screens[kernel.screen_index].row, kernel.screens[kernel.screen_index].column);
 }
 
 void set_idt_gate(int n, uint32_t handler)
@@ -119,7 +140,9 @@ void keyboard_handler()
         if (c)
 		{
 			if (kernel.terminal_ctrl == 0)
+			{
 				terminal_putchar(c);
+			}
 		}
 		else
 		{
