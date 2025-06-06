@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:26:11 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/06 15:36:32 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/06 15:44:24 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ void terminal_putchar(char c)
 		}
 		else
 		{
+			if (kernel.terminal_shift && c >= 'a' && c <= 'z')
+				c -= 32;
 			terminal_putentryat(c, kernel.terminal_color, kernel.terminal_column, kernel.terminal_row);
 			if (++kernel.terminal_column == VGA_WIDTH) {
 				kernel.terminal_column = 0;
