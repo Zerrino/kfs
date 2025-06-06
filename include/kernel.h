@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:48:23 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/06 21:36:43 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/06 22:19:11 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@
 # define ICW4_8086 0x01
 
 # define NB_SCREEN 3
+# define NB_SCROLL 3
 
 # define N(x) (x >> ((sizeof(x) * 8) - 1))
 # define ABS(x) ((x + (1 * N(x))) ^ N(x))
@@ -91,8 +92,9 @@ typedef struct s_screens
 	size_t		row;
 	size_t		column;
 	uint8_t		color;
-	uint16_t	content[VGA_WIDTH * VGA_HEIGHT];
+	uint16_t	content[VGA_WIDTH * (VGA_HEIGHT * NB_SCROLL)];
 	uint16_t	pos_cursor;
+	uint16_t	offset;
 }	t_screens;
 
 typedef struct s_kernel
@@ -106,7 +108,7 @@ typedef struct s_kernel
 }	t_kernel;
 
 extern t_kernel	kernel;
-
+void		terminal_offset(uint16_t offset);
 void		terminal_restore();
 
 /* src/keyboard.c */

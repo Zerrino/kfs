@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:33:23 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/06 21:57:18 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/06 22:42:57 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,11 @@ void	update_cursor(int scancode)
 				return;
 			}
 		}
-		else if (kernel.screens[kernel.screen_index].column < VGA_WIDTH)
-		kernel.screens[kernel.screen_index].column++;
+		else if (kernel.screens[kernel.screen_index].column < VGA_WIDTH - 1)
+			kernel.screens[kernel.screen_index].column++;
 		else
 		{
-			if (kernel.screens[kernel.screen_index].row < VGA_HEIGHT)
+			if (kernel.screens[kernel.screen_index].row < VGA_HEIGHT - 1)
 			{
 				kernel.screens[kernel.screen_index].row++;
 				kernel.screens[kernel.screen_index].column = 0;
@@ -71,28 +71,36 @@ void	update_cursor(int scancode)
 	}
 	else if (scancode == 80)
 	{
-		if (kernel.screens[kernel.screen_index].row < VGA_HEIGHT)
+		if (kernel.screens[kernel.screen_index].row < VGA_HEIGHT - 1)
+		{
 			kernel.screens[kernel.screen_index].row++;
+		}
 		else
-			kernel.screens[kernel.screen_index].row = 0;
+		{
+			if (kernel.screens[kernel.screen_index].offset < (VGA_HEIGHT * (NB_SCREEN - 1)) - 1)
+				terminal_offset(++kernel.screens[kernel.screen_index].offset);
+		}
 	}
 	else if (scancode == 72)
 	{
 		if (kernel.screens[kernel.screen_index].row > 0)
 			kernel.screens[kernel.screen_index].row--;
 		else
-			kernel.screens[kernel.screen_index].row = VGA_HEIGHT;
+		{
+			if (kernel.screens[kernel.screen_index].offset > 0)
+				terminal_offset(--kernel.screens[kernel.screen_index].offset);
+		}
 	}
 	vga_set_cursor(kernel.screens[kernel.screen_index].row, kernel.screens[kernel.screen_index].column);
 }
 
 void set_idt_gate(int n, uint32_t handler)
 {
-    kernel.idt[n].offset_1  = handler & 0xFFFF;
-    kernel.idt[n].selector    = 0x08;          // Code segment selector
-    kernel.idt[n].zero        = 0;
-    kernel.idt[n].type_attributes   = 0x8E;          // Present, Ring 0, 32-bit interrupt gate
-    kernel.idt[n].offset_2 = (handler >> 16) & 0xFFFF;
+    kernel.idt[n].offset_1			= handler & 0xFFFF;
+    kernel.idt[n].selector			= 0x08;          // Code segment selector
+    kernel.idt[n].zero				= 0;
+    kernel.idt[n].type_attributes	= 0x8E;          // Present, Ring 0, 32-bit interrupt gate
+    kernel.idt[n].offset_2			= (handler >> 16) & 0xFFFF;
 }
 
 void init_idt()
@@ -110,7 +118,8 @@ void init_idt()
     load_idt(&idtp);
 }
 
-void pic_remap() {
+void pic_remap()
+{
     outb(0x20, 0x11); // init
     outb(0xA0, 0x11);
     outb(0x21, 0x20); // IRQ0–7 -> 0x20–0x27

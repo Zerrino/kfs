@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/06 21:45:52 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/06 22:37:26 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void terminal_initialize()
 	{
 		kernel.screens[i].color = vga_entry_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK);
 		for (size_t y = 0; y < VGA_HEIGHT; y++) {
-			for (size_t x = 0; x < VGA_WIDTH; x++) {
+			for (size_t x = 0; x < VGA_WIDTH * NB_SCROLL; x++) {
 				const size_t index = y * VGA_WIDTH + x;
 				kernel.screens[i].content[index] = vga_entry(' ', kernel.screens[i].color);
 			}
@@ -40,12 +40,22 @@ void terminal_initialize()
 	__asm__ volatile ("sti");
 }
 
+void terminal_offset(uint16_t offset)
+{
+	for (size_t y = 0; y < VGA_HEIGHT; y++) {
+		for (size_t x = 0; x < VGA_WIDTH; x++) {
+			const size_t index = y * VGA_WIDTH + x;
+			kernel.terminal_buffer[index] = vga_entry(kernel.screens[kernel.screen_index].content[index + (VGA_WIDTH * offset)], kernel.screens[kernel.screen_index].color);
+		}
+	}
+}
+
 void terminal_restore()
 {
 	for (size_t y = 0; y < VGA_HEIGHT; y++) {
 		for (size_t x = 0; x < VGA_WIDTH; x++) {
 			const size_t index = y * VGA_WIDTH + x;
-			kernel.terminal_buffer[index] = vga_entry(kernel.screens[kernel.screen_index].content[index], kernel.screens[kernel.screen_index].color);
+			kernel.terminal_buffer[index] = vga_entry(kernel.screens[kernel.screen_index].content[index + (VGA_WIDTH * kernel.screens[kernel.screen_index].offset)], kernel.screens[kernel.screen_index].color);
 		}
 	}
 }

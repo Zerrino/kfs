@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:26:11 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/06 21:58:23 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/06 22:33:17 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void terminal_putentryat(char c, uint8_t color, size_t x, size_t y)
 {
 	const size_t index = y * VGA_WIDTH + x;
 	kernel.terminal_buffer[index] = vga_entry(c, color);
-	kernel.screens[kernel.screen_index].content[index] = vga_entry(c, color);
+	kernel.screens[kernel.screen_index].content[index + (kernel.screens[kernel.screen_index].offset * VGA_WIDTH)] = vga_entry(c, color);
 }
 
 void terminal_putchar(char c)
