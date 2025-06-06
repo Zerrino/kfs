@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:23:39 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/06 14:00:23 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/06 14:40:42 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void outb(uint16_t port, uint8_t val)
 
 uint8_t inb(uint16_t port)
 {
-	uint8_t ret;
+	uint8_t	ret;
 	__asm__ __volatile__("inb %1, %0" : "=a"(ret) : "Nd"(port));
 	return ret;
 }

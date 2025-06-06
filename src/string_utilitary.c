@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:26:11 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/06 14:36:47 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/06 15:36:32 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,21 +46,21 @@ void terminal_putchar(char c)
 	}
 	else
 	{
-	if (c == '\n')
-	{
-		if (++kernel.terminal_row == VGA_HEIGHT)
-			kernel.terminal_row = 0;
-		kernel.terminal_column = 0;
-	}
-	else
-	{
-		terminal_putentryat(c, kernel.terminal_color, kernel.terminal_column, kernel.terminal_row);
-		if (++kernel.terminal_column == VGA_WIDTH) {
-			kernel.terminal_column = 0;
+		if (c == '\n')
+		{
 			if (++kernel.terminal_row == VGA_HEIGHT)
 				kernel.terminal_row = 0;
+			kernel.terminal_column = 0;
 		}
-	}
+		else
+		{
+			terminal_putentryat(c, kernel.terminal_color, kernel.terminal_column, kernel.terminal_row);
+			if (++kernel.terminal_column == VGA_WIDTH) {
+				kernel.terminal_column = 0;
+				if (++kernel.terminal_row == VGA_HEIGHT)
+					kernel.terminal_row = 0;
+			}
+		}
 	}
 	vga_set_cursor(kernel.terminal_row, kernel.terminal_column);
 }

@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:33:23 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/06 14:34:58 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/06 15:38:53 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,15 @@
 
 void	update_cursor(int scancode)
 {
-	if (scancode == 75)
+	if (scancode == 29)
+	{
+		kernel.terminal_ctrl = 1;
+	}
+	if (scancode == 42 || scancode == 54)
+	{
+		kernel.terminal_shift = 1;
+	}
+	else if (scancode == 75)
 	{
 		if (kernel.terminal_column > 0)
 			kernel.terminal_column--;
@@ -110,11 +118,13 @@ void keyboard_handler()
         char c = scancode_to_ascii[scancode];
         if (c)
 		{
-			terminal_putchar(c);
+			if (kernel.terminal_ctrl == 0)
+				terminal_putchar(c);
 		}
 		else
 		{
-			if (scancode == 75 || scancode == 77 || scancode == 80 || scancode == 72)
+			if (scancode == 75 || scancode == 77 || scancode == 80 || scancode == 72|| scancode == 29
+				|| scancode == 42 || scancode == 54)
 				update_cursor(scancode);
 			else
 			{
@@ -122,5 +132,23 @@ void keyboard_handler()
 			}
 		}
     }
+	else
+	{ // 29 - 157
+		if (scancode == 157)
+		{
+			kernel.terminal_ctrl = 0;
+		}
+		else if (scancode == 170 || scancode == 182)
+		{
+			kernel.terminal_shift = 0;
+		}
+		else if (scancode == 142)
+		{
+
+		}
+		else
+			;
+			//printnbr(scancode, 10);
+	}
     outb(0x20, 0x20);                       /* EOI au PIC */
 }

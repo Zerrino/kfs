@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:48:23 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/06 14:37:56 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/06 15:31:48 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@
 # define ICW1_INIT 0x10
 # define ICW1_ICW4 0x01
 # define ICW4_8086 0x01
+
 # define N(x) (x >> ((sizeof(x) * 8) - 1))
 # define ABS(x) ((x + (1 * N(x))) ^ N(x))
 
@@ -89,36 +90,38 @@ typedef struct s_kernel
 	size_t		terminal_row;
 	size_t		terminal_column;
 	uint8_t		terminal_color;
+	uint8_t		terminal_ctrl;
+	uint8_t		terminal_shift;
 	uint16_t	*terminal_buffer;
 }	t_kernel;
 
 extern t_kernel	kernel;
 
 /* src/keyboard.c */
-void	update_cursor(int scancode);
-void	set_idt_gate(int n, uint32_t handler);
-void	init_idt();
-void	pic_remap(void);
-void	keyboard_handler();
+void		update_cursor(int scancode);
+void		set_idt_gate(int n, uint32_t handler);
+void		init_idt();
+void		pic_remap(void);
+void		keyboard_handler();
 
 /* src/utils.s */
-extern void load_idt(t_idt_descryptor *);
+void		load_idt(t_idt_descryptor *);
 
 
 /* src/inlinie_utils.c */
-uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg);
-uint16_t vga_entry(unsigned char uc, uint8_t color);
-void vga_set_cursor(size_t row, size_t col);
-void outb(uint16_t port, uint8_t val);
-uint8_t inb(uint16_t port);
+uint8_t		vga_entry_color(enum vga_color fg, enum vga_color bg);
+uint16_t	vga_entry(unsigned char uc, uint8_t color);
+void		vga_set_cursor(size_t row, size_t col);
+void		outb(uint16_t port, uint8_t val);
+uint8_t		inb(uint16_t port);
 
 /* src/string_utilitary.c */
-size_t	strlen(const char* str);
-void	terminal_putentryat(char c, uint8_t color, size_t x, size_t y);
-void	terminal_putchar(char c);
-void	terminal_write(const char* data, size_t size);
-void	terminal_writestring(const char* data);
-void	printnbr(int nbr, int base);
+size_t		strlen(const char* str);
+void		terminal_putentryat(char c, uint8_t color, size_t x, size_t y);
+void		terminal_putchar(char c);
+void		terminal_write(const char* data, size_t size);
+void		terminal_writestring(const char* data);
+void		printnbr(int nbr, int base);
 
 
 #endif
