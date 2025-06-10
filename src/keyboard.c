@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:33:23 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/06 22:42:57 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/10 12:52:13 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,27 +109,28 @@ void init_idt()
         .size = sizeof(kernel.idt) - 1,
         .offset  = (uint32_t)&(*kernel.idt)
     };
-
-    // Exemple : handler clavier à l'entrée 0x21 (IRQ1)
-    extern void irq1_handler();  // défini en ASM plus bas
-    set_idt_gate(0x21, (uint32_t)irq1_handler);
+    set_idt_gate(PIC1_DATA, (uint32_t)irq1_handler);
 	extern void irq0_handler();
-	set_idt_gate(0x20, (uint32_t)irq0_handler); // IRQ0 remappée à 0x20
+	set_idt_gate(PIC1_CMD, (uint32_t)irq0_handler);
     load_idt(&idtp);
 }
 
-void pic_remap()
+void pic_remap(void)
 {
-    outb(0x20, 0x11); // init
-    outb(0xA0, 0x11);
-    outb(0x21, 0x20); // IRQ0–7 -> 0x20–0x27
-    outb(0xA1, 0x28); // IRQ8–15 -> 0x28–0x2F
-    outb(0x21, 0x04);
-    outb(0xA1, 0x02);
-    outb(0x21, 0x01);
-    outb(0xA1, 0x01);
-    outb(0x21, 0x0);
-    outb(0xA1, 0x0);
+    outb(PIC1_CMD,  ICW1);
+    outb(PIC2_CMD,  ICW1);
+
+    outb(PIC1_DATA, PIC1_OFFSET);
+    outb(PIC2_DATA, PIC2_OFFSET);
+
+    outb(PIC1_DATA, PIC1_CASCADE_IRQ2);
+    outb(PIC2_DATA, PIC2_CASCADE_ID);
+
+    outb(PIC1_DATA, ICW4_8086);
+    outb(PIC2_DATA, ICW4_8086);
+
+    outb(PIC1_DATA, PIC_MASK_NONE);
+    outb(PIC2_DATA, PIC_MASK_NONE);
 }
 
 void keyboard_handler()
@@ -178,9 +179,8 @@ void keyboard_handler()
 		{
 
 		}
-		else
-			;
+		//else
+		//	;
 			//printnbr(scancode, 10);
 	}
-    outb(0x20, 0x20);                       /* EOI au PIC */
 }

@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:48:23 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/06 22:19:11 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/10 12:52:27 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,37 @@
 
 #ifndef KERNEL_H
 # define KERNEL_H
+
+/* ──────────── Ports du PIC 8259 ──────────── */
+#define PIC1_CMD    0x20    /* Command register (Master)  */
+#define PIC1_DATA   0x21    /* Data register    (Master)  */
+#define PIC2_CMD    0xA0    /* Command register (Slave)   */
+#define PIC2_DATA   0xA1    /* Data register    (Slave)   */
+
+/* ──────────── ICW1 (Initialization Cmd Word 1) ──────────── */
+#define ICW1_ICW4   0x01    /* ICW4 suivra               */
+#define ICW1_INIT   0x10    /* Lancer la séquence d’init */
+#define ICW1        (ICW1_INIT | ICW1_ICW4)       /* 0x11 */
+
+/* ──────────── Offsets après remap (ICW2) ──────────── */
+#define PIC1_OFFSET 0x20    /* IRQ0-7  → vecteurs 0x20-27 */
+#define PIC2_OFFSET 0x28    /* IRQ8-15 → vecteurs 0x28-2F */
+
+/* ──────────── Cascade configuration (ICW3) ──────────── */
+#define PIC1_CASCADE_IRQ2 0x04   /* Le Slave est branché sur IRQ2 */
+#define PIC2_CASCADE_ID   0x02   /* ID du Slave dans la chaîne    */
+
+/* ──────────── ICW4 ──────────── */
+#define ICW4_8086  0x01     /* Mode 8086/88 */
+
+/* ──────────── Masques (OCW1) ──────────── */
+#define PIC_MASK_NONE 0x00  /* Dé-masquer toutes les lignes */
+
+/* ──────────── Commande EOI (End-Of-Interrupt) ──────────── */
+#define PIC_EOI    0x20
+
+
+
 
 # include <stdbool.h>
 # include <stddef.h>
@@ -120,7 +151,8 @@ void		keyboard_handler();
 
 /* src/utils.s */
 void		load_idt(t_idt_descryptor *);
-
+void		irq0_handler();
+void		irq1_handler();
 
 /* src/inlinie_utils.c */
 uint8_t		vga_entry_color(enum vga_color fg, enum vga_color bg);

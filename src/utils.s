@@ -11,10 +11,9 @@ irq0_handler:
     iretd
 
 irq1_handler:
-	; keyboard_handler(t_kernel *kernel)
     pusha
     call keyboard_handler
-    mov al, 0x20        ; envoyer EOI au PIC
+    mov al, 0x20
     out 0x20, al
     popa
     iretd

@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/06 22:37:26 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/10 12:56:20 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,10 @@ void terminal_offset(uint16_t offset)
 
 void terminal_restore()
 {
-	for (size_t y = 0; y < VGA_HEIGHT; y++) {
-		for (size_t x = 0; x < VGA_WIDTH; x++) {
+	for (size_t y = 0; y < VGA_HEIGHT; y++)
+	{
+		for (size_t x = 0; x < VGA_WIDTH; x++)
+		{
 			const size_t index = y * VGA_WIDTH + x;
 			kernel.terminal_buffer[index] = vga_entry(kernel.screens[kernel.screen_index].content[index + (VGA_WIDTH * kernel.screens[kernel.screen_index].offset)], kernel.screens[kernel.screen_index].color);
 		}

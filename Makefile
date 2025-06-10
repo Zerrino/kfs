@@ -31,7 +31,7 @@ BIN      := $(BUILD)/myos.bin
 ISO      := $(BUILD)/myos.iso
 
 # Flags
-CFLAGS    := -std=gnu99 -ffreestanding -O2 -Wall -Wextra
+CFLAGS    := -std=gnu99 -ffreestanding -O2 -Wall -Wextra -Werror
 CXXFLAGS  := -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti
 LDFLAGS   := -T linker.ld -ffreestanding -O2 -nostdlib
 NASMFLAGS := -f elf32
