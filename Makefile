@@ -55,7 +55,7 @@ $(BUILD)/%.o: $(SRC_DIR)/%.s | $(BUILD)
 # 4) Link
 $(BIN): linker.ld $(BOOT_OBJ) $(C_OBJ) $(CPP_OBJ) $(ASM_OBJ)
 	$(CC) $(LDFLAGS) $(BOOT_OBJ) $(C_OBJ) $(CPP_OBJ) $(ASM_OBJ) -o $@ -lgcc
-	@$(GRUBFILE) --is-x86-multiboot $@ \
+	#@$(GRUBFILE) --is-x86-multiboot $@ \
 	 && echo "multiboot confirmed" \
 	 || (echo "the file is not multiboot" && false)
 

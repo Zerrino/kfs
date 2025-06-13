@@ -6,90 +6,109 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:33:23 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/10 12:52:13 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/13 18:25:36 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/kernel.h"
 
-void	update_cursor(int scancode)
+static void	left_arrow()
 {
-	if (scancode == 29)
+	if (kernel.terminal_ctrl && kernel.terminal_shift)
 	{
-		kernel.terminal_ctrl = 1;
+		if (kernel.screen_index > 0)
+		{
+			kernel.screen_index--;
+			terminal_restore();
+			vga_cursor_restore();
+			return ;
+		}
 	}
-	if (scancode == 42 || scancode == 54)
+	else if (kernel.screens[kernel.screen_index].column > 0)
+		kernel.screens[kernel.screen_index].column--;
+	else
 	{
-		kernel.terminal_shift = 1;
+		if (kernel.screens[kernel.screen_index].row > 0)
+		{
+			kernel.screens[kernel.screen_index].row--;
+			kernel.screens[kernel.screen_index].column = VGA_WIDTH;
+		}
 	}
-	else if (scancode == 75)
-	{
+}
 
-		if (kernel.terminal_ctrl && kernel.terminal_shift)
-		{
-			if (kernel.screen_index > 0)
-			{
-				kernel.screen_index--;
-				terminal_restore();
-				vga_cursor_restore();
-				return ;
-			}
-		}
-		else if (kernel.screens[kernel.screen_index].column > 0)
-			kernel.screens[kernel.screen_index].column--;
-		else
-		{
-			if (kernel.screens[kernel.screen_index].row > 0)
-			{
-				kernel.screens[kernel.screen_index].row--;
-				kernel.screens[kernel.screen_index].column = VGA_WIDTH;
-			}
-		}
-	}
-	else if (scancode == 77)
+static void	right_arrow()
+{
+	if (kernel.terminal_ctrl && kernel.terminal_shift)
 	{
-		if (kernel.terminal_ctrl && kernel.terminal_shift)
+		if (kernel.screen_index < NB_SCREEN - 1)
 		{
-			if (kernel.screen_index < NB_SCREEN - 1)
-			{
-				kernel.screen_index++;
-				terminal_restore();
-				vga_cursor_restore();
-				return;
-			}
-		}
-		else if (kernel.screens[kernel.screen_index].column < VGA_WIDTH - 1)
-			kernel.screens[kernel.screen_index].column++;
-		else
-		{
-			if (kernel.screens[kernel.screen_index].row < VGA_HEIGHT - 1)
-			{
-				kernel.screens[kernel.screen_index].row++;
-				kernel.screens[kernel.screen_index].column = 0;
-			}
+			kernel.screen_index++;
+			terminal_restore();
+			vga_cursor_restore();
+			return;
 		}
 	}
-	else if (scancode == 80)
+	else if (kernel.screens[kernel.screen_index].column < VGA_WIDTH - 1)
+		kernel.screens[kernel.screen_index].column++;
+	else
 	{
 		if (kernel.screens[kernel.screen_index].row < VGA_HEIGHT - 1)
 		{
 			kernel.screens[kernel.screen_index].row++;
-		}
-		else
-		{
-			if (kernel.screens[kernel.screen_index].offset < (VGA_HEIGHT * (NB_SCREEN - 1)) - 1)
-				terminal_offset(++kernel.screens[kernel.screen_index].offset);
+			kernel.screens[kernel.screen_index].column = 0;
 		}
 	}
-	else if (scancode == 72)
+}
+
+static void	down_arrow()
+{
+	if (kernel.screens[kernel.screen_index].row < VGA_HEIGHT - 1)
 	{
-		if (kernel.screens[kernel.screen_index].row > 0)
-			kernel.screens[kernel.screen_index].row--;
-		else
-		{
-			if (kernel.screens[kernel.screen_index].offset > 0)
-				terminal_offset(--kernel.screens[kernel.screen_index].offset);
-		}
+		kernel.screens[kernel.screen_index].row++;
+	}
+	else
+	{
+		if (kernel.screens[kernel.screen_index].offset < (VGA_HEIGHT * (NB_SCREEN - 1)) - 1)
+			terminal_offset(++kernel.screens[kernel.screen_index].offset);
+	}
+}
+
+static void	up_arrow()
+{
+	if (kernel.screens[kernel.screen_index].row > 0)
+		kernel.screens[kernel.screen_index].row--;
+	else
+	{
+		if (kernel.screens[kernel.screen_index].offset > 0)
+			terminal_offset(--kernel.screens[kernel.screen_index].offset);
+	}
+}
+
+void	update_cursor(int scancode)
+{
+	switch (scancode)
+	{
+		case 29:
+			kernel.terminal_ctrl = 1;
+			break;
+		case 42:
+		case 54:
+			kernel.terminal_shift = 1;
+			break;
+		case 75:
+			left_arrow();
+			break;
+		case 77:
+			right_arrow();
+			break;
+		case 80:
+			down_arrow();
+			break;
+		case 72:
+			up_arrow();
+			break;
+		default:
+			break;
 	}
 	vga_set_cursor(kernel.screens[kernel.screen_index].row, kernel.screens[kernel.screen_index].column);
 }
