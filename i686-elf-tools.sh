@@ -1,5 +1,5 @@
 # Ton répertoire racine « sgoinfre »
-export BASE=/home/rodolfo/Documents/Campus19/PostCommon/RNCP6/ApplicativeDevelopment/Suite/kfs
+export BASE=/home/rperez-t/Documents/Campus/Post/RNCP/7/Ai+Data/Suite/kfs
 
 # Dossiers que l'on va créer
 export SRC=$BASE/sources          # archives + répertoires sources
