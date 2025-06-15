@@ -52,7 +52,6 @@
 
 
 
-
 # include <stdbool.h>
 # include <stddef.h>
 # include <stdint.h>
@@ -159,6 +158,7 @@ uint8_t		vga_entry_color(enum vga_color fg, enum vga_color bg);
 uint16_t	vga_entry(unsigned char uc, uint8_t color);
 void		vga_set_cursor(size_t row, size_t col);
 void		outb(uint16_t port, uint8_t val);
+void		outw(uint16_t port, uint16_t val);
 uint8_t		inb(uint16_t port);
 void		vga_cursor_restore();
 
@@ -170,5 +170,28 @@ void		terminal_write(const char* data, size_t size);
 void		terminal_writestring(const char* data);
 void		printnbr(int nbr, int base);
 
+/* src/gdt.c */
+void gdt_install();
+void gdt_set_gate(int num, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran);
+
+/* src/gdt_asm.s */
+void gdt_flush(void *);
+
+/* src/stack.c */
+void stack_push(uint32_t value);
+uint32_t stack_pop();
+uint32_t stack_peek();
+int stack_is_empty();
+int stack_size();
+void print_kernel_stack();
+
+/* src/shell.c */
+void shell_initialize();
+void shell_process_command(const char* cmd);
+void shell_handle_input(char c);
+int strcmp(const char* s1, const char* s2);
+
+/* src/kernel.c */
+void terminal_initialize();
 
 #endif

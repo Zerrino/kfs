@@ -145,42 +145,40 @@ void keyboard_handler()
 
     uint8_t scancode = inb(0x60);
     if (!(scancode & 0x80))
-	{
+    {
         char c = scancode_to_ascii[scancode];
         if (c)
-		{
-			if (kernel.terminal_ctrl == 0)
-			{
-				terminal_putchar(c);
-			}
-		}
-		else
-		{
-			if (scancode == 75 || scancode == 77 || scancode == 80 || scancode == 72|| scancode == 29
-				|| scancode == 42 || scancode == 54)
-				update_cursor(scancode);
-			else
-			{
-				printnbr(scancode, 10);
-			}
-		}
+        {
+            if (kernel.terminal_ctrl == 0)
+            {
+                // Send character to shell instead of directly to terminal
+                shell_handle_input(c);
+            }
+        }
+        else
+        {
+            if (scancode == 75 || scancode == 77 || scancode == 80 || scancode == 72|| scancode == 29
+                || scancode == 42 || scancode == 54)
+                update_cursor(scancode);
+            else
+            {
+                printnbr(scancode, 10);
+            }
+        }
     }
-	else
-	{ // 29 - 157
-		if (scancode == 157)
-		{
-			kernel.terminal_ctrl = 0;
-		}
-		else if (scancode == 170 || scancode == 182)
-		{
-			kernel.terminal_shift = 0;
-		}
-		else if (scancode == 142)
-		{
+    else
+    { // 29 - 157
+        if (scancode == 157)
+        {
+            kernel.terminal_ctrl = 0;
+        }
+        else if (scancode == 170 || scancode == 182)
+        {
+            kernel.terminal_shift = 0;
+        }
+        else if (scancode == 142)
+        {
 
-		}
-		//else
-		//	;
-			//printnbr(scancode, 10);
-	}
+        }
+    }
 }

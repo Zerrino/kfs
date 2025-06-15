@@ -52,3 +52,8 @@ void vga_cursor_restore()
     outb(VGA_PORT_INDEX, VGA_CRSR_HIGH);
     outb(VGA_PORT_DATA,  kernel.screens[kernel.screen_index].pos_cursor >> 8);
 }
+
+// Output word (16 bits) to port
+void outw(uint16_t port, uint16_t val) {
+    __asm__ volatile("outw %0, %1" : : "a"(val), "Nd"(port));
+}
