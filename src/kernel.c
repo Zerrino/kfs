@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kernel.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/10 12:56:20 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/17 21:32:56 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,37 +67,19 @@ void kernel_main(void)
 	kernel.terminal_buffer = (uint16_t *)VGA_MEMORY;
 
 	terminal_initialize();
-	
-	// Debug message before GDT initialization
 	terminal_writestring("About to initialize GDT...\n");
-	
-	// Initialize GDT
 	gdt_install();
-	
-	// Debug message after GDT initialization
 	terminal_writestring("GDT initialized successfully!\n");
 	terminal_writestring("GDT located at address: 0x00000800\n");
-	
-	// Test the stack functionality
 	terminal_writestring("Testing kernel stack...\n");
 	stack_push(0xDEADBEEF);
 	stack_push(0xCAFEBABE);
 	stack_push(0x12345678);
-	
-	// Print the kernel stack
 	print_kernel_stack();
-	
 	terminal_writestring("\nGDT and Stack initialized successfully!\n\n");
-	
-	// Initialize the shell
 	shell_initialize();
 	
-	// Re-enable interrupts to allow keyboard input
-	__asm__ volatile ("sti");
-	
+	__asm__ volatile ("sti"); /* Enable interrupts */
 	while(1)
-	{
-		// Simple halt to prevent CPU from running at 100%
-		__asm__ volatile ("hlt");
-	}
+		__asm__ volatile ("hlt"); /* Prevent CPU from running at 100% */
 }

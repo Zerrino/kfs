@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kernel.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:48:23 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/10 12:52:27 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/17 21:59:02 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,7 +182,6 @@ void stack_push(uint32_t value);
 uint32_t stack_pop();
 uint32_t stack_peek();
 int stack_is_empty();
-int stack_size();
 void print_kernel_stack();
 
 /* src/shell.c */
