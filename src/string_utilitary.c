@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   string_utilitary.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:26:11 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/06 22:33:17 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/17 22:20:15 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,11 @@ void terminal_putchar(char c)
 		if (c == '\n')
 		{
 			if (++kernel.screens[kernel.screen_index].row == VGA_HEIGHT)
-				kernel.screens[kernel.screen_index].row = 0;
+			{
+				kernel.screens[kernel.screen_index].row = VGA_HEIGHT - 1;
+				kernel.screens[kernel.screen_index].offset++;
+				terminal_offset(kernel.screens[kernel.screen_index].offset);
+			}
 			kernel.screens[kernel.screen_index].column = 0;
 		}
 		else
@@ -61,7 +65,11 @@ void terminal_putchar(char c)
 			if (++kernel.screens[kernel.screen_index].column == VGA_WIDTH) {
 				kernel.screens[kernel.screen_index].column = 0;
 				if (++kernel.screens[kernel.screen_index].row == VGA_HEIGHT)
-					kernel.screens[kernel.screen_index].row = 0;
+				{
+					kernel.screens[kernel.screen_index].row = VGA_HEIGHT - 1;
+					kernel.screens[kernel.screen_index].offset++;
+					terminal_offset(kernel.screens[kernel.screen_index].offset);
+				}
 			}
 		}
 	}

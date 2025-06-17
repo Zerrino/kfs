@@ -6,7 +6,7 @@
 /*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:17 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/06/17 21:58:18 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/06/17 22:27:55 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,29 +17,29 @@ static uint32_t kernel_stack[STACK_SIZE];
 static int stack_pointer = -1;
 
 void stack_push(uint32_t value) {
-    if (stack_pointer < STACK_SIZE - 1) {
+    if (stack_pointer < STACK_SIZE - 1) 
         kernel_stack[++stack_pointer] = value;
-    } else {
+    else 
         terminal_writestring("Error: Stack overflow\n");
-    }
 }
 
 uint32_t stack_pop() {
-    if (stack_pointer >= 0) {
+    if (stack_pointer >= 0) 
         return kernel_stack[stack_pointer--];
-    } else {
+    else {
         terminal_writestring("Error: Stack underflow\n");
         return 0;
     }
 }
 
 uint32_t stack_peek() {
-    if (stack_pointer >= 0) {
+    if (stack_pointer >= 0) 
         return kernel_stack[stack_pointer];
-    } else {
-        terminal_writestring("Error: Stack is empty\n");
+    else{
+		
+		terminal_writestring("Error: Stack is empty\n");
         return 0;
-    }
+	}
 }
 
 int stack_is_empty() {
