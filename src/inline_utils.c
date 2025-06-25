@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   inline_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:23:39 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/06 21:55:53 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/25 19:49:15 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void vga_set_cursor(size_t row, size_t col)
 {
 
     uint16_t pos = (uint16_t)(row * VGA_WIDTH + col);
-	kernel.screens[kernel.screen_index].pos_cursor = pos;
+    kernel.screens[kernel.screen_index].pos_cursor = pos;
     outb(VGA_PORT_INDEX, VGA_CRSR_LOW);
     outb(VGA_PORT_DATA,  pos & 0xFF);
     outb(VGA_PORT_INDEX, VGA_CRSR_HIGH);

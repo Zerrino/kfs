@@ -9,6 +9,9 @@ GRUBISO  := $(TARGET)-grub-mkrescue
 QEMU     := qemu-system-i386
 
 SRC_DIR := src
+IDT_DIR := interupts
+ASM_DIR := asm
+
 BUILD   := build
 
 # Répertoires
@@ -18,16 +21,18 @@ ISO_BOOT := $(ISO_DIR)/boot
 ISO_GRUB := $(ISO_BOOT)/grub
 
 # Fichiers
-C_SRC := $(wildcard $(SRC_DIR)/*.c)
+C_SRC := $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/$(IDT_DIR)/*.c)
 C_OBJ := $(patsubst $(SRC_DIR)/%.c,$(BUILD)/%.o,$(C_SRC))
+#C_OBJ := $(patsubst $(IDT_DIR)/%.c,$(BUILD)/%.o,$(C_SRC))
+
 
 BOOT_SRC := $(SRC_DIR)/boot.s
 BOOT_OBJ := $(BUILD)/boot.o
 
-ASM_SRC := $(filter-out $(BOOT_SRC), $(wildcard $(SRC_DIR)/*.s))
-ASM_OBJ := $(patsubst $(SRC_DIR)/%.s,$(BUILD)/%.o,$(patsubst $(SRC_DIR)/%.S,$(BUILD)/%.o,$(ASM_SRC)))
+ASM_SRC := $(wildcard $(SRC_DIR)/$(ASM_DIR)/*.s)
+ASM_OBJ := $(patsubst $(SRC_DIR)/%.s,$(BUILD)/%.o,$(ASM_SRC))
 
-BIN      := $(BUILD)/myos.bin
+BIN      := chickenKernel.iso
 ISO      := $(BUILD)/myos.iso
 
 # Flags
@@ -44,6 +49,8 @@ all: $(BIN)                         ## Compile le noyau
 $(BOOT_OBJ): $(BOOT_SRC) | $(BUILD)
 	$(AS) $< -o $@
 
+
+
 # 2) C
 $(BUILD)/%.o: $(SRC_DIR)/%.c | $(BUILD)
 	$(CC) -c $< -o $@ $(CFLAGS) -I./include
@@ -55,9 +62,6 @@ $(BUILD)/%.o: $(SRC_DIR)/%.s | $(BUILD)
 # 4) Link
 $(BIN): linker.ld $(BOOT_OBJ) $(C_OBJ) $(CPP_OBJ) $(ASM_OBJ)
 	$(CC) $(LDFLAGS) $(BOOT_OBJ) $(C_OBJ) $(CPP_OBJ) $(ASM_OBJ) -o $@ -lgcc
-	#@$(GRUBFILE) --is-x86-multiboot $@ \
-	 && echo "multiboot confirmed" \
-	 || (echo "the file is not multiboot" && false)
 
 # 5) ISO bootable
 iso: $(ISO)                        ## Crée l’image ISO
@@ -79,9 +83,15 @@ runiso: iso
 # Répertoire build
 $(BUILD):
 	@mkdir -p $(BUILD)
+	@mkdir -p $(BUILD)/$(ASM_DIR)
+	@mkdir -p $(BUILD)/$(IDT_DIR)
 
 # Nettoyage
 clean:
 	rm -rf $(BUILD)
+
+fclean: clean
+	rm -f $(BIN)
+
 
 re: clean all

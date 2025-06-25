@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kernel.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:48:23 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/10 12:52:27 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/25 17:06:18 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@
 # include <stddef.h>
 # include <stdint.h>
 # include <limits.h>
+# include "idt.h"
+
 
 # define VGA_WIDTH   80
 # define VGA_HEIGHT  25
@@ -102,21 +104,6 @@ enum vga_color {
 	VGA_COLOR_WHITE = 15,
 };
 
- // https://wiki.osdev.org/Interrupt_Descriptor_Table
- typedef struct s_idt_descriptor
- {
-	uint16_t	size;	// Size: One less than the size of the IDT in bytes.
-	uint32_t	offset;	// Offset: The linear address of the Interrupt Descriptor Table (not the physical address, paging applies).
- }	__attribute__((packed)) t_idt_descryptor;
-
-typedef struct s_idt_entry
-{
-	uint16_t offset_1;        // offset bits 0..15
-	uint16_t selector;        // a code segment selector in GDT or LDT
-	uint8_t  zero;            // unused, set to 0
-	uint8_t  type_attributes; // gate type, dpl, and p fields
-	uint16_t offset_2;        // offset bits 16..31
-}	__attribute__((packed)) t_idt_entry;
 
 typedef struct s_screens
 {
@@ -130,7 +117,9 @@ typedef struct s_screens
 
 typedef struct s_kernel
 {
-	t_idt_entry idt[IDT_ENTRIES];
+	ISRHandler			handlers[256];
+	t_idt_entry			idt[IDT_ENTRIES];
+	t_idt_descryptor	idt_descriptor;
 	t_screens	screens[NB_SCREEN];
 	uint8_t		terminal_ctrl;
 	uint8_t		terminal_shift;
@@ -145,14 +134,10 @@ void		terminal_restore();
 /* src/keyboard.c */
 void		update_cursor(int scancode);
 void		set_idt_gate(int n, uint32_t handler);
-void		init_idt();
-void		pic_remap(void);
 void		keyboard_handler();
 
 /* src/utils.s */
-void		load_idt(t_idt_descryptor *);
-void		irq0_handler();
-void		irq1_handler();
+
 
 /* src/inlinie_utils.c */
 uint8_t		vga_entry_color(enum vga_color fg, enum vga_color bg);
@@ -170,5 +155,7 @@ void		terminal_write(const char* data, size_t size);
 void		terminal_writestring(const char* data);
 void		printnbr(int nbr, int base);
 
+
+void		crash_me();
 
 #endif

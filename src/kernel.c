@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kernel.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/10 12:56:20 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/06/25 22:08:33 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,10 @@ void terminal_initialize()
 			kernel.terminal_buffer[index] = vga_entry(' ', kernel.screens[kernel.screen_index].color);
 		}
 	}
+	ISR_Initialize();
+	IDT_Initialize();
+	IRQ_Initialize();
 
-	vga_set_cursor(0, 0);
-	pic_remap();
-	init_idt();
-	__asm__ volatile ("sti");
 }
 
 void terminal_offset(uint16_t offset)
