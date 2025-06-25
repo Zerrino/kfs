@@ -6,22 +6,21 @@
 /*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 20:34:40 by zerrino           #+#    #+#             */
-/*   Updated: 2025/06/25 22:10:45 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/06/26 00:26:37 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/kernel.h"
 
-IRQHandler	g_IRQHandlers[16];
 
 void	IRQ_Handler(t_registers* regs)
 {
 	int	irq;
 
 	irq = regs->interrupt - PIC1_OFFSET;
-	if (g_IRQHandlers[irq] != NULL)
+	if (kernel.IRQHandlers[irq] != NULL)
 	{
-		g_IRQHandlers[irq](regs);
+		kernel.IRQHandlers[irq](regs);
 	}
 	else
 	{
@@ -54,5 +53,5 @@ void		IRQ_Initialize()
 
 void		IRQ_RegisterHandler(int irq, IRQHandler handler)
 {
-	g_IRQHandlers[irq] = handler;
+	kernel.IRQHandlers[irq] = handler;
 }

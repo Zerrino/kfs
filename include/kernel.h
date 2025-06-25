@@ -6,7 +6,7 @@
 /*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:48:23 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/25 17:06:18 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/06/26 00:25:53 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,8 @@ typedef struct s_screens
 
 typedef struct s_kernel
 {
-	ISRHandler			handlers[256];
+	ISRHandler			ISRhandlers[256];
+	IRQHandler			IRQHandlers[16];
 	t_idt_entry			idt[IDT_ENTRIES];
 	t_idt_descryptor	idt_descriptor;
 	t_screens	screens[NB_SCREEN];

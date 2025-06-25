@@ -6,7 +6,7 @@
 /*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 02:10:22 by zerrino           #+#    #+#             */
-/*   Updated: 2025/06/25 21:43:05 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/06/26 00:22:23 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -587,9 +587,9 @@ void	ISR_Initialize()
 
 void	__attribute__((cdecl)) ISR_Handler(t_registers* regs)
 {
-	if (kernel.handlers[regs->interrupt] != NULL)
+	if (kernel.ISRhandlers[regs->interrupt] != NULL)
 	{
-		kernel.handlers[regs->interrupt](regs);
+		kernel.ISRhandlers[regs->interrupt](regs);
 	}
 	else if (regs->interrupt >= 32)
 	{
@@ -610,6 +610,6 @@ void	__attribute__((cdecl)) ISR_Handler(t_registers* regs)
 
 void ISR_RegisterHandler(int interrupt, ISRHandler handler)
 {
-	kernel.handlers[interrupt] = handler;
+	kernel.ISRhandlers[interrupt] = handler;
 	IDT_EnableGate(interrupt);
 }
