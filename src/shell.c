@@ -6,7 +6,7 @@
 /*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:20 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/06/17 21:58:21 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/01 20:24:52 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,7 @@ void handle_unknown(const char* command) {
 
 command_type_t get_command_type(const char* command) {
 	command_type_t cmd_type;
-	
+
 	cmd_type = CMD_UNKNOWN;
     if (strcmp(command, "help") == 0)
 		cmd_type = CMD_HELP;

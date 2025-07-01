@@ -6,7 +6,7 @@
 /*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:14 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/06/17 21:58:15 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/01 20:23:23 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,12 @@ void gdt_install() {
     gdt_pointer.limit = (sizeof(struct gdt_entry) * 6) - 1;
     gdt_pointer.base = 0x00000800;
 
-    gdt_set_gate(0, 0, 0, 0, 0);
-    gdt_set_gate(1, 0, 0xFFFFFFFF, 0x9A, 0xC0); /* kernel code */
-    gdt_set_gate(2, 0, 0xFFFFFFFF, 0x92, 0xC0); /* kernel data */
-    gdt_set_gate(3, 0, 0xFFFFFFFF, 0x92, 0xC0); /* kernel stack */
-    gdt_set_gate(4, 0, 0xFFFFFFFF, 0xFA, 0xC0); /* user code */
-    gdt_set_gate(5, 0, 0xFFFFFFFF, 0xF2, 0xC0); /* user data */
+    gdt_set_gate(0, 0, 0, 0, 0);                    /* null descriptor */
+    gdt_set_gate(1, 0, 0xFFFFFFFF, 0x9A, 0xC0);    /* kernel code */
+    gdt_set_gate(2, 0, 0xFFFFFFFF, 0x92, 0xC0);    /* kernel data */
+    gdt_set_gate(3, 0, 0xFFFFFFFF, 0x92, 0xC0);    /* kernel stack */
+    gdt_set_gate(4, 0, 0xFFFFFFFF, 0xFA, 0xC0);    /* user code */
+    gdt_set_gate(5, 0, 0xFFFFFFFF, 0xF2, 0xC0);    /* user data */
 
     gdt_flush(&gdt_pointer);
 }

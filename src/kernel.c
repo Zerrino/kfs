@@ -6,7 +6,7 @@
 /*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/17 22:26:37 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/01 20:26:20 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,10 @@ void terminal_initialize()
 	}
 
 	vga_set_cursor(0, 0);
-	pic_remap();
-	init_idt();
-	__asm__ volatile ("sti");
+	IDT_Initialize();
+	ISR_Initialize();
+	IRQ_Initialize();
+	EnableInterrupts();
 }
 
 void terminal_offset(uint16_t offset)
@@ -67,7 +68,8 @@ void kernel_main(void)
 	kernel.terminal_buffer = (uint16_t *)VGA_MEMORY;
 
 	terminal_initialize();
-	/* KS1 Requirement */
+
+	/* KFS-1 Base System */
 	terminal_writestring("42\n");
 	terminal_writestring("KFS - Kernel from Scratch\n");
 	terminal_writestring("========================\n");
@@ -79,14 +81,15 @@ void kernel_main(void)
 	terminal_writestring("Basic functions (strlen, strcmp) available\n");
 	terminal_writestring("Colors and cursor support enabled\n");
 	terminal_writestring("Keyboard input handling ready\n");
-	terminal_writestring("Multiple screens supported\n\n");
+	terminal_writestring("Multiple screens supported\n");
+	terminal_writestring("Interrupt handling system active\n\n");
 
-	/* KS2 Features */
-	terminal_writestring("Initializing KS2 features...\n");
-	__asm__ volatile ("cli"); /* Clear interrupt flag */
+	/* KFS-2 Features */
+	terminal_writestring("Initializing KFS-2 features...\n");
+	DisableInterrupts(); /* Clear interrupt flag */
 	gdt_install();
 	terminal_writestring("GDT initialized at 0x00000800\n");
-	__asm__ volatile ("sti"); /* Re-enable interrupts after GDT is set up */
+	EnableInterrupts(); /* Re-enable interrupts after GDT is set up */
 
 	/* Test stack functionality */
 	stack_push(0xDEADBEEF);
@@ -97,7 +100,12 @@ void kernel_main(void)
 	terminal_writestring("\nAll systems ready!\n");
 	terminal_writestring("Use arrow keys to navigate, Ctrl+Shift+arrows for screens\n");
 	terminal_writestring("Type to enter shell mode, ESC to exit shell\n\n");
-	terminal_writestring("Ready for input...\n");
-	while(1)
+
+	/* Initialize shell */
+	shell_initialize();
+
+	while (1)
+	{
 		__asm__ volatile ("hlt");
+	}
 }
