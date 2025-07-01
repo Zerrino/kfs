@@ -6,7 +6,7 @@
 /*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 20:34:40 by zerrino           #+#    #+#             */
-/*   Updated: 2025/06/26 00:26:37 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/06/27 00:38:45 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,9 @@ void		IRQ_Initialize()
 		ISR_RegisterHandler(PIC1_OFFSET + i, IRQ_Handler);
 		i++;
 	}
+
 	EnableInterrupts();
+
 	IRQ_RegisterHandler(0, timer);
 	IRQ_RegisterHandler(1, keyboard_handler);
 }

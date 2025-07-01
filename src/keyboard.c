@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   keyboard.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:33:23 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/25 23:37:24 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/07/01 20:27:40 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ void	update_cursor(int scancode)
 	vga_set_cursor(kernel.screens[kernel.screen_index].row, kernel.screens[kernel.screen_index].column);
 }
 
+static int shell_mode = 0;
 
 void keyboard_handler()
 {
@@ -126,38 +127,49 @@ void keyboard_handler()
 
     uint8_t scancode = inb(0x60);
     if (!(scancode & 0x80))
-	{
-		char c = scancode_to_ascii[scancode];
-		if (scancode == 75 || scancode == 77 || scancode == 80 || scancode == 72|| scancode == 29
-				|| scancode == 42 || scancode == 54)
-		{
-				update_cursor(scancode);
+    {
+        /* Handle special keys first (arrows, ctrl, shift, etc.) */
+        if (scancode == 75 || scancode == 77 || scancode == 80 || scancode == 72|| scancode == 29
+            || scancode == 42 || scancode == 54)
+        {
+            update_cursor(scancode);
+            return;
+        }
 
-		}
-		else if (c)
-		{
-			if (kernel.terminal_ctrl == 0)
-			{
-				terminal_putchar(c);
-			}
-		}
-	}
-	else
-	{ // 29 - 157
-		if (scancode == 157)
-		{
-			kernel.terminal_ctrl = 0;
-		}
-		else if (scancode == 170 || scancode == 182)
-		{
-			kernel.terminal_shift = 0;
-		}
-		else if (scancode == 142)
-		{
+        char c = scancode_to_ascii[scancode];
+        if (c)
+        {
+            /* Handle ESC key to exit shell mode */
+            if (c == 27) /* ESC key */
+            {
+                if (shell_mode) {
+                    shell_mode = 0;
+                    terminal_writestring("\nNavigation mode. Use arrow keys to move, type to enter shell.\n");
+                }
+                return;
+            }
 
-		}
-		//else
-		//	;
-			//printnbr(scancode, 10);
-	}
+            /* If not in shell mode and user types, enter shell mode */
+            if (!shell_mode && c != 27) {
+                shell_mode = 1;
+                terminal_writestring("\n");
+                shell_initialize();
+            }
+
+            /* Send to shell if in shell mode and not in control mode */
+            if (shell_mode && kernel.terminal_ctrl == 0)
+                shell_handle_input(c);
+            /* In navigation mode, just display the character */
+            else if (!shell_mode)
+                terminal_putchar(c);
+        }
+    }
+    else
+    {
+        /* Handle key releases */
+        if (scancode == 157) /* Ctrl release */
+            kernel.terminal_ctrl = 0;
+        else if (scancode == 170 || scancode == 182) /* Shift release */
+            kernel.terminal_shift = 0;
+    }
 }

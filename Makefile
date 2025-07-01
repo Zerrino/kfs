@@ -1,97 +1,73 @@
-# === Paramètres =============================================================
-TARGET   := i686-elf
-AS       := $(TARGET)-as
-NASM     := nasm
-CC       := $(TARGET)-gcc
-CXX      := $(TARGET)-g++
-GRUBFILE := $(TARGET)-grub-file
-GRUBISO  := $(TARGET)-grub-mkrescue
-QEMU     := qemu-system-i386
+TARGET    := i686-elf
+AS        := $(TARGET)-as
+CC        := $(TARGET)-gcc
+NASM      := nasm
+QEMU      := qemu-system-i386
 
-SRC_DIR := src
-IDT_DIR := interupts
-ASM_DIR := asm
+SRC_DIR   := src
+BUILD     := build
+ISO_DIR   := $(BUILD)/isodir
+ISO_BOOT  := $(ISO_DIR)/boot
+ISO_GRUB  := $(ISO_BOOT)/grub
 
-BUILD   := build
+KERNEL    := chickenKernel
+ISO_IMG   := $(BUILD)/chicken.iso
 
-# Répertoires
-BUILD    := build
-ISO_DIR  := $(BUILD)/isodir
-ISO_BOOT := $(ISO_DIR)/boot
-ISO_GRUB := $(ISO_BOOT)/grub
+C_SRC     := $(shell find $(SRC_DIR) -type f -name '*.c')
+ASM_SRC   := $(shell find $(SRC_DIR) -type f -name '*.s')
+BOOT_SRC  := $(SRC_DIR)/boot.s
 
-# Fichiers
-C_SRC := $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/$(IDT_DIR)/*.c)
-C_OBJ := $(patsubst $(SRC_DIR)/%.c,$(BUILD)/%.o,$(C_SRC))
-#C_OBJ := $(patsubst $(IDT_DIR)/%.c,$(BUILD)/%.o,$(C_SRC))
+C_OBJ     := $(patsubst $(SRC_DIR)/%.c,$(BUILD)/%.o,$(C_SRC))
+ASM_OBJ   := $(patsubst $(SRC_DIR)/%.s,$(BUILD)/%.o,$(ASM_SRC))
+BOOT_OBJ  := $(BUILD)/boot.o
 
-
-BOOT_SRC := $(SRC_DIR)/boot.s
-BOOT_OBJ := $(BUILD)/boot.o
-
-ASM_SRC := $(wildcard $(SRC_DIR)/$(ASM_DIR)/*.s)
-ASM_OBJ := $(patsubst $(SRC_DIR)/%.s,$(BUILD)/%.o,$(ASM_SRC))
-
-BIN      := chickenKernel.iso
-ISO      := $(BUILD)/myos.iso
-
-# Flags
-CFLAGS    := -std=gnu99 -ffreestanding -O2 -Wall -Wextra -Werror
-CXXFLAGS  := -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti
-LDFLAGS   := -T linker.ld -ffreestanding -O2 -nostdlib
+CFLAGS    := -std=gnu99 -ffreestanding -O2 -Wall -Wextra -Werror \
+             -fno-builtin -fno-stack-protector -nostdlib -nodefaultlibs \
+             -Iinclude
+LDFLAGS   := -T utils/linker.ld -nostdlib -ffreestanding -O2
 NASMFLAGS := -f elf32
-# ===========================================================================#
-.PHONY: all iso run clean
 
-all: $(BIN)                         ## Compile le noyau
 
-# 1) Assembleur
-$(BOOT_OBJ): $(BOOT_SRC) | $(BUILD)
+.PHONY: all iso run runiso clean fclean re
+
+all: $(KERNEL)
+
+$(BUILD)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD)/%.o: $(SRC_DIR)/%.s
+	@mkdir -p $(dir $@)
+	$(NASM) $(NASMFLAGS) $< -o $@
+
+$(BOOT_OBJ): $(BOOT_SRC)
+	@mkdir -p $(dir $@)
 	$(AS) $< -o $@
 
+$(KERNEL): $(BOOT_OBJ) $(C_OBJ) $(ASM_OBJ)
+	$(CC) $(LDFLAGS) -o $@ $^
 
-
-# 2) C
-$(BUILD)/%.o: $(SRC_DIR)/%.c | $(BUILD)
-	$(CC) -c $< -o $@ $(CFLAGS) -I./include
-
-$(BUILD)/%.o: $(SRC_DIR)/%.s | $(BUILD)
-	$(NASM) $< -o $@ $(NASMFLAGS) -I./include
-
-
-# 4) Link
-$(BIN): linker.ld $(BOOT_OBJ) $(C_OBJ) $(CPP_OBJ) $(ASM_OBJ)
-	$(CC) $(LDFLAGS) $(BOOT_OBJ) $(C_OBJ) $(CPP_OBJ) $(ASM_OBJ) -o $@ -lgcc
-
-# 5) ISO bootable
-iso: $(ISO)                        ## Crée l’image ISO
-
-$(ISO): $(BIN) grub.cfg
+$(ISO_IMG): $(KERNEL) utils/grub.cfg
 	@mkdir -p $(ISO_GRUB)
-	cp $(BIN)            $(ISO_BOOT)/
-	cp grub.cfg          $(ISO_GRUB)/
-	$(GRUBISO) -o $@ $(ISO_DIR)
+	cp $(KERNEL)       $(ISO_BOOT)/
+	cp utils/grub.cfg        $(ISO_GRUB)/
+	grub-mkrescue -o $@ $(ISO_DIR)
 
-# 6) Lancer QEMU directement
-run: $(BIN)
-	$(QEMU) -kernel $<
+iso: $(ISO_IMG)
 
-# 7) Lancer QEMU avec l’ISO GRUB
-runiso: iso
-	$(QEMU) -cdrom $(ISO)
+run: $(KERNEL)
+	$(QEMU) -kernel $< -serial stdio
 
-# Répertoire build
-$(BUILD):
-	@mkdir -p $(BUILD)
-	@mkdir -p $(BUILD)/$(ASM_DIR)
-	@mkdir -p $(BUILD)/$(IDT_DIR)
+runiso: $(ISO_IMG)
+	$(QEMU) -cdrom $< -serial stdio
 
-# Nettoyage
 clean:
 	rm -rf $(BUILD)
 
 fclean: clean
-	rm -f $(BIN)
 
+	rm -f $(KERNEL)
 
-re: clean all
+re: fclean all
+
+.PHONY: all iso run runiso clean fclean re

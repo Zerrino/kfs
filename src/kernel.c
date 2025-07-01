@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kernel.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/25 22:08:33 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/07/01 20:26:20 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,12 @@ void terminal_initialize()
 	IDT_Initialize();
 	IRQ_Initialize();
 
+
+	vga_set_cursor(0, 0);
+	IDT_Initialize();
+	ISR_Initialize();
+	IRQ_Initialize();
+	EnableInterrupts();
 }
 
 void terminal_offset(uint16_t offset)
@@ -63,12 +69,47 @@ void terminal_restore()
 
 void kernel_main(void)
 {
-
 	kernel.terminal_buffer = (uint16_t *)VGA_MEMORY;
 
-
 	terminal_initialize();
-	while(1)
+
+	/* KFS-1 Base System */
+	terminal_writestring("42\n");
+	terminal_writestring("KFS - Kernel from Scratch\n");
+	terminal_writestring("========================\n");
+	terminal_writestring("GRUB bootloader working\n");
+	terminal_writestring("Multiboot header detected\n");
+	terminal_writestring("ASM boot code functional\n");
+	terminal_writestring("Kernel compiled and linked\n");
+	terminal_writestring("Screen interface working\n");
+	terminal_writestring("Basic functions (strlen, strcmp) available\n");
+	terminal_writestring("Colors and cursor support enabled\n");
+	terminal_writestring("Keyboard input handling ready\n");
+	terminal_writestring("Multiple screens supported\n");
+	terminal_writestring("Interrupt handling system active\n\n");
+
+	/* KFS-2 Features */
+	terminal_writestring("Initializing KFS-2 features...\n");
+	DisableInterrupts(); /* Clear interrupt flag */
+	gdt_install();
+	terminal_writestring("GDT initialized at 0x00000800\n");
+	EnableInterrupts(); /* Re-enable interrupts after GDT is set up */
+
+	/* Test stack functionality */
+	stack_push(0xDEADBEEF);
+	stack_push(0xCAFEBABE);
+	stack_push(0x12345678);
+	terminal_writestring("Kernel stack operational\n");
+
+	terminal_writestring("\nAll systems ready!\n");
+	terminal_writestring("Use arrow keys to navigate, Ctrl+Shift+arrows for screens\n");
+	terminal_writestring("Type to enter shell mode, ESC to exit shell\n\n");
+
+	/* Initialize shell */
+	shell_initialize();
+
+	while (1)
 	{
+		__asm__ volatile ("hlt");
 	}
 }

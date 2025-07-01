@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   inline_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:23:39 by alexafer          #+#    #+#             */
-/*   Updated: 2025/06/25 19:49:15 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/07/01 20:25:31 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,11 @@ uint16_t vga_entry(unsigned char uc, uint8_t color)
 void outb(uint16_t port, uint8_t val)
 {
     __asm__ __volatile__("outb %0, %1" : : "a"(val), "Nd"(port));
+}
+
+void outw(uint16_t port, uint16_t val)
+{
+    __asm__ __volatile__("outw %0, %1" : : "a"(val), "Nd"(port));
 }
 
 uint8_t inb(uint16_t port)
