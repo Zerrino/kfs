@@ -58,6 +58,6 @@ isr_common:
     mov fs, ax
     mov gs, ax
 
-    popa
-    add esp, 8
-    iret
+    popa                ; pop what we pushed with pusha
+    add esp, 8          ; remove error code and interrupt number
+    iret                ; will pop: cs, eip, eflags, ss, esp

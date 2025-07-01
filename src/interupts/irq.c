@@ -42,6 +42,9 @@ void		IRQ_Initialize()
 		ISR_RegisterHandler(PIC1_OFFSET + i, IRQ_Handler);
 		i++;
 	}
+
+	EnableInterrupts();
+
 	IRQ_RegisterHandler(0, timer);
 	IRQ_RegisterHandler(1, keyboard_handler);
 }

@@ -65,6 +65,7 @@ clean:
 	rm -rf $(BUILD)
 
 fclean: clean
+
 	rm -f $(KERNEL)
 
 re: fclean all

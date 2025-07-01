@@ -113,7 +113,6 @@ void	update_cursor(int scancode)
 	vga_set_cursor(kernel.screens[kernel.screen_index].row, kernel.screens[kernel.screen_index].column);
 }
 
-
 static int shell_mode = 0;
 
 void keyboard_handler()

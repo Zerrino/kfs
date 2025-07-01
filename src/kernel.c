@@ -33,6 +33,10 @@ void terminal_initialize()
 			kernel.terminal_buffer[index] = vga_entry(' ', kernel.screens[kernel.screen_index].color);
 		}
 	}
+	ISR_Initialize();
+	IDT_Initialize();
+	IRQ_Initialize();
+
 
 	vga_set_cursor(0, 0);
 	IDT_Initialize();
