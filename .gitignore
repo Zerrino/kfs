@@ -1,4 +1,4 @@
-opt/
-sources/
+opt/*
+sources/*
 .vscode/
-build/
+build/*

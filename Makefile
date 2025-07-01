@@ -27,9 +27,6 @@ CFLAGS    := -std=gnu99 -ffreestanding -O2 -Wall -Wextra -Werror \
 LDFLAGS   := -T utils/linker.ld -nostdlib -ffreestanding -O2
 NASMFLAGS := -f elf32
 
-
-.PHONY: all iso run runiso clean fclean re
-
 all: $(KERNEL)
 
 $(BUILD)/%.o: $(SRC_DIR)/%.c
