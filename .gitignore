@@ -1,4 +1,20 @@
+# Toolchain directories (ignore both folder and contents)
+opt/
 opt/*
+sources/
 sources/*
+
+# IDE and editor files
 .vscode/
+
+# Build artifacts
+build/
 build/*
+
+# Kernel binary
+chickenKernel
+
+# Object files
+*.o
+*.bin
+*.iso
