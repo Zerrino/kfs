@@ -61,7 +61,13 @@ static int expand_heap(size_t size)
     uint32_t i;
     uint32_t virt_addr;
     uint32_t phys_addr;
-    
+
+    /* Check if paging is enabled and directory is set */
+    if (!g_current_directory) {
+        kernel_error("expand_heap called without page directory");
+        return -1;
+    }
+
     /* Calculate pages needed */
     pages_needed = (size + PAGE_SIZE - 1) / PAGE_SIZE;
     new_end = g_kernel_heap.current_end + (pages_needed * PAGE_SIZE);
@@ -182,10 +188,16 @@ void *kmalloc(size_t size)
 {
     t_mem_block *block;
     uint32_t total_size;
-    
+
     if (size == 0)
         return NULL;
-    
+
+    /* Check if heap is initialized */
+    if (g_kernel_heap.start_addr == 0) {
+        kernel_error("kmalloc called before heap initialization");
+        return NULL;
+    }
+
     /* Align size to 4-byte boundary */
     size = (size + 3) & ~3;
     

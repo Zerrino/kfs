@@ -49,8 +49,21 @@ void paging_init(void)
     /* Identity map the first 4MB (kernel space) */
     for (i = 0; i < 1024; i++) {
         phys_addr = i * PAGE_SIZE;
-        paging_map_page(g_kernel_directory, phys_addr, phys_addr, 
+        paging_map_page(g_kernel_directory, phys_addr, phys_addr,
                        PAGE_PRESENT | PAGE_WRITABLE);
+    }
+
+    /* Map kernel heap area (4MB - 8MB) */
+    terminal_writestring("Mapping kernel heap area...\n");
+    for (i = 1024; i < 2048; i++) {
+        phys_addr = phys_alloc_page();
+        if (phys_addr) {
+            paging_map_page(g_kernel_directory, i * PAGE_SIZE, phys_addr,
+                           PAGE_PRESENT | PAGE_WRITABLE);
+        } else {
+            terminal_writestring("Warning: Failed to allocate page for heap mapping\n");
+            break;
+        }
     }
     
     /* Set current directory */
