@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kernel.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:48:23 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/01 20:25:45 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/02 18:24:31 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,7 @@ enum vga_color {
 
 typedef struct s_screens
 {
+	int			shell_mode;
 	size_t		row;
 	size_t		column;
 	uint8_t		color;
@@ -138,7 +139,8 @@ void		set_idt_gate(int n, uint32_t handler);
 void		keyboard_handler();
 
 /* src/utils.s */
-
+int		ft_strcmp(const char *, const char *);
+char	*ft_strcpy(char *, const char *);
 
 /* src/inlinie_utils.c */
 uint8_t		vga_entry_color(enum vga_color fg, enum vga_color bg);
@@ -182,5 +184,13 @@ int			strcmp(const char* s1, const char* s2);
 
 /* src/kernel.c */
 void		terminal_initialize();
+
+/* src/mem_utils.c*/
+void		*ft_memset(void *s, int c, size_t n);
+void		*ft_memcpy(void *dst, const void *src, size_t n);
+void		*ft_memmove(void *dst, const void *src, size_t n);
+void		*ft_memchr(const void *s, int c, size_t n);
+void		ft_bzero(void *s, size_t n);
+int			ft_memcmp(const void *s1, const void *s2, size_t n);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   keyboard.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:33:23 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/01 20:27:40 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/02 18:26:07 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,8 +113,6 @@ void	update_cursor(int scancode)
 	vga_set_cursor(kernel.screens[kernel.screen_index].row, kernel.screens[kernel.screen_index].column);
 }
 
-static int shell_mode = 0;
-
 void keyboard_handler()
 {
     static const char scancode_to_ascii[] = {
@@ -142,25 +140,25 @@ void keyboard_handler()
             /* Handle ESC key to exit shell mode */
             if (c == 27) /* ESC key */
             {
-                if (shell_mode) {
-                    shell_mode = 0;
+                if (kernel.screens[kernel.screen_index].shell_mode) {
+                    kernel.screens[kernel.screen_index].shell_mode = 0;
                     terminal_writestring("\nNavigation mode. Use arrow keys to move, type to enter shell.\n");
                 }
                 return;
             }
 
             /* If not in shell mode and user types, enter shell mode */
-            if (!shell_mode && c != 27) {
-                shell_mode = 1;
+            if (!kernel.screens[kernel.screen_index].shell_mode && c != 27) {
+                kernel.screens[kernel.screen_index].shell_mode = 1;
                 terminal_writestring("\n");
-                shell_initialize();
+                //shell_initialize();
             }
 
             /* Send to shell if in shell mode and not in control mode */
-            if (shell_mode && kernel.terminal_ctrl == 0)
+            if (kernel.screens[kernel.screen_index].shell_mode && kernel.terminal_ctrl == 0)
                 shell_handle_input(c);
             /* In navigation mode, just display the character */
-            else if (!shell_mode)
+            else if (!kernel.screens[kernel.screen_index].shell_mode)
                 terminal_putchar(c);
         }
     }

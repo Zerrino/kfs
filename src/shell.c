@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:20 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/01 20:24:52 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/02 18:24:02 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ void shell_initialize() {
     terminal_writestring("KFS Shell v1.0\n");
     terminal_writestring("Type 'help' for available commands\n");
     terminal_writestring("> ");
+    //kernel.shell_mode = 1;
 }
 
 void handle_help() {
@@ -119,7 +120,25 @@ void handle_pop() {
 }
 
 void handle_clear() {
-    terminal_initialize();
+	for (size_t y = 0; y < VGA_HEIGHT * NB_SCROLL; y++)
+	{
+		for (size_t x = 0; x < VGA_WIDTH; x++)
+		{
+			const size_t index = y * VGA_WIDTH + x;
+			kernel.screens[kernel.screen_index].content[index] = vga_entry(' ', kernel.screens[kernel.screen_index].color);
+		}
+	}
+	for (size_t y = 0; y < VGA_HEIGHT; y++)
+	{
+		for (size_t x = 0; x < VGA_WIDTH; x++)
+		{
+			const size_t index = y * VGA_WIDTH + x;
+			kernel.terminal_buffer[index] = vga_entry(' ', kernel.screens[kernel.screen_index].color);
+		}
+	}
+
+	kernel.screens[kernel.screen_index].row = 0;
+	kernel.screens[kernel.screen_index].column = 0;
 }
 
 void handle_reboot() {
