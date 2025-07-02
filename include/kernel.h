@@ -58,6 +58,7 @@
 # include <stdint.h>
 # include <limits.h>
 # include "idt.h"
+# include "memory.h"
 
 
 # define VGA_WIDTH   80
@@ -179,8 +180,13 @@ void		shell_initialize();
 void		shell_process_command(const char* cmd);
 void		shell_handle_input(char c);
 int			strcmp(const char* s1, const char* s2);
+void		handle_memstats();
+void		handle_memtest();
+void		handle_vmemstats();
+void		handle_memcheck();
 
 /* src/kernel.c */
 void		terminal_initialize();
+void		kernelPanic();
 
 #endif

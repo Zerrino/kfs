@@ -101,6 +101,28 @@ void kernel_main(void)
 	stack_push(0x12345678);
 	terminal_writestring("Kernel stack operational\n");
 
+	/* KFS-3 Memory Management Features */
+	terminal_writestring("\nInitializing KFS-3 memory management...\n");
+	DisableInterrupts(); /* Disable interrupts during memory initialization */
+
+	/* Initialize physical memory manager (assume 16MB for now) */
+	phys_mem_init(16 * 1024 * 1024);
+
+	/* Initialize paging system */
+	paging_init();
+
+	/* Initialize kernel memory allocator */
+	kmem_init();
+
+	/* Initialize panic system */
+	panic_init();
+
+	/* Enable paging */
+	paging_enable();
+
+	EnableInterrupts(); /* Re-enable interrupts */
+	terminal_writestring("Memory management system initialized\n");
+
 	terminal_writestring("\nAll systems ready!\n");
 	terminal_writestring("Use arrow keys to navigate, Ctrl+Shift+arrows for screens\n");
 	terminal_writestring("Type to enter shell mode, ESC to exit shell\n\n");

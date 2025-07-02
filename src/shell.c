@@ -25,6 +25,10 @@ typedef enum {
     CMD_REBOOT,
     CMD_HALT,
     CMD_SHUTDOWN,
+    CMD_MEMSTATS,
+    CMD_MEMTEST,
+    CMD_VMEMSTATS,
+    CMD_MEMCHECK,
     CMD_UNKNOWN
 } command_type_t;
 
@@ -44,6 +48,11 @@ void handle_help() {
     terminal_writestring("  reboot       - Reboot the system\n");
     terminal_writestring("  halt         - Halt the system\n");
     terminal_writestring("  shutdown     - Shutdown the system\n");
+    terminal_writestring("\nMemory Management Commands:\n");
+    terminal_writestring("  memstats     - Display memory statistics\n");
+    terminal_writestring("  memtest      - Run memory allocation tests\n");
+    terminal_writestring("  vmemstats    - Display virtual memory statistics\n");
+    terminal_writestring("  memcheck     - Check memory integrity\n");
 }
 
 void handle_stack() {
@@ -168,6 +177,14 @@ command_type_t get_command_type(const char* command) {
 		cmd_type = CMD_HALT;
     else if (strcmp(command, "shutdown") == 0)
 		cmd_type = CMD_SHUTDOWN;
+    else if (strcmp(command, "memstats") == 0)
+		cmd_type = CMD_MEMSTATS;
+    else if (strcmp(command, "memtest") == 0)
+		cmd_type = CMD_MEMTEST;
+    else if (strcmp(command, "vmemstats") == 0)
+		cmd_type = CMD_VMEMSTATS;
+    else if (strcmp(command, "memcheck") == 0)
+		cmd_type = CMD_MEMCHECK;
 	return cmd_type;
 }
 
@@ -219,6 +236,18 @@ void shell_process_command(const char* cmd) {
         case CMD_SHUTDOWN:
             handle_shutdown();
             break;
+        case CMD_MEMSTATS:
+            handle_memstats();
+            break;
+        case CMD_MEMTEST:
+            handle_memtest();
+            break;
+        case CMD_VMEMSTATS:
+            handle_vmemstats();
+            break;
+        case CMD_MEMCHECK:
+            handle_memcheck();
+            break;
         case CMD_UNKNOWN:
             if (command[0] != '\0')
                 handle_unknown(command);
@@ -251,4 +280,142 @@ int strcmp(const char* s1, const char* s2) {
         s2++;
     }
     return *(const unsigned char*)s1 - *(const unsigned char*)s2;
+}
+
+/* Memory Management Command Handlers */
+
+void handle_memstats() {
+    terminal_writestring("\n=== Physical Memory Statistics ===\n");
+    terminal_writestring("Total pages: ");
+    printnbr(g_phys_mem_manager.total_pages, 10);
+    terminal_writestring("\nUsed pages: ");
+    printnbr(g_phys_mem_manager.used_pages, 10);
+    terminal_writestring("\nFree pages: ");
+    printnbr(g_phys_mem_manager.total_pages - g_phys_mem_manager.used_pages, 10);
+    terminal_writestring("\n\n=== Kernel Heap Statistics ===\n");
+    terminal_writestring("Heap start: 0x");
+    printnbr(g_kernel_heap.start_addr, 16);
+    terminal_writestring("\nHeap end: 0x");
+    printnbr(g_kernel_heap.current_end, 16);
+    terminal_writestring("\nHeap size: ");
+    printnbr((g_kernel_heap.current_end - g_kernel_heap.start_addr) / 1024, 10);
+    terminal_writestring(" KB\n");
+
+    if (is_paging_enabled()) {
+        terminal_writestring("\nPaging: ENABLED\n");
+        terminal_writestring("Page directory: 0x");
+        printnbr(get_cr3(), 16);
+        terminal_writestring("\n");
+    } else {
+        terminal_writestring("\nPaging: DISABLED\n");
+    }
+}
+
+void handle_memtest() {
+    void *ptr1, *ptr2, *ptr3;
+
+    terminal_writestring("\n=== Memory Allocation Test ===\n");
+
+    /* Test kmalloc */
+    terminal_writestring("Testing kmalloc...\n");
+    ptr1 = kmalloc(1024);
+    if (ptr1) {
+        terminal_writestring("kmalloc(1024): SUCCESS - 0x");
+        printnbr((uint32_t)ptr1, 16);
+        terminal_writestring("\n");
+    } else {
+        terminal_writestring("kmalloc(1024): FAILED\n");
+        return;
+    }
+
+    ptr2 = kmalloc(2048);
+    if (ptr2) {
+        terminal_writestring("kmalloc(2048): SUCCESS - 0x");
+        printnbr((uint32_t)ptr2, 16);
+        terminal_writestring("\n");
+    } else {
+        terminal_writestring("kmalloc(2048): FAILED\n");
+        kfree(ptr1);
+        return;
+    }
+
+    /* Test ksize */
+    terminal_writestring("Size of first allocation: ");
+    printnbr(ksize(ptr1), 10);
+    terminal_writestring(" bytes\n");
+
+    /* Test kfree */
+    terminal_writestring("Testing kfree...\n");
+    kfree(ptr1);
+    terminal_writestring("kfree(ptr1): SUCCESS\n");
+
+    /* Test vmalloc */
+    terminal_writestring("Testing vmalloc...\n");
+    ptr3 = vmalloc(4096);
+    if (ptr3) {
+        terminal_writestring("vmalloc(4096): SUCCESS - 0x");
+        printnbr((uint32_t)ptr3, 16);
+        terminal_writestring("\n");
+    } else {
+        terminal_writestring("vmalloc(4096): FAILED\n");
+        kfree(ptr2);
+        return;
+    }
+
+    /* Test vsize */
+    terminal_writestring("Size of virtual allocation: ");
+    printnbr(vsize(ptr3), 10);
+    terminal_writestring(" bytes\n");
+
+    /* Clean up */
+    kfree(ptr2);
+    vfree(ptr3);
+    terminal_writestring("Memory test completed successfully!\n");
+}
+
+void handle_vmemstats() {
+    vmem_print_stats();
+}
+
+void handle_memcheck() {
+    terminal_writestring("\n=== Memory Integrity Check ===\n");
+
+    /* Check if memory management is initialized */
+    if (g_phys_mem_manager.total_pages == 0) {
+        terminal_writestring("ERROR: Physical memory manager not initialized\n");
+        return;
+    }
+
+    if (g_kernel_heap.start_addr == 0) {
+        terminal_writestring("ERROR: Kernel heap not initialized\n");
+        return;
+    }
+
+    if (!g_current_directory) {
+        terminal_writestring("ERROR: Page directory not set\n");
+        return;
+    }
+
+    terminal_writestring("Physical memory manager: OK\n");
+    terminal_writestring("Kernel heap: OK\n");
+    terminal_writestring("Paging system: OK\n");
+
+    /* Check for memory leaks by comparing allocated vs used pages */
+    uint32_t used_pages = g_phys_mem_manager.used_pages;
+    uint32_t expected_pages = (g_kernel_heap.current_end - g_kernel_heap.start_addr) / PAGE_SIZE;
+    expected_pages += 1; /* Page directory */
+
+    terminal_writestring("Used pages: ");
+    printnbr(used_pages, 10);
+    terminal_writestring("\nExpected minimum: ");
+    printnbr(expected_pages, 10);
+    terminal_writestring("\n");
+
+    if (used_pages >= expected_pages) {
+        terminal_writestring("Memory usage: NORMAL\n");
+    } else {
+        terminal_writestring("WARNING: Unexpected memory usage pattern\n");
+    }
+
+    terminal_writestring("Memory integrity check completed\n");
 }

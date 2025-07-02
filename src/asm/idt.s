@@ -14,7 +14,4 @@ IDT_Load:
     pop ebp
     ret
 
-global  kernelPanic
-kernelPanic:
-    cli
-    hlt
+
