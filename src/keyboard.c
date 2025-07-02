@@ -6,7 +6,7 @@
 /*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:33:23 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/02 18:26:07 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/07/02 18:47:37 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static void	down_arrow()
 	}
 	else
 	{
-		if (kernel.screens[kernel.screen_index].offset < (VGA_HEIGHT * (NB_SCREEN - 1)) - 1)
+		if (kernel.screens[kernel.screen_index].offset < (VGA_HEIGHT * (NB_SCROLL - 1)) - 1)
 			terminal_offset(++kernel.screens[kernel.screen_index].offset);
 	}
 }
