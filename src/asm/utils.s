@@ -1,4 +1,3 @@
-
 [bits 32]
 
 global crash_me

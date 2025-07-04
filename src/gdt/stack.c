@@ -6,13 +6,11 @@
 /*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:17 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/04 13:06:03 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/04 14:30:56 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/kernel.h"
-
-#define STACK_SIZE 1024
 static uint32_t kernel_stack[STACK_SIZE];
 static int stack_pointer = -1;
 

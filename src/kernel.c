@@ -6,13 +6,11 @@
 /*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/04 12:58:31 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/04 14:46:25 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/kernel.h"
-
-t_kernel	kernel = {0};
 
 void terminal_initialize()
 {

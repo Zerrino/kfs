@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   io.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 19:58:37 by zerrino           #+#    #+#             */
-/*   Updated: 2025/06/25 21:32:53 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/07/04 14:30:36 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/kernel.h"
-
-#define UNUSED_PORT		0x80
 
 void	iowait()
 {

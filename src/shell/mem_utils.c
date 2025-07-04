@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   mem_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 17:05:27 by zerrino           #+#    #+#             */
-/*   Updated: 2025/07/02 17:06:45 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/07/04 13:42:00 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/kernel.h"
+#include "../../include/kernel.h"
 
 void	*ft_memset(void *s, int c, size_t n)
 {
