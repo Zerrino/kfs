@@ -6,17 +6,11 @@
 /*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 00:00:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/04 12:57:36 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/04 14:46:38 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/kernel.h"
-
-/* Global kernel heap */
-t_kernel_heap g_kernel_heap = {0};
-
-/* Minimum block size (including header) */
-#define MIN_BLOCK_SIZE (sizeof(t_mem_block) + 16)
 
 void kmem_init(void)
 {
