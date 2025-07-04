@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   shell.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:20 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/02 18:24:02 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/07/04 13:06:32 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/kernel.h"
+#include "../../include/kernel.h"
 
 #define COMMAND_BUFFER_SIZE 256
 static char command_buffer[COMMAND_BUFFER_SIZE];

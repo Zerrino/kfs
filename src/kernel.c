@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kernel.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/02 18:27:59 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/07/04 12:58:31 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,45 +74,22 @@ void kernel_main(void)
 
 	terminal_initialize();
 
-
-
-	/* Test stack functionality */
-	stack_push(0xDEADBEEF);
-	stack_push(0xCAFEBABE);
-	stack_push(0x12345678);
-	terminal_writestring("Kernel stack operational\n");
-
 	/* KFS-3 Memory Management Features */
 	terminal_writestring("\nInitializing KFS-3 memory management...\n");
 	DisableInterrupts(); /* Disable interrupts during memory initialization */
-
-	/* Initialize physical memory manager (assume 16MB for now) */
 	phys_mem_init(16 * 1024 * 1024);
-
-	/* Initialize paging system */
 	paging_init();
-
-	/* Initialize kernel memory allocator */
 	kmem_init();
-
-	/* Initialize panic system */
 	panic_init();
-
-	/* Enable paging */
 	paging_enable();
-
 	EnableInterrupts(); /* Re-enable interrupts */
 	terminal_writestring("Memory management system initialized\n");
-
 	terminal_writestring("\nAll systems ready!\n");
 	terminal_writestring("Use arrow keys to navigate, Ctrl+Shift+arrows for screens\n");
 	terminal_writestring("Type to enter shell mode, ESC to exit shell\n\n");
-
 	/* Initialize shell */
 	shell_initialize();
 
 	while (1)
-	{
 		__asm__ volatile ("hlt");
-	}
 }

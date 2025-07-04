@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   gdt.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:14 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/01 20:23:23 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/04 13:05:58 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/kernel.h"
+#include "../../include/kernel.h"
 
 struct gdt_entry {
     uint16_t limit_low;
