@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   enums.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 15:10:55 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/04 15:11:00 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/05 15:51:54 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,6 @@ typedef enum {
 	CMD_MEMTEST2,
 	CMD_MEMTEST3,
 	CMD_MEMTEST4,
-	CMD_MEMTEST4DEBUG,
 	CMD_MEMTEST5,
 	CMD_CRASHTEST,
 	CMD_CRASH1,

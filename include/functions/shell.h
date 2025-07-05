@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 15:11:31 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/04 15:29:44 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/05 15:49:55 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void		printnbr(int n, int base);
 void		shell_initialize();
 void		shell_process_command(const char* cmd);
 void		shell_handle_input(char c);
-int			strcmp(const char* s1, const char* s2);
+int			ft_strcmp(const char* s1, const char* s2);
 void		handle_memstats();
 void		handle_memtest();
 void		handle_vmemstats();
