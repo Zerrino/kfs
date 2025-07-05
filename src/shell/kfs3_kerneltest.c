@@ -6,15 +6,13 @@
 /*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:20 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/05 14:24:26 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/05 18:28:48 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/kernel.h"
 
 /* Crash Test: Demonstrate Kernel Panic Levels */
-
-
 /* Individual Crash Tests */
 void handle_crash1() {
     terminal_writestring("\n=== WARNING LEVEL TEST ===\n");

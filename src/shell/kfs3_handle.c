@@ -6,7 +6,7 @@
 /*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:20 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/05 14:26:45 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/05 18:30:22 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,8 @@ void handle_memstats() {
         terminal_writestring("Page directory: 0x");
         printnbr(get_cr3(), 16);
         terminal_writestring("\n");
-    } else {
+    } else
         terminal_writestring("\nPaging: DISABLED\n");
-    }
 }
 
 void handle_memtest() {
@@ -54,7 +53,6 @@ void handle_memtest() {
 void handle_crashtest() {
     terminal_writestring("\n=== KERNEL PANIC LEVEL DEMONSTRATION ===\n");
     terminal_writestring("Available crash test commands:\n\n");
-
     terminal_writestring("Safe tests (system continues):\n");
     terminal_writestring("  crash1    - WARNING level test\n");
     terminal_writestring("  crash2    - ERROR level test\n");
@@ -63,7 +61,6 @@ void handle_crashtest() {
     terminal_writestring("  crash4    - Division by zero\n");
     terminal_writestring("  crash5    - NULL pointer dereference\n");
     terminal_writestring("  crash6    - Invalid memory access\n");
-
     terminal_writestring("\nType the command you want to test.\n");
     terminal_writestring("Example: crash1\n");
 }
@@ -74,8 +71,6 @@ void handle_vmemstats() {
 
 void handle_memcheck() {
     terminal_writestring("\n=== Memory Integrity Check ===\n");
-
-    /* Check if memory management is initialized */
     if (g_phys_mem_manager.total_pages == 0) {
         terminal_writestring("ERROR: Physical memory manager not initialized\n");
         return;
@@ -94,23 +89,18 @@ void handle_memcheck() {
     terminal_writestring("Physical memory manager: OK\n");
     terminal_writestring("Kernel heap: OK\n");
     terminal_writestring("Paging system: OK\n");
-
-    /* Check for memory leaks by comparing allocated vs used pages */
     uint32_t used_pages = g_phys_mem_manager.used_pages;
     uint32_t expected_pages = (g_kernel_heap.current_end - g_kernel_heap.start_addr) / PAGE_SIZE;
     expected_pages += 1; /* Page directory */
-
     terminal_writestring("Used pages: ");
     printnbr(used_pages, 10);
     terminal_writestring("\nExpected minimum: ");
     printnbr(expected_pages, 10);
     terminal_writestring("\n");
-
-    if (used_pages >= expected_pages) {
+    if (used_pages >= expected_pages)
         terminal_writestring("Memory usage: NORMAL\n");
-    } else {
+    else 
         terminal_writestring("WARNING: Unexpected memory usage pattern\n");
-    }
 
     terminal_writestring("Memory integrity check completed\n");
 }

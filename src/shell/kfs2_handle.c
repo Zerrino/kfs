@@ -6,7 +6,7 @@
 /*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:20 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/05 14:10:56 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/05 18:32:33 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,6 @@ void handle_help() {
     terminal_writestring("\nMemory Management Commands:\n");
     terminal_writestring("  memstats     - Display memory statistics\n");
     terminal_writestring("  memtest      - Run comprehensive memory tests\n");
-    terminal_writestring("  memtest1     - Basic allocation tests\n");
-    terminal_writestring("  memtest2     - Multiple allocation tests\n");
-    terminal_writestring("  memtest3     - Large allocation tests\n");
-    terminal_writestring("  memtest4     - Virtual memory analysis\n");
-    terminal_writestring("  memtest4debug- Debug virtual memory issues\n");
-    terminal_writestring("  memtest5     - Edge case tests\n");
     terminal_writestring("  crashtest    - Test kernel panic levels\n");
     terminal_writestring("  vmemstats    - Display virtual memory statistics\n");
     terminal_writestring("  memcheck     - Check memory integrity\n");
@@ -61,7 +55,6 @@ void handle_push(const char* arg) {
 
     while (arg[i] != '\0') {
         value = value * 16;
-
         if (arg[i] >= '0' && arg[i] <= '9')
             value += arg[i] - '0';
         else if (arg[i] >= 'a' && arg[i] <= 'f')
@@ -78,7 +71,6 @@ void handle_push(const char* arg) {
     if (value != 0 || (arg[0] == '0' && arg[1] == '\0')) {
         stack_push(value);
         terminal_writestring("Pushed 0x");
-
         for (int j = 7; j >= 0; j--) {
             uint8_t nibble = (value >> (j * 4)) & 0xF;
             char hex_char;
@@ -86,6 +78,7 @@ void handle_push(const char* arg) {
                 hex_char = '0' + nibble;
             else
                 hex_char = 'A' + (nibble - 10);
+				
             terminal_putchar(hex_char);
         }
 
@@ -101,7 +94,6 @@ void handle_pop() {
 
     uint32_t value = stack_pop();
     terminal_writestring("Popped 0x");
-
     for (int j = 7; j >= 0; j--) {
         uint8_t nibble = (value >> (j * 4)) & 0xF;
         char hex_char;
@@ -109,6 +101,7 @@ void handle_pop() {
             hex_char = '0' + nibble;
         else
             hex_char = 'A' + (nibble - 10);
+			
         terminal_putchar(hex_char);
     }
 

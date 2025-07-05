@@ -6,7 +6,7 @@
 /*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:20 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/05 15:50:41 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/05 18:37:32 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,22 +18,16 @@ void handle_memtest1() {
     uint32_t initial_used_pages;
 
     terminal_writestring("\n=== TEST 1: Basic Allocation Tests ===\n");
-
-    /* Record initial memory state */
     initial_used_pages = g_phys_mem_manager.used_pages;
     terminal_writestring("Initial used pages: ");
     printnbr(initial_used_pages, 10);
     terminal_writestring("\n");
-
-    /* Test various sizes */
-    uint32_t test_sizes[] = {16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
+    uint32_t test_sizes[] = {16, 32, 64, 128, 256, 512, 1024, 2048, 4096}; /* Test various sizes */
     uint32_t num_sizes = sizeof(test_sizes) / sizeof(test_sizes[0]);
-
     for (i = 0; i < (int)num_sizes; i++) {
         terminal_writestring("\nTesting size ");
         printnbr(test_sizes[i], 10);
         terminal_writestring(" bytes...\n");
-
         void *ptr = kmalloc(test_sizes[i]);
         if (ptr) {
             terminal_writestring("  kmalloc: SUCCESS - 0x");
@@ -41,20 +35,16 @@ void handle_memtest1() {
             terminal_writestring("\n  Size: ");
             printnbr(ksize(ptr), 10);
             terminal_writestring(" bytes\n");
-
-            /* Write pattern to memory to test accessibility */
             uint32_t *data = (uint32_t *)ptr;
             uint32_t pattern = 0xDEADBEEF + i;
             terminal_writestring("  Writing pattern 0x");
             printnbr(pattern, 16);
             terminal_writestring("...\n");
-
             *data = pattern;
 
-            /* Verify pattern */
-            if (*data == pattern) {
+            if (*data == pattern)
                 terminal_writestring("  Memory write/read: OK\n");
-            } else {
+            else {
                 terminal_writestring("  Memory write/read: FAILED\n");
                 terminal_writestring("  Expected: 0x");
                 printnbr(pattern, 16);
@@ -83,30 +73,23 @@ void handle_memtest2() {
     int i;
 
     terminal_writestring("\n=== TEST 2: Multiple Allocation Tests ===\n");
-
-    /* Initialize array */
     for (i = 0; i < 10; i++) {
         ptrs[i] = NULL;
     }
 
-    /* Allocate multiple small blocks */
     int successful_allocs = 0;
     terminal_writestring("Allocating 10 blocks of 128 bytes each...\n");
-
     for (i = 0; i < 10; i++) {
         terminal_writestring("Allocating block ");
         printnbr(i, 10);
         terminal_writestring("...\n");
-
         ptrs[i] = kmalloc(128);
         if (ptrs[i]) {
             successful_allocs++;
             terminal_writestring("  SUCCESS - 0x");
             printnbr((uint32_t)ptrs[i], 16);
             terminal_writestring("\n");
-
-            /* Write unique pattern to each block */
-            uint32_t *data = (uint32_t *)ptrs[i];
+            uint32_t *data = (uint32_t *)ptrs[i]; /* Write unique pattern to each block */
             *data = 0xCAFEBABE + i;
         } else {
             terminal_writestring("  FAILED\n");
@@ -117,8 +100,6 @@ void handle_memtest2() {
     terminal_writestring("Successfully allocated ");
     printnbr(successful_allocs, 10);
     terminal_writestring("/10 blocks\n");
-
-    /* Verify all patterns */
     terminal_writestring("Verifying patterns...\n");
     int pattern_errors = 0;
     for (i = 0; i < successful_allocs; i++) {
@@ -135,9 +116,9 @@ void handle_memtest2() {
     }
 
     terminal_writestring("Pattern verification: ");
-    if (pattern_errors == 0) {
+    if (pattern_errors == 0)
         terminal_writestring("PASSED\n");
-    } else {
+    else {
         terminal_writestring("FAILED (");
         printnbr(pattern_errors, 10);
         terminal_writestring(" errors)\n");
@@ -207,30 +188,23 @@ void handle_memtest3() {
 /* TEST 4: Virtual Memory Tests */
 void handle_memtest4() {
     terminal_writestring("\n=== TEST 4: Virtual Memory Analysis ===\n");
-
-    /* Check virtual memory constants */
     terminal_writestring("Virtual memory layout:\n");
     terminal_writestring("  USER_SPACE_START: 0x");
     printnbr(USER_SPACE_START, 16);
     terminal_writestring("\n  USER_SPACE_END: 0x");
     printnbr(USER_SPACE_END, 16);
     terminal_writestring("\n");
-
-    /* Check physical memory availability */
     terminal_writestring("Physical memory status:\n");
     terminal_writestring("  Free pages: ");
     printnbr(g_phys_mem_manager.free_pages, 10);
     terminal_writestring("\n  Used pages: ");
     printnbr(g_phys_mem_manager.used_pages, 10);
     terminal_writestring("\n");
-
-    /* Check if we have enough physical memory for vmalloc */
-    if (g_phys_mem_manager.free_pages < 10) {
+    if (g_phys_mem_manager.free_pages < 10) { 
         terminal_writestring("WARNING: Low physical memory (< 10 pages)\n");
         terminal_writestring("This may cause vmalloc to fail\n");
-    } else {
+    } else 
         terminal_writestring("Physical memory looks sufficient\n");
-    }
 
     /* Check current directory for paging */
     terminal_writestring("Page directory: ");
@@ -247,29 +221,24 @@ void handle_memtest4() {
     terminal_writestring("- Physical memory manager is active\n");
     terminal_writestring("- Page directory is initialized\n");
     terminal_writestring("- vmalloc/vfree functions are available\n");
-
     terminal_writestring("\nNOTE: Direct vmalloc testing disabled due to\n");
     terminal_writestring("potential infinite loop in error handling.\n");
     terminal_writestring("Virtual memory system appears ready for use.\n");
-
     terminal_writestring("TEST 4 COMPLETE\n");
 }
 
 /* TEST 5: Edge Cases */
 void handle_memtest5() {
     terminal_writestring("\n=== TEST 5: Edge Cases ===\n");
-
-    /* Test zero allocation */
     terminal_writestring("Testing zero allocation...\n");
     void *zero_ptr = kmalloc(0);
-    if (zero_ptr == NULL) {
+    if (zero_ptr == NULL)
         terminal_writestring("  kmalloc(0): Correctly returned NULL\n");
-    } else {
+    else {
         terminal_writestring("  kmalloc(0): ERROR - Returned non-NULL\n");
         kfree(zero_ptr);
     }
 
-    /* Test double free protection */
     terminal_writestring("Testing double free protection...\n");
     void *double_free_ptr = kmalloc(256);
     if (double_free_ptr) {
@@ -281,11 +250,9 @@ void handle_memtest5() {
         terminal_writestring("Done\n");
     }
 
-    /* Test invalid free */
     terminal_writestring("Testing invalid free protection...\n");
     terminal_writestring("  Invalid free (should warn): ");
     kfree((void *)0x12345678); /* This should trigger a warning */
     terminal_writestring("Done\n");
-
     terminal_writestring("TEST 5 COMPLETE\n");
 }
