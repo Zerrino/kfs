@@ -6,7 +6,7 @@
 /*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 15:11:31 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/05 15:49:55 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/05 15:58:56 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,17 @@ void		shell_initialize();
 void		shell_process_command(const char* cmd);
 void		shell_handle_input(char c);
 int			ft_strcmp(const char* s1, const char* s2);
+
+/* ──────────── Command Type Resolution Functions ──────────── */
+command_type_t	get_command_type(const char* command);
+command_type_t	get_kfs2_command_type(const char* command);
+command_type_t	get_kfs3_memory_command_type(const char* command);
+command_type_t	get_kfs3_crash_command_type(const char* command);
+
+/* ──────────── Command Handler Functions ──────────── */
+int			handle_kfs2_commands(command_type_t cmd_type, const char* arg);
+int			handle_kfs3_memory_commands(command_type_t cmd_type, const char* arg);
+int			handle_kfs3_crash_commands(command_type_t cmd_type, const char* arg);
 void		handle_memstats();
 void		handle_memtest();
 void		handle_vmemstats();
