@@ -41,7 +41,7 @@ void gdt_set_gate(int num, uint32_t base, uint32_t limit, uint8_t access, uint8_
 }
 
 void gdt_install() {
-    gdt_pointer.limit = (sizeof(struct gdt_entry) * 6) - 1;
+    gdt_pointer.limit = (sizeof(struct gdt_entry) * 7) - 1;
     gdt_pointer.base = 0x00000800;
 
     gdt_set_gate(0, 0, 0, 0, 0);                    /* null descriptor */
@@ -50,6 +50,56 @@ void gdt_install() {
     gdt_set_gate(3, 0, 0xFFFFFFFF, 0x92, 0xC0);    /* kernel stack */
     gdt_set_gate(4, 0, 0xFFFFFFFF, 0xFA, 0xC0);    /* user code */
     gdt_set_gate(5, 0, 0xFFFFFFFF, 0xF2, 0xC0);    /* user data */
+    gdt_set_gate(6, 0, 0xFFFFFFFF, 0xF2, 0xC0);    /* user stack */
 
     gdt_flush(&gdt_pointer);
+}
+
+void print_gdt_info() {
+    terminal_writestring("GDT Information:\n");
+    terminal_writestring("  GDT Base Address: 0x");
+    printnbr(gdt_pointer.base, 16);
+    terminal_writestring("\n  GDT Limit: ");
+    printnbr(gdt_pointer.limit, 10);
+    terminal_writestring(" bytes\n");
+    terminal_writestring("  Number of entries: ");
+    printnbr((gdt_pointer.limit + 1) / sizeof(struct gdt_entry), 10);
+    terminal_writestring("\n");
+
+    const char* segment_names[] = {
+        "Null Descriptor",
+        "Kernel Code",
+        "Kernel Data",
+        "Kernel Stack",
+        "User Code",
+        "User Data",
+        "User Stack"
+    };
+
+    uint16_t selectors[] = {
+        GDT_NULL_SEGMENT, GDT_KERNEL_CODE, GDT_KERNEL_DATA,
+        GDT_KERNEL_STACK, GDT_USER_CODE, GDT_USER_DATA, GDT_USER_STACK
+    };
+
+    for (int i = 0; i < 7; i++) {
+        terminal_writestring("  [");
+        printnbr(i, 10);
+        terminal_writestring("] ");
+        terminal_writestring(segment_names[i]);
+        terminal_writestring(" (Selector: 0x");
+        printnbr(selectors[i], 16);
+        terminal_writestring(")\n");
+        terminal_writestring("      Base: 0x");
+
+        uint32_t base = gdt[i].base_low | (gdt[i].base_middle << 16) | (gdt[i].base_high << 24);
+        printnbr(base, 16);
+
+        terminal_writestring(", Limit: 0x");
+        uint32_t limit = gdt[i].limit_low | ((gdt[i].granularity & 0x0F) << 16);
+        printnbr(limit, 16);
+
+        terminal_writestring(", Access: 0x");
+        printnbr(gdt[i].access, 16);
+        terminal_writestring("\n");
+    }
 }

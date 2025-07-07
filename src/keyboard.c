@@ -12,6 +12,28 @@
 
 #include "../include/kernel.h"
 
+void keyboard_init() {
+    // Wait for keyboard controller to be ready
+    while (inb(0x64) & 0x02);
+
+    // Send keyboard reset command
+    outb(0x60, 0xFF);
+
+    // Wait for acknowledgment
+    while (!(inb(0x64) & 0x01));
+    uint8_t response = inb(0x60);
+
+    if (response == 0xFA) {
+        terminal_writestring("Keyboard reset successful\n");
+    } else {
+        terminal_writestring("Keyboard reset failed\n");
+    }
+
+    // Enable keyboard
+    while (inb(0x64) & 0x02);
+    outb(0x64, 0xAE);
+}
+
 static void	left_arrow()
 {
 	if (kernel.terminal_ctrl && kernel.terminal_shift)
@@ -113,8 +135,12 @@ void	update_cursor(int scancode)
 	vga_set_cursor(kernel.screens[kernel.screen_index].row, kernel.screens[kernel.screen_index].column);
 }
 
-void keyboard_handler()
+void keyboard_handler(t_registers* regs)
 {
+    (void)regs; // Suppress unused parameter warning
+
+    // Debug: Show that keyboard interrupt fired
+   // terminal_writestring("[KBD]");
     static const char scancode_to_ascii[] = {
         0, 27,'1','2','3','4','5','6','7','8','9','0','-','=', '\b',
         '\t','q','w','e','r','t','y','u','i','o','p','[',']','\n',

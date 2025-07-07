@@ -1,10 +1,11 @@
 [bits 32]
+%include "include/gdt_segments.inc"
 
 extern ISR_Handler
 
 %macro ISR_NOERROR 1
 
-global	ISR%1:
+global	ISR%1
 ISR%1:
 	push	0
 	push	%1
@@ -14,9 +15,8 @@ ISR%1:
 
 %macro ISR_ERRORCODE 1
 
-global	ISR%1:
+global	ISR%1
 ISR%1:
-
 	push	%1
 	jmp		isr_common
 
@@ -26,7 +26,7 @@ ISR%1:
 
 %assign n 0
 %rep 256
-	%if  (n = 8)  | (n = 10) | (n = 11) | (n = 12) | (n = 13) | (n = 14) | (n = 17) | (n = 21) | (n = 29) | (n = 30)
+	%if  (n == 8)  | (n == 10) | (n == 11) | (n == 12) | (n == 13) | (n == 14) | (n == 17) | (n == 21) | (n == 29) | (n == 30)
 		ISR_ERRORCODE n
 	%else
 		ISR_NOERROR n
@@ -42,7 +42,7 @@ isr_common:
     mov ax, ds
     push eax
 
-    mov ax, 0x10        ; use kernel data segment
+    mov ax, GDT_KERNEL_DATA  ; use kernel data segment
     mov ds, ax
     mov es, ax
     mov fs, ax

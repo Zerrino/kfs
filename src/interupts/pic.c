@@ -14,35 +14,35 @@
 
 void	PIC_Configure(uint8_t offsetPic1, uint8_t offsetPic2)
 {
-	i686_outb(PIC1_CMD, PIC_ICW1_ICW4 | PIC_ICW1_INIT);
+	outb(PIC1_CMD, PIC_ICW1_ICW4 | PIC_ICW1_INIT);
 	iowait();
-	i686_outb(PIC2_CMD, PIC_ICW1_ICW4 | PIC_ICW1_INIT);
+	outb(PIC2_CMD, PIC_ICW1_ICW4 | PIC_ICW1_INIT);
 	iowait();
-	i686_outb(PIC1_DATA, offsetPic1);
+	outb(PIC1_DATA, offsetPic1);
 	iowait();
-	i686_outb(PIC2_DATA, offsetPic2);
+	outb(PIC2_DATA, offsetPic2);
 	iowait();
-	i686_outb(PIC1_DATA, 0x4);
+	outb(PIC1_DATA, 0x4);
 	iowait();
-	i686_outb(PIC2_DATA, 0x2);
-	iowait();
-
-	i686_outb(PIC1_DATA, PIC_ICW4_8086);
-	iowait();
-	i686_outb(PIC2_DATA, PIC_ICW4_8086);
+	outb(PIC2_DATA, 0x2);
 	iowait();
 
-	i686_outb(PIC1_DATA, 0);
+	outb(PIC1_DATA, PIC_ICW4_8086);
 	iowait();
-	i686_outb(PIC2_DATA, 0);
+	outb(PIC2_DATA, PIC_ICW4_8086);
+	iowait();
+
+	outb(PIC1_DATA, 0);
+	iowait();
+	outb(PIC2_DATA, 0);
 	iowait();
 }
 
 void	PIC_SendEOF(int irq)
 {
 	if (irq >= 8)
-		i686_outb(PIC2_CMD, PIC_CMD_EOF);
-	i686_outb(PIC1_CMD, PIC_CMD_EOF);
+		outb(PIC2_CMD, PIC_CMD_EOF);
+	outb(PIC1_CMD, PIC_CMD_EOF);
 }
 
 void	PIC_Mask(int irq)
@@ -57,8 +57,8 @@ void	PIC_Mask(int irq)
 		irq -= 8;
 		port = PIC2_DATA;
 	}
-	mask = i686_inb(port);
-	i686_outb(port, mask | (1 << irq));
+	mask = inb(port);
+	outb(port, mask | (1 << irq));
 }
 
 void	PIC_Unmask(int irq)
@@ -73,28 +73,28 @@ void	PIC_Unmask(int irq)
 		irq -= 8;
 		port = PIC2_DATA;
 	}
-	mask = i686_inb(port);
-	i686_outb(port, mask & ~(1 << irq));
+	mask = inb(port);
+	outb(port, mask & ~(1 << irq));
 }
 
 void	PIC_Disable()
 {
-	i686_outb(PIC1_DATA, 0xFF);
+	outb(PIC1_DATA, 0xFF);
 	iowait();
-	i686_outb(PIC2_DATA, 0xFF);
+	outb(PIC2_DATA, 0xFF);
 	iowait();
 }
 
 uint16_t	PIC_ReadIRQRequestReg()
 {
-	i686_outb(PIC1_CMD, PIC_CMD_READ_IRR);
-	i686_outb(PIC2_CMD, PIC_CMD_READ_IRR);
-	return (i686_inb(PIC1_CMD) | (i686_inb(PIC2_CMD) << 8));
+	outb(PIC1_CMD, PIC_CMD_READ_IRR);
+	outb(PIC2_CMD, PIC_CMD_READ_IRR);
+	return (inb(PIC1_CMD) | (inb(PIC2_CMD) << 8));
 }
 
 uint16_t	PIC_ReadInServiceReg()
 {
-	i686_outb(PIC1_CMD, PIC_CMD_READ_ISR);
-	i686_outb(PIC2_CMD, PIC_CMD_READ_ISR);
-	return (i686_inb(PIC1_CMD) | (i686_inb(PIC2_CMD) << 8));
+	outb(PIC1_CMD, PIC_CMD_READ_ISR);
+	outb(PIC2_CMD, PIC_CMD_READ_ISR);
+	return (inb(PIC1_CMD) | (inb(PIC2_CMD) << 8));
 }

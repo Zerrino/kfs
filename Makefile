@@ -1,6 +1,6 @@
 TARGET    := i686-elf
-AS        := $(TARGET)-as
-CC        := $(TARGET)-gcc
+AS        := as --32
+CC        := gcc -m32
 NASM      := nasm
 QEMU      := qemu-system-i386
 
@@ -23,9 +23,9 @@ BOOT_OBJ  := $(BUILD)/boot.o
 
 CFLAGS    := -std=gnu99 -ffreestanding -O2 -Wall -Wextra -Werror \
              -fno-builtin -fno-stack-protector -nostdlib -nodefaultlibs \
-             -Iinclude
-LDFLAGS   := -T utils/linker.ld -nostdlib -ffreestanding -O2
-NASMFLAGS := -f elf32
+             -Iinclude -m32
+LDFLAGS   := -T utils/linker.ld -nostdlib -ffreestanding -O2 -m32
+NASMFLAGS := -f elf32 -I./
 
 all: $(KERNEL)
 

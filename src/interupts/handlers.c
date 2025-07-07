@@ -15,4 +15,11 @@
 void	timer(t_registers* regs)
 {
 	(void)regs;
+	static int timer_count = 0;
+	timer_count++;
+
+	// // Show timer tick every 100 interrupts (roughly 1 second)
+	// if (timer_count % 100 == 0) {
+	// 	terminal_writestring("[T]");
+	// }
 }
