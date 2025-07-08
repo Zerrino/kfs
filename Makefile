@@ -1,6 +1,6 @@
 TARGET    := i686-elf
-AS        := as --32
-CC        := gcc -m32
+AS        := $(TARGET)-as
+CC        := $(TARGET)-gcc
 NASM      := nasm
 QEMU      := qemu-system-i386
 
@@ -48,7 +48,7 @@ $(ISO_IMG): $(KERNEL) utils/grub.cfg
 	@mkdir -p $(ISO_GRUB)
 	cp $(KERNEL)       $(ISO_BOOT)/
 	cp utils/grub.cfg        $(ISO_GRUB)/
-	grub-mkrescue -o $@ $(ISO_DIR)
+	$(TARGET)-grub-mkrescue -o $@ $(ISO_DIR)
 
 iso: $(ISO_IMG)
 
