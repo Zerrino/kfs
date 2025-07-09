@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:20 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/02 18:24:02 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/07/09 12:05:19 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -349,11 +349,11 @@ void handle_push(const char* arg) {
     while (arg[i] != '\0') {
         value = value * 16;
 
-        if (arg[i] >= '0' && arg[i] <= '9')
+        if ('0' <= arg[i] && arg[i] <= '9')
             value += arg[i] - '0';
-        else if (arg[i] >= 'a' && arg[i] <= 'f')
+        else if ('a' <= arg[i] && arg[i] <= 'f')
             value += arg[i] - 'a' + 10;
-        else if (arg[i] >= 'A' && arg[i] <= 'F')
+        else if ('A' <= arg[i] && arg[i] <= 'F')
             value += arg[i] - 'A' + 10;
         else {
             terminal_writestring("Error: Invalid hex value\n");
@@ -366,7 +366,7 @@ void handle_push(const char* arg) {
         stack_push(value);
         terminal_writestring("Pushed 0x");
 
-        for (int j = 7; j >= 0; j--) {
+        for (int j = 7; 0 <= j; j--) {
             uint8_t nibble = (value >> (j * 4)) & 0xF;
             char hex_char;
             if (nibble < 10)
@@ -389,7 +389,7 @@ void handle_pop() {
     uint32_t value = stack_pop();
     terminal_writestring("Popped 0x");
 
-    for (int j = 7; j >= 0; j--) {
+    for (int j = 7; 0 <= j; j--) {
         uint8_t nibble = (value >> (j * 4)) & 0xF;
         char hex_char;
         if (nibble < 10)
@@ -571,12 +571,12 @@ void shell_handle_input(char c) {
         kernel.command_buffer[kernel.buffer_pos] = '\0';
         shell_process_command(kernel.command_buffer);
         kernel.buffer_pos = 0;
-    } else if (c == '\b' && kernel.buffer_pos > 0) {
+    } else if (c == '\b' && 0 < kernel.buffer_pos) {
         kernel.buffer_pos--;
         terminal_putchar('\b');
         terminal_putchar(' ');
         terminal_putchar('\b');
-    } else if (c >= ' ' && c <= '~' && kernel.buffer_pos < COMMAND_BUFFER_SIZE - 1) {
+    } else if (' ' <= c && c <= '~' && kernel.buffer_pos < COMMAND_BUFFER_SIZE - 1) {
         kernel.command_buffer[kernel.buffer_pos++] = c;
         terminal_putchar(c);
     }

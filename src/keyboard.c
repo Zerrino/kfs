@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   keyboard.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:33:23 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/02 18:47:37 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/07/09 12:17:31 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,13 @@
 void keyboard_init() {
     // Wait for keyboard controller to be ready
     while (inb(0x64) & 0x02);
-
-    // Send keyboard reset command
-    outb(0x60, 0xFF);
-
-    // Wait for acknowledgment
-    while (!(inb(0x64) & 0x01));
+    outb(0x60, 0xFF); // Reset keyboard
+    while (!(inb(0x64) & 0x01)); // Wait for acknowledgment
     uint8_t response = inb(0x60);
-
-    if (response == 0xFA) {
-        terminal_writestring("Keyboard reset successful\n");
-    } else {
+    if (response != 0xFA)
         terminal_writestring("Keyboard reset failed\n");
-    }
-
-    // Enable keyboard
-    while (inb(0x64) & 0x02);
+		
+    while (inb(0x64) & 0x02); // Enable keyboard
     outb(0x64, 0xAE);
 }
 
@@ -38,7 +29,7 @@ static void	left_arrow()
 {
 	if (kernel.terminal_ctrl && kernel.terminal_shift)
 	{
-		if (kernel.screen_index > 0)
+		if (0 < kernel.screen_index)
 		{
 			kernel.screen_index--;
 			terminal_restore();
@@ -46,11 +37,11 @@ static void	left_arrow()
 			return ;
 		}
 	}
-	else if (kernel.screens[kernel.screen_index].column > 0)
+	else if (0 < kernel.screens[kernel.screen_index].column)
 		kernel.screens[kernel.screen_index].column--;
 	else
 	{
-		if (kernel.screens[kernel.screen_index].row > 0)
+		if (0 < kernel.screens[kernel.screen_index].row)
 		{
 			kernel.screens[kernel.screen_index].row--;
 			kernel.screens[kernel.screen_index].column = VGA_WIDTH;
@@ -97,11 +88,11 @@ static void	down_arrow()
 
 static void	up_arrow()
 {
-	if (kernel.screens[kernel.screen_index].row > 0)
+	if (0 < kernel.screens[kernel.screen_index].row)
 		kernel.screens[kernel.screen_index].row--;
 	else
 	{
-		if (kernel.screens[kernel.screen_index].offset > 0)
+		if (0 < kernel.screens[kernel.screen_index].offset)
 			terminal_offset(--kernel.screens[kernel.screen_index].offset);
 	}
 }
@@ -177,7 +168,6 @@ void keyboard_handler(t_registers* regs)
             if (!kernel.screens[kernel.screen_index].shell_mode && c != 27) {
                 kernel.screens[kernel.screen_index].shell_mode = 1;
                 terminal_writestring("\n");
-                //shell_initialize();
             }
 
             /* Send to shell if in shell mode and not in control mode */

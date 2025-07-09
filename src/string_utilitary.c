@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   string_utilitary.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:26:11 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/02 17:36:12 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/07/09 12:20:49 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ size_t strlen(const char* str)
 	size_t len = 0;
 	while (str[len])
 		len++;
+	
 	return len;
 }
 
@@ -31,13 +32,14 @@ void terminal_putchar(char c)
 {
 	if (c == '\0')
 		return ;
+		
 	if (c == '\b')
 	{
-		if (kernel.screens[kernel.screen_index].column > 0)
+		if (0 < kernel.screens[kernel.screen_index].column)
 			kernel.screens[kernel.screen_index].column--;
 		else
 		{
-			if (kernel.screens[kernel.screen_index].row > 0)
+			if (0 < kernel.screens[kernel.screen_index].row)
 			{
 				kernel.screens[kernel.screen_index].row--;
 				kernel.screens[kernel.screen_index].column = VGA_WIDTH;
@@ -55,7 +57,7 @@ void terminal_putchar(char c)
 		}
 		else
 		{
-			if (kernel.terminal_shift && c >= 'a' && c <= 'z')
+			if (kernel.terminal_shift && 'a' <= c && c <= 'z')
 				c -= 32;
 			terminal_putentryat(c, kernel.screens[kernel.screen_index].color, kernel.screens[kernel.screen_index].column, kernel.screens[kernel.screen_index].row);
 			if (++kernel.screens[kernel.screen_index].column == VGA_WIDTH) {
@@ -82,7 +84,8 @@ void terminal_writestring(const char* data)
 void	printnbr(int nbr, int base)
 {
 	terminal_putchar('-' * -(N(nbr)));
-	if (nbr == INT_MIN || ABS(nbr) >= base)
+	if (nbr == INT_MIN || base <= ABS(nbr))
 		printnbr(ABS(nbr / base), base);
-	terminal_putchar(ABS(nbr % base) + '0' + (7 * (ABS(nbr % base) > 9)));
+		
+	terminal_putchar(ABS(nbr % base) + '0' + (7 * (9 < ABS(nbr % base))));
 }

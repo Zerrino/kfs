@@ -3,17 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   isr.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 02:10:22 by zerrino           #+#    #+#             */
-/*   Updated: 2025/06/27 01:49:21 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/07/09 12:09:51 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/kernel.h"
-
-//ISRHandler g_ISRHandlers[256];
-
 
 static const char* const g_Exceptions[] = {
 	"Divide by zero error",
@@ -574,28 +571,19 @@ void	ISR_InitializeGates()
 void	ISR_Initialize()
 {
 	int	i;
-	//terminal_writestring("Setting up ISR gates...\n");
-	ISR_InitializeGates();
-	//terminal_writestring("ISR gates set up!\n");
 
-	//terminal_writestring("Enabling ISR gates...\n");
+	ISR_InitializeGates();
 	i = 0;
-	while (i < 256)
-	{
+	for (i = 0; i < 256; i++)
 		IDT_EnableGate(i);
-		i++;
-	}
-	//terminal_writestring("All ISR gates enabled!\n");
 }
 
 
 void	__attribute__((cdecl)) ISR_Handler(t_registers* regs)
 {
 	if (kernel.ISRhandlers[regs->interrupt] != NULL)
-	{
 		kernel.ISRhandlers[regs->interrupt](regs);
-	}
-	else if (regs->interrupt >= 32)
+	else if (32 <= regs->interrupt)
 	{
 		terminal_writestring("Unhandled interrupt : ");
 		printnbr(regs->interrupt, 10);

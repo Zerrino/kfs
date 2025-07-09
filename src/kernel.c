@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kernel.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/02 18:27:59 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/07/09 12:14:57 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,6 @@ void kernel_main(void)
 	kernel.terminal_buffer = (uint16_t *)VGA_MEMORY;
 
 	terminal_initialize();
-
 	while (1)
 		__asm__ volatile ("hlt");
 }

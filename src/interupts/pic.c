@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pic.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 19:59:42 by zerrino           #+#    #+#             */
-/*   Updated: 2025/06/25 21:34:01 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/07/09 12:13:24 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,10 @@ void	PIC_Configure(uint8_t offsetPic1, uint8_t offsetPic2)
 	iowait();
 	outb(PIC2_DATA, 0x2);
 	iowait();
-
 	outb(PIC1_DATA, PIC_ICW4_8086);
 	iowait();
 	outb(PIC2_DATA, PIC_ICW4_8086);
 	iowait();
-
 	outb(PIC1_DATA, 0);
 	iowait();
 	outb(PIC2_DATA, 0);
@@ -40,8 +38,9 @@ void	PIC_Configure(uint8_t offsetPic1, uint8_t offsetPic2)
 
 void	PIC_SendEOF(int irq)
 {
-	if (irq >= 8)
+	if (8 <= irq)
 		outb(PIC2_CMD, PIC_CMD_EOF);
+
 	outb(PIC1_CMD, PIC_CMD_EOF);
 }
 
@@ -57,6 +56,7 @@ void	PIC_Mask(int irq)
 		irq -= 8;
 		port = PIC2_DATA;
 	}
+
 	mask = inb(port);
 	outb(port, mask | (1 << irq));
 }
@@ -73,6 +73,7 @@ void	PIC_Unmask(int irq)
 		irq -= 8;
 		port = PIC2_DATA;
 	}
+
 	mask = inb(port);
 	outb(port, mask & ~(1 << irq));
 }
