@@ -6,23 +6,22 @@
 /*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:33:23 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/09 12:17:31 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/09 16:59:37 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/kernel.h"
 
 void keyboard_init() {
-    // Wait for keyboard controller to be ready
-    while (inb(0x64) & 0x02);
-    outb(0x60, 0xFF); // Reset keyboard
-    while (!(inb(0x64) & 0x01)); // Wait for acknowledgment
-    uint8_t response = inb(0x60);
-    if (response != 0xFA)
+    while (inb(KEYBOARD_STATUS_PORT) & KEYBOARD_STATUS_READY); // Wait for keyboard controller to be ready
+    outb(KEYBOARD_DATA_PORT, KEYBOARD_CMD_RESET); // Reset keyboard
+    while (!(inb(KEYBOARD_STATUS_PORT) & KEYBOARD_STATUS_DATA)); // Wait for acknowledgment
+    uint8_t response = inb(KEYBOARD_DATA_PORT);
+    if (response != KEYBOARD_ACK)
         terminal_writestring("Keyboard reset failed\n");
-		
-    while (inb(0x64) & 0x02); // Enable keyboard
-    outb(0x64, 0xAE);
+
+    while (inb(KEYBOARD_STATUS_PORT) & KEYBOARD_STATUS_READY); // Enable keyboard
+    outb(KEYBOARD_STATUS_PORT, KEYBOARD_CMD_ENABLE);
 }
 
 static void	left_arrow()
@@ -76,9 +75,7 @@ static void	right_arrow()
 static void	down_arrow()
 {
 	if (kernel.screens[kernel.screen_index].row < VGA_HEIGHT - 1)
-	{
 		kernel.screens[kernel.screen_index].row++;
-	}
 	else
 	{
 		if (kernel.screens[kernel.screen_index].offset < (VGA_HEIGHT * (NB_SCROLL - 1)) - 1)
@@ -101,23 +98,23 @@ void	update_cursor(int scancode)
 {
 	switch (scancode)
 	{
-		case 29:
+		case SCANCODE_CTRL_PRESS:
 			kernel.terminal_ctrl = 1;
 			break;
-		case 42:
-		case 54:
+		case SCANCODE_LSHIFT_PRESS:
+		case SCANCODE_RSHIFT_PRESS:
 			kernel.terminal_shift = 1;
 			break;
-		case 75:
+		case SCANCODE_LEFT_ARROW:
 			left_arrow();
 			break;
-		case 77:
+		case SCANCODE_RIGHT_ARROW:
 			right_arrow();
 			break;
-		case 80:
+		case SCANCODE_DOWN_ARROW:
 			down_arrow();
 			break;
-		case 72:
+		case SCANCODE_UP_ARROW:
 			up_arrow();
 			break;
 		default:
@@ -130,8 +127,6 @@ void keyboard_handler(t_registers* regs)
 {
     (void)regs; // Suppress unused parameter warning
 
-    // Debug: Show that keyboard interrupt fired
-   // terminal_writestring("[KBD]");
     static const char scancode_to_ascii[] = {
         0, 27,'1','2','3','4','5','6','7','8','9','0','-','=', '\b',
         '\t','q','w','e','r','t','y','u','i','o','p','[',']','\n',
@@ -140,12 +135,14 @@ void keyboard_handler(t_registers* regs)
         0,' ' /* etc. */
     };
 
-    uint8_t scancode = inb(0x60);
+    uint8_t scancode = inb(KEYBOARD_DATA_PORT);
     if (!(scancode & 0x80))
     {
         /* Handle special keys first (arrows, ctrl, shift, etc.) */
-        if (scancode == 75 || scancode == 77 || scancode == 80 || scancode == 72|| scancode == 29
-            || scancode == 42 || scancode == 54)
+        if (scancode == SCANCODE_LEFT_ARROW || scancode == SCANCODE_RIGHT_ARROW ||
+            scancode == SCANCODE_DOWN_ARROW || scancode == SCANCODE_UP_ARROW ||
+            scancode == SCANCODE_CTRL_PRESS || scancode == SCANCODE_LSHIFT_PRESS ||
+            scancode == SCANCODE_RSHIFT_PRESS)
         {
             update_cursor(scancode);
             return;
@@ -155,7 +152,7 @@ void keyboard_handler(t_registers* regs)
         if (c)
         {
             /* Handle ESC key to exit shell mode */
-            if (c == 27) /* ESC key */
+            if (c == SCANCODE_ESC) /* ESC key */
             {
                 if (kernel.screens[kernel.screen_index].shell_mode) {
                     kernel.screens[kernel.screen_index].shell_mode = 0;
@@ -165,7 +162,7 @@ void keyboard_handler(t_registers* regs)
             }
 
             /* If not in shell mode and user types, enter shell mode */
-            if (!kernel.screens[kernel.screen_index].shell_mode && c != 27) {
+            if (!kernel.screens[kernel.screen_index].shell_mode && c != SCANCODE_ESC) {
                 kernel.screens[kernel.screen_index].shell_mode = 1;
                 terminal_writestring("\n");
             }
@@ -181,9 +178,9 @@ void keyboard_handler(t_registers* regs)
     else
     {
         /* Handle key releases */
-        if (scancode == 157) /* Ctrl release */
+        if (scancode == SCANCODE_CTRL_RELEASE) /* Ctrl release */
             kernel.terminal_ctrl = 0;
-        else if (scancode == 170 || scancode == 182) /* Shift release */
+        else if (scancode == SCANCODE_LSHIFT_RELEASE || scancode == SCANCODE_RSHIFT_RELEASE) /* Shift release */
             kernel.terminal_shift = 0;
     }
 }

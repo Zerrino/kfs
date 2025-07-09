@@ -1,26 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   kernel.h                                           :+:      :+:    :+:   */
+/*   globals.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/17 21:58:14 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 14:40:36 by rperez-t         ###   ########.fr       */
+/*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
+/*   Updated: 2025/07/09 16:00:23 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef KERNEL_H
-# define KERNEL_H
+#ifndef GLOBALS_H
+# define GLOBALS_H
 
-/* ──────────── Main Kernel Header ──────────── */
-/* This header includes all necessary components for the kernel */
+#include "structs.h"
 
-#include "core/libs.h"
-#include "core/defines.h"
-#include "core/enums.h"
-#include "core/structs.h"
-#include "core/globals.h"
-#include "core/functions.h"
+/* ──────────── Global Variables ──────────── */
+/* Kernel instance */
+extern t_kernel kernel;
+
+/* GDT instance */
+extern t_gdt_entry *gdt;
 
 #endif

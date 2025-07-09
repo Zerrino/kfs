@@ -6,36 +6,16 @@
 /*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:20 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 12:05:19 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/09 15:13:19 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/kernel.h"
 
-typedef enum {
-    CMD_HELP,
-    CMD_STACK,
-    CMD_GDT,
-    CMD_SEGMENTS,
-    CMD_MEMORY,
-    CMD_GDTTEST,
-    CMD_STACKTEST,
-    CMD_SYSINFO,
-    CMD_INTERRUPTS,
-    CMD_PUSH,
-    CMD_POP,
-    CMD_CLEAR,
-    CMD_REBOOT,
-    CMD_HALT,
-    CMD_SHUTDOWN,
-    CMD_UNKNOWN
-} command_type_t;
-
 void shell_initialize() {
     terminal_writestring("KFS Shell v1.0\n");
     terminal_writestring("Type 'help' for available commands\n");
     terminal_writestring("> ");
-    //kernel.shell_mode = 1;
 }
 
 void handle_help() {
@@ -121,7 +101,7 @@ void handle_segments() {
 void handle_memory() {
     terminal_writestring("=== Memory Layout ===\n");
     terminal_writestring("GDT Base Address:     0x");
-    printnbr(0x00000800, 16);
+    printnbr(GDT_BASE_ADDRESS, 16);
     terminal_writestring("\n");
 
     extern char _start, _end;
@@ -183,21 +163,21 @@ void handle_gdttest() {
     // Test segment privilege levels
     terminal_writestring("Segment Privilege Levels:\n");
     terminal_writestring("  CS RPL: ");
-    printnbr(cs & 0x3, 10);
+    printnbr(cs & RPL_MASK, 10);
     terminal_writestring(" (Ring ");
-    printnbr(cs & 0x3, 10);
+    printnbr(cs & RPL_MASK, 10);
     terminal_writestring(")\n");
 
     terminal_writestring("  DS RPL: ");
-    printnbr(ds & 0x3, 10);
+    printnbr(ds & RPL_MASK, 10);
     terminal_writestring(" (Ring ");
-    printnbr(ds & 0x3, 10);
+    printnbr(ds & RPL_MASK, 10);
     terminal_writestring(")\n");
 
     terminal_writestring("  SS RPL: ");
-    printnbr(ss & 0x3, 10);
+    printnbr(ss & RPL_MASK, 10);
     terminal_writestring(" (Ring ");
-    printnbr(ss & 0x3, 10);
+    printnbr(ss & RPL_MASK, 10);
     terminal_writestring(")\n");
 
     terminal_writestring("GDT Test completed successfully!\n");
@@ -213,9 +193,9 @@ void handle_stacktest() {
 
     // Push some test values
     terminal_writestring("Pushing test values: 0xDEAD, 0xBEEF, 0xCAFE\n");
-    stack_push(0xDEAD);
-    stack_push(0xBEEF);
-    stack_push(0xCAFE);
+    stack_push(TEST_VALUE_DEAD);
+    stack_push(TEST_VALUE_BEEF);
+    stack_push(TEST_VALUE_CAFE);
 
     terminal_writestring("Stack size after push: ");
     printnbr(stack_size(), 10);
@@ -251,7 +231,9 @@ void handle_sysinfo() {
 
     // GDT Info
     terminal_writestring("--- Global Descriptor Table ---\n");
-    terminal_writestring("Location: 0x00000800\n");
+    terminal_writestring("Location: 0x");
+    printnbr(GDT_BASE_ADDRESS, 16);
+    terminal_writestring("\n");
     terminal_writestring("Entries: 7 (Null, K-Code, K-Data, K-Stack, U-Code, U-Data, U-Stack)\n");
 
     // Current segments
@@ -309,7 +291,7 @@ void handle_interrupts() {
     __asm__ volatile ("pushf; pop %0" : "=r" (eflags));
 
     terminal_writestring("Interrupt Flag (IF): ");
-    if (eflags & 0x200) {
+    if (eflags & EFLAGS_INTERRUPT_FLAG) {
         terminal_writestring("ENABLED\n");
     } else {
         terminal_writestring("DISABLED\n");
@@ -367,7 +349,7 @@ void handle_push(const char* arg) {
         terminal_writestring("Pushed 0x");
 
         for (int j = 7; 0 <= j; j--) {
-            uint8_t nibble = (value >> (j * 4)) & 0xF;
+            uint8_t nibble = (value >> (j * BITS_PER_NIBBLE)) & NIBBLE_MASK;
             char hex_char;
             if (nibble < 10)
                 hex_char = '0' + nibble;
@@ -390,7 +372,7 @@ void handle_pop() {
     terminal_writestring("Popped 0x");
 
     for (int j = 7; 0 <= j; j--) {
-        uint8_t nibble = (value >> (j * 4)) & 0xF;
+        uint8_t nibble = (value >> (j * BITS_PER_NIBBLE)) & NIBBLE_MASK;
         char hex_char;
         if (nibble < 10)
             hex_char = '0' + nibble;
@@ -426,7 +408,7 @@ void handle_clear() {
 
 void handle_reboot() {
     terminal_writestring("Rebooting...\n");
-    outb(0x64, 0xFE);
+    outb(REBOOT_PORT, REBOOT_CMD);
 }
 
 void handle_halt() {
@@ -437,8 +419,8 @@ void handle_halt() {
 void handle_shutdown() {
     terminal_writestring("Shutting down...\n");
 
-    outw(0xB004, 0x2000); /* ACPI shutdown */
-    outw(0x604, 0x2000);  /* APM shutdown */
+    outw(ACPI_SHUTDOWN_PORT, SHUTDOWN_CMD); /* ACPI shutdown */
+    outw(APM_SHUTDOWN_PORT, SHUTDOWN_CMD);  /* APM shutdown */
 
     terminal_writestring("Shutdown failed, halting CPU\n");
     __asm__ volatile("cli; hlt");

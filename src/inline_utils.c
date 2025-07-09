@@ -6,7 +6,7 @@
 /*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:23:39 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/01 20:25:31 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/09 14:58:54 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,15 +45,15 @@ void vga_set_cursor(size_t row, size_t col)
     uint16_t pos = (uint16_t)(row * VGA_WIDTH + col);
     kernel.screens[kernel.screen_index].pos_cursor = pos;
     outb(VGA_PORT_INDEX, VGA_CRSR_LOW);
-    outb(VGA_PORT_DATA,  pos & 0xFF);
+    outb(VGA_PORT_DATA,  pos & BYTE_MASK);
     outb(VGA_PORT_INDEX, VGA_CRSR_HIGH);
-    outb(VGA_PORT_DATA,  pos >> 8);
+    outb(VGA_PORT_DATA,  pos >> BITS_PER_BYTE);
 }
 
 void vga_cursor_restore()
 {
     outb(VGA_PORT_INDEX, VGA_CRSR_LOW);
-    outb(VGA_PORT_DATA,  kernel.screens[kernel.screen_index].pos_cursor & 0xFF);
+    outb(VGA_PORT_DATA,  kernel.screens[kernel.screen_index].pos_cursor & BYTE_MASK);
     outb(VGA_PORT_INDEX, VGA_CRSR_HIGH);
-    outb(VGA_PORT_DATA,  kernel.screens[kernel.screen_index].pos_cursor >> 8);
+    outb(VGA_PORT_DATA,  kernel.screens[kernel.screen_index].pos_cursor >> BITS_PER_BYTE);
 }
