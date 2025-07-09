@@ -41,16 +41,18 @@ void gdt_set_gate(int num, uint32_t base, uint32_t limit, uint8_t access, uint8_
 }
 
 void gdt_install() {
-    gdt_pointer.limit = (sizeof(struct gdt_entry) * 7) - 1;
-    gdt_pointer.base = 0x00000800;
+    /* Initialize GDT pointer using constants */
+    gdt_pointer.limit = (sizeof(struct gdt_entry) * GDT_MAX_ENTRIES) - 1;
+    gdt_pointer.base = GDT_BASE_ADDRESS;
 
-    gdt_set_gate(0, 0, 0, 0, 0);                    /* null descriptor */
-    gdt_set_gate(1, 0, 0xFFFFFFFF, 0x9A, 0xC0);    /* kernel code */
-    gdt_set_gate(2, 0, 0xFFFFFFFF, 0x92, 0xC0);    /* kernel data */
-    gdt_set_gate(3, 0, 0xFFFFFFFF, 0x92, 0xC0);    /* kernel stack */
-    gdt_set_gate(4, 0, 0xFFFFFFFF, 0xFA, 0xC0);    /* user code */
-    gdt_set_gate(5, 0, 0xFFFFFFFF, 0xF2, 0xC0);    /* user data */
-    gdt_set_gate(6, 0, 0xFFFFFFFF, 0xF2, 0xC0);    /* user stack */
+    /* Set up GDT entries using descriptive enums and constants */
+    gdt_set_gate(GDT_NULL_INDEX,         GDT_NULL_BASE,    GDT_NULL_LIMIT,    GDT_NULL_ACCESS,         GDT_NULL_GRANULARITY);  /* null descriptor */
+    gdt_set_gate(GDT_KERNEL_CODE_INDEX,  GDT_SEGMENT_BASE, GDT_SEGMENT_LIMIT, GDT_ACCESS_KERNEL_CODE,  GDT_GRAN_STANDARD);     /* kernel code */
+    gdt_set_gate(GDT_KERNEL_DATA_INDEX,  GDT_SEGMENT_BASE, GDT_SEGMENT_LIMIT, GDT_ACCESS_KERNEL_DATA,  GDT_GRAN_STANDARD);     /* kernel data */
+    gdt_set_gate(GDT_KERNEL_STACK_INDEX, GDT_SEGMENT_BASE, GDT_SEGMENT_LIMIT, GDT_ACCESS_KERNEL_DATA,  GDT_GRAN_STANDARD);     /* kernel stack */
+    gdt_set_gate(GDT_USER_CODE_INDEX,    GDT_SEGMENT_BASE, GDT_SEGMENT_LIMIT, GDT_ACCESS_USER_CODE,    GDT_GRAN_STANDARD);     /* user code */
+    gdt_set_gate(GDT_USER_DATA_INDEX,    GDT_SEGMENT_BASE, GDT_SEGMENT_LIMIT, GDT_ACCESS_USER_DATA,    GDT_GRAN_STANDARD);     /* user data */
+    gdt_set_gate(GDT_USER_STACK_INDEX,   GDT_SEGMENT_BASE, GDT_SEGMENT_LIMIT, GDT_ACCESS_USER_DATA,    GDT_GRAN_STANDARD);     /* user stack */
 
     gdt_flush(&gdt_pointer);
 }

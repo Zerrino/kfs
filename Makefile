@@ -2,8 +2,13 @@ TARGET    := i686-elf
 AS        := $(TARGET)-as
 CC        := $(TARGET)-gcc
 NASM      := nasm
-QEMU      := qemu-system-i386 
+QEMU      := qemu-system-i386
 MKGRUB    := $(TARGET)-grub-mkrescue
+ifeq ($(shell uname), Darwin)
+	MKGRUB := $(TARGET)-grub-mkrescue
+else
+	MKGRUB := grub-mkrescue
+endif
 
 SRC_DIR   := src
 BUILD     := build

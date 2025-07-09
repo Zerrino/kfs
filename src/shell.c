@@ -12,10 +12,6 @@
 
 #include "../include/kernel.h"
 
-#define COMMAND_BUFFER_SIZE 256
-static char command_buffer[COMMAND_BUFFER_SIZE];
-static int buffer_pos = 0;
-
 typedef enum {
     CMD_HELP,
     CMD_STACK,
@@ -572,16 +568,16 @@ void shell_process_command(const char* cmd) {
 void shell_handle_input(char c) {
     if (c == '\n') {
         terminal_putchar('\n');
-        command_buffer[buffer_pos] = '\0';
-        shell_process_command(command_buffer);
-        buffer_pos = 0;
-    } else if (c == '\b' && buffer_pos > 0) {
-        buffer_pos--;
+        kernel.command_buffer[kernel.buffer_pos] = '\0';
+        shell_process_command(kernel.command_buffer);
+        kernel.buffer_pos = 0;
+    } else if (c == '\b' && kernel.buffer_pos > 0) {
+        kernel.buffer_pos--;
         terminal_putchar('\b');
         terminal_putchar(' ');
         terminal_putchar('\b');
-    } else if (c >= ' ' && c <= '~' && buffer_pos < COMMAND_BUFFER_SIZE - 1) {
-        command_buffer[buffer_pos++] = c;
+    } else if (c >= ' ' && c <= '~' && kernel.buffer_pos < COMMAND_BUFFER_SIZE - 1) {
+        kernel.command_buffer[kernel.buffer_pos++] = c;
         terminal_putchar(c);
     }
 }
