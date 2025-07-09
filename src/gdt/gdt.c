@@ -6,11 +6,11 @@
 /*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:14 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 16:56:28 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/09 17:10:49 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/kernel.h"
+#include "../../include/kernel.h"
 
 t_gdt_entry *gdt = (t_gdt_entry *)GDT_BASE_ADDRESS;
 
