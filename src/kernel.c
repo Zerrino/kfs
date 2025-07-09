@@ -38,26 +38,14 @@ void terminal_initialize()
 	}
 
 	DisableInterrupts();
-//	terminal_writestring("Installing GDT...\n");
 	gdt_install();
-//	terminal_writestring("GDT installed successfully!\n");
-//	terminal_writestring("Initializing IDT...\n");
 	IDT_Initialize();
-//	terminal_writestring("Initializing ISR...\n");
 	ISR_Initialize();
-//	terminal_writestring("Initializing IRQ...\n");
 	IRQ_Initialize();
-//	terminal_writestring("Testing stack...\n");
 	stack_push(0xCAFEBABE);
 	stack_push(0x12345678);
-//	terminal_writestring("Stack test completed!\n");
-
-//	terminal_writestring("All initialization complete!\n");
-	terminal_writestring("Initializing keyboard controller...\n");
 	keyboard_init();
-//	terminal_writestring("Enabling interrupts now...\n");
 	EnableInterrupts();
-//	terminal_writestring("Interrupts enabled! Kernel ready.\n");
 }
 
 void terminal_offset(uint16_t offset)
@@ -88,11 +76,6 @@ void kernel_main(void)
 
 	terminal_initialize();
 
-
-
-
 	while (1)
-	{
 		__asm__ volatile ("hlt");
-	}
 }
