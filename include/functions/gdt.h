@@ -6,7 +6,7 @@
 /*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 16:05:43 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/09 21:37:29 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,19 @@
 #include "../core/libs.h"
 #include "../core/structs.h"
 
-/* ──────────── GDT Selector Definitions ──────────── */
-#define GDT_NULL_SEGMENT    0x00
-#define GDT_KERNEL_CODE     0x08
-#define GDT_KERNEL_DATA     0x10
-#define GDT_KERNEL_STACK    0x18
-#define GDT_USER_CODE       0x20
-#define GDT_USER_DATA       0x28
-#define GDT_USER_STACK      0x30
+/* ──────────── Functions from src/gdt/gdt.c ──────────── */
 
-/* ──────────── GDT Function Prototypes ──────────── */
 void gdt_set_gate(int num, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran);
 void gdt_install(void);
 void print_gdt_info(void);
+
+/* ──────────── Functions from src/gdt/stack.c ──────────── */
+
+void stack_push(uint32_t value);
+uint32_t stack_pop(void);
+uint32_t stack_peek(void);
+int stack_is_empty(void);
+int stack_size(void);
+void print_kernel_stack(void);
 
 #endif
