@@ -6,7 +6,7 @@
 /*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/10 16:17:36 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 19:32:22 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,26 +72,6 @@ typedef struct s_screens {
 	uint16_t	pos_cursor;
 	uint16_t	offset;
 } t_screens;
-
-/* ──────────── Main Kernel Structure ──────────── */
-typedef struct s_kernel {
-	ISRHandler			ISRhandlers[256];
-	IRQHandler			IRQHandlers[16];
-	t_idt_entry			idt[IDT_ENTRIES];
-	t_idt_descryptor	idt_descriptor;
-	t_screens			screens[NB_SCREEN];
-	uint8_t				terminal_ctrl;
-	uint8_t				terminal_shift;
-	uint8_t				screen_index;
-	uint16_t			*terminal_buffer;
-	char				command_buffer[COMMAND_BUFFER_SIZE];
-	int					buffer_pos;
-	uint32_t			kernel_stack[KERNEL_STACK_SIZE];
-	int					stack_pointer;
-	t_gdt_ptr			gdt_pointer;
-} t_kernel;
-
-/* ──────────── Memory Management Structures ──────────── */
 
 /* ──────────── Page Table Entry Structure ──────────── */
 typedef struct s_page_table_entry {
@@ -164,5 +144,37 @@ typedef struct s_kernel_heap {
 	uint32_t current_end;       /* Current heap end */
 	t_mem_block *first_block;   /* First memory block */
 } t_kernel_heap;
+
+/* ──────────── Main Kernel Structure ──────────── */
+typedef struct s_kernel {
+	/* ──────────── Interrupt Management ──────────── */
+	ISRHandler			ISRhandlers[256];
+	IRQHandler			IRQHandlers[16];
+	t_idt_entry			idt[IDT_ENTRIES];
+	t_idt_descryptor	idt_descriptor;
+
+	/* ──────────── Screen and Terminal Management ──────────── */
+	t_screens			screens[NB_SCREEN];
+	uint8_t				terminal_ctrl;
+	uint8_t				terminal_shift;
+	uint8_t				screen_index;
+	uint16_t			*terminal_buffer;
+	char				command_buffer[COMMAND_BUFFER_SIZE];
+	int					buffer_pos;
+
+	/* ──────────── Stack Management ──────────── */
+	uint32_t			kernel_stack[KERNEL_STACK_SIZE];
+	int					stack_pointer;
+
+	/* ──────────── GDT Management ──────────── */
+	t_gdt_entry			*gdt;
+	t_gdt_ptr			gdt_pointer;
+
+	/* ──────────── Memory Management ──────────── */
+	t_kernel_heap		kernel_heap;
+	t_page_directory	*kernel_directory;
+	t_page_directory	*current_directory;
+	t_phys_mem_manager	phys_mem_manager;
+} t_kernel;
 
 #endif

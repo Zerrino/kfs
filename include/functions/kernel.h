@@ -6,7 +6,7 @@
 /*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 21:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/10 16:03:32 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 19:30:37 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,10 @@
 #include "../core/enums.h"
 #include "../core/libs.h"
 #include "../core/structs.h"
+
+/* ──────────── Functions from src/globals.c ──────────── */
+
+void kernel_globals_init(void);
 
 /* ──────────── Functions from src/kernel/init.c ──────────── */
 

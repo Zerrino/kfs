@@ -6,7 +6,7 @@
 /*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/10 16:59:24 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 19:44:19 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void kfs3_init()
 
 void kernel_initialize(void)
 {
+	kernel_globals_init();  /* Initialize kernel structure first */
 	kfs2_init();
 	kfs3_init();
 }

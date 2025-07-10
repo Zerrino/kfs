@@ -6,16 +6,16 @@
 /*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:20 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/10 16:55:56 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 20:00:16 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/kfs.h"
 
 void shell_initialize() {
-    terminal_writestring("KFS Shell v");
+    terminal_writestring("KFS Chicken Shell v");
 	printnbr(VERSION, 10);
-	terminal_writestring("\n");
+	terminal_writestring(".0\n");
     terminal_writestring("Type 'help' for available commands\n");
     terminal_writestring("> ");
 }

@@ -6,7 +6,7 @@
 /*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 20:14:06 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/10 16:38:10 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 19:58:20 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,6 @@ void display_memory_management_help(void) {
     terminal_writestring("\n=== KFS3 Memory Management Commands ===\n");
     terminal_writestring("  memstats     - Display memory statistics\n");
     terminal_writestring("  memtest      - Show memory test suite help\n");
-    terminal_writestring("  memtest1     - Basic allocation tests\n");
-    terminal_writestring("  memtest2     - Multiple allocation tests\n");
-    terminal_writestring("  memtest3     - Large allocation tests\n");
-    terminal_writestring("  memtest4     - Virtual memory tests\n");
-    terminal_writestring("  memtest5     - Edge case tests\n");
     terminal_writestring("  vmemstats    - Virtual memory statistics\n");
     terminal_writestring("  memcheck     - Memory integrity check\n");
 }
@@ -38,12 +33,6 @@ void display_memory_management_help(void) {
 void display_kernel_testing_help(void) {
     terminal_writestring("\n=== KFS3 Kernel Testing Commands ===\n");
     terminal_writestring("  crashtest    - Show crash test suite help\n");
-    terminal_writestring("  crash1       - WARNING level test (safe)\n");
-    terminal_writestring("  crash2       - ERROR level test (safe)\n");
-    terminal_writestring("  crash3       - FATAL level test (DANGEROUS - HALTS SYSTEM)\n");
-    terminal_writestring("  crash4       - Division by zero test\n");
-    terminal_writestring("  crash5       - Invalid memory access test\n");
-    terminal_writestring("  crash6       - Stack overflow test\n");
 }
 
 command_type_t get_memory_management_command_type(const char* command) {

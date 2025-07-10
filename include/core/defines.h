@@ -6,7 +6,7 @@
 /*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/10 16:19:18 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 19:55:56 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@
 /* ──────────── GDT Constants ──────────── */
 #define GDT_BASE_ADDRESS        0x00000800  /* GDT base address */
 #define GDT_MAX_ENTRIES         7           /* Number of GDT entries */
+/* The GDT limit is the size of the GDT minus 1 (as per Intel specification) */
+#define GDT_LIMIT_OFFSET        1           /* GDT limit = size - 1 */
 
 /* ──────────── GDT Segment Selectors ──────────── */
 #define GDT_NULL_SEGMENT        0x00        /* Null segment selector */
@@ -208,5 +210,6 @@
 # define ABS(x) ((x + (1 * N(x))) ^ N(x))
 # define FLAG_SET(x, flag) x |= (flag)
 # define FLAG_UNSET(x, flag) x &= ~(flag)
+# define GDT_CALCULATE_LIMIT(entries) ((sizeof(t_gdt_entry) * (entries)) - GDT_LIMIT_OFFSET)
 
 #endif
