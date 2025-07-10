@@ -3,15 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   defines.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 16:54:34 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 16:19:18 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef DEFINES_H
 # define DEFINES_H
+
+/* ──────────── Kernel Constants ──────────── */
+# define VERSION 3
 
 /* ──────────── VGA Display Constants ──────────── */
 # define VGA_WIDTH   80
@@ -163,6 +166,42 @@
 #define EXCEPTION_MSG_HYPERVISOR_INJECTION  "Hypervisor Injection Exception"
 #define EXCEPTION_MSG_VMM_COMMUNICATION     "VMM Communication Exception"
 #define EXCEPTION_MSG_SECURITY              "Security Exception"
+
+/* ──────────── Memory Management Constants ──────────── */
+#define MIN_BLOCK_SIZE		(sizeof(t_mem_block) + 16)
+
+/* ──────────── Memory Constants ──────────── */
+#define PAGE_SIZE           4096        /* 4KB pages */
+#define PAGE_ALIGN_MASK     0xFFFFF000  /* Page alignment mask */
+#define PAGE_OFFSET_MASK    0x00000FFF  /* Page offset mask */
+#define PAGES_PER_TABLE     1024        /* Pages per page table */
+#define TABLES_PER_DIR      1024        /* Page tables per directory */
+
+/* Memory layout constants */
+#define KERNEL_START        0x00100000  /* 1MB - Kernel start */
+#define KERNEL_HEAP_START   0x00400000  /* 4MB - Kernel heap start */
+#define KERNEL_HEAP_SIZE    0x00400000  /* 4MB - Kernel heap size */
+#define USER_SPACE_START    0x40000000  /* 1GB - User space start */
+#define USER_SPACE_END      0xC0000000  /* 3GB - User space end */
+
+/* Physical memory constants */
+#define PHYS_MEM_START      0x00100000  /* 1MB - Start of usable physical memory */
+#define MAX_PHYS_MEMORY     0x10000000  /* 256MB - Maximum physical memory */
+#define BITMAP_SIZE         (MAX_PHYS_MEMORY / PAGE_SIZE / 8) /* Bitmap size in bytes */
+
+/* ──────────── Page Directory/Table Entry Flags ──────────── */
+#define PAGE_PRESENT        0x001       /* Page is present in memory */
+#define PAGE_WRITABLE       0x002       /* Page is writable */
+#define PAGE_USER           0x004       /* Page is accessible by user */
+#define PAGE_WRITE_THROUGH  0x008       /* Write-through caching */
+#define PAGE_CACHE_DISABLE  0x010       /* Cache disabled */
+#define PAGE_ACCESSED       0x020       /* Page was accessed */
+#define PAGE_DIRTY          0x040       /* Page was written to (only for page table entries) */
+#define PAGE_SIZE_4MB       0x080       /* 4MB page size (only for page directory entries) */
+#define PAGE_GLOBAL         0x100       /* Global page */
+
+/* ──────────── I/O Port Constants ──────────── */
+#define UNUSED_PORT         0x80        /* Unused port for I/O wait operations */
 
 /* ──────────── Utility Macros ──────────── */
 # define N(x) (x >> ((sizeof(x) * 8) - 1))

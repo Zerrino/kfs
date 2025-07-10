@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   string_utilitary.c                                 :+:      :+:    :+:   */
+/*   shell_write.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:26:11 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/09 12:20:49 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 16:01:54 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/kernel.h"
+#include "../../../include/kfs.h"
 
 size_t strlen(const char* str)
 {

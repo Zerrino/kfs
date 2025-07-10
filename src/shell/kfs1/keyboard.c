@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   keyboard.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:33:23 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/09 16:59:37 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 16:01:54 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/kernel.h"
+#include "../../../include/kfs.h"
 
 void keyboard_init() {
     while (inb(KEYBOARD_STATUS_PORT) & KEYBOARD_STATUS_READY); // Wait for keyboard controller to be ready

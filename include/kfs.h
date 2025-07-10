@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kernel.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:14 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 14:40:36 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 16:01:11 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,5 +22,8 @@
 #include "core/structs.h"
 #include "core/globals.h"
 #include "core/functions.h"
+
+/* ──────────── Main Kernel Function ──────────── */
+void kernel_main(void);
 
 #endif

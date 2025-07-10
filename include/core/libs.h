@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libs.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 16:36:12 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 12:05:35 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ typedef signed int         int32_t;
 typedef signed long long   int64_t;
 typedef uint32_t           size_t;
 typedef int32_t            ssize_t;
+typedef int32_t            intptr_t;
 
 #ifndef NULL
 #define NULL ((void*)0)

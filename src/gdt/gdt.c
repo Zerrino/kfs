@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   gdt.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:14 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 17:10:49 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 16:01:54 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/kernel.h"
-
-t_gdt_entry *gdt = (t_gdt_entry *)GDT_BASE_ADDRESS;
+#include "../../include/kfs.h"
 
 void gdt_set_gate(int num, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran) {
     gdt[num].base_low    = (base & 0xFFFF);

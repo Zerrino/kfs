@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 21:45:26 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 16:36:01 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,5 +96,42 @@ bool handle_core_system_commands(command_type_t cmd_type, const char* arg);
 bool handle_gdt_memory_commands(command_type_t cmd_type, const char* arg);
 bool handle_stack_operations_commands(command_type_t cmd_type, const char* arg);
 bool handle_system_info_commands(command_type_t cmd_type, const char* arg);
+
+/* ──────────── Functions from src/shell/kfs3.c ──────────── */
+
+void display_kfs3_help(void);
+command_type_t get_kfs3_command_type(const char* command);
+bool handle_kfs3_commands(command_type_t cmd_type, const char* arg);
+
+/* ──────────── Functions from src/shell/kfs3/shell_memory.c ──────────── */
+
+void handle_memstats(void);
+void handle_memtest(void);
+void handle_memtest1(void);
+void handle_memtest2(void);
+void handle_memtest3(void);
+void handle_memtest4(void);
+void handle_memtest5(void);
+void handle_vmemstats(void);
+void handle_memcheck(void);
+
+/* ──────────── Functions from src/shell/kfs3/shell_crash.c ──────────── */
+
+void handle_crashtest(void);
+void handle_crash1(void);
+void handle_crash2(void);
+void handle_crash3(void);
+void handle_crash4(void);
+void handle_crash5(void);
+void handle_crash6(void);
+
+/* ──────────── Functions from src/shell/kfs3/kfs3_handle.c ──────────── */
+
+void display_memory_management_help(void);
+void display_kernel_testing_help(void);
+command_type_t get_memory_management_command_type(const char* command);
+command_type_t get_kernel_testing_command_type(const char* command);
+bool handle_memory_management_commands(command_type_t cmd_type, const char* arg);
+bool handle_kernel_testing_commands(command_type_t cmd_type, const char* arg);
 
 #endif

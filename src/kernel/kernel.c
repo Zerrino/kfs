@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   kernel.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/09 12:14:57 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 17:00:55 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/kernel.h"
-
-t_kernel	kernel = {0};
+#include "../../include/kfs.h"
 
 void terminal_initialize()
 {
@@ -36,16 +34,8 @@ void terminal_initialize()
 			kernel.terminal_buffer[index] = kernel.screens[kernel.screen_index].content[index];
 		}
 	}
-
-	DisableInterrupts();
-	gdt_install();
-	IDT_Initialize();
-	ISR_Initialize();
-	IRQ_Initialize();
-	stack_push(0xCAFEBABE);
-	stack_push(0x12345678);
-	keyboard_init();
-	EnableInterrupts();
+	
+	kernel_initialize();
 }
 
 void terminal_offset(uint16_t offset)
@@ -68,13 +58,4 @@ void terminal_restore()
 			kernel.terminal_buffer[index] = vga_entry(kernel.screens[kernel.screen_index].content[index + (VGA_WIDTH * kernel.screens[kernel.screen_index].offset)], kernel.screens[kernel.screen_index].color);
 		}
 	}
-}
-
-void kernel_main(void)
-{
-	kernel.terminal_buffer = (uint16_t *)VGA_MEMORY;
-
-	terminal_initialize();
-	while (1)
-		__asm__ volatile ("hlt");
 }

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   irq.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 20:34:40 by zerrino           #+#    #+#             */
-/*   Updated: 2025/07/09 12:22:48 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 16:01:54 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/kernel.h"
+#include "../../include/kfs.h"
 
 
 void	IRQ_Handler(t_registers* regs)
