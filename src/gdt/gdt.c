@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gdt.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:14 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 17:10:49 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/11 11:52:54 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void gdt_install() {
     gdt_set_gate(GDT_NULL_INDEX,         GDT_NULL_BASE,    GDT_NULL_LIMIT,    GDT_NULL_ACCESS,         GDT_NULL_GRANULARITY);  /* null descriptor */
     gdt_set_gate(GDT_KERNEL_CODE_INDEX,  GDT_SEGMENT_BASE, GDT_SEGMENT_LIMIT, GDT_ACCESS_KERNEL_CODE,  GDT_GRAN_STANDARD);     /* kernel code */
     gdt_set_gate(GDT_KERNEL_DATA_INDEX,  GDT_SEGMENT_BASE, GDT_SEGMENT_LIMIT, GDT_ACCESS_KERNEL_DATA,  GDT_GRAN_STANDARD);     /* kernel data */
-    gdt_set_gate(GDT_KERNEL_STACK_INDEX, GDT_SEGMENT_BASE, GDT_SEGMENT_LIMIT, GDT_ACCESS_KERNEL_DATA,  GDT_GRAN_STANDARD);     /* kernel stack */
+    gdt_set_gate(GDT_KERNEL_STACK_INDEX, GDT_SEGMENT_BASE, GDT_SEGMENT_LIMIT, GDT_ACCESS_KERNEL_DATA,  GDT_GRAN_STANDARD);     /* kernel stack segment (flat model) */
     gdt_set_gate(GDT_USER_CODE_INDEX,    GDT_SEGMENT_BASE, GDT_SEGMENT_LIMIT, GDT_ACCESS_USER_CODE,    GDT_GRAN_STANDARD);     /* user code */
     gdt_set_gate(GDT_USER_DATA_INDEX,    GDT_SEGMENT_BASE, GDT_SEGMENT_LIMIT, GDT_ACCESS_USER_DATA,    GDT_GRAN_STANDARD);     /* user data */
     gdt_set_gate(GDT_USER_STACK_INDEX,   GDT_SEGMENT_BASE, GDT_SEGMENT_LIMIT, GDT_ACCESS_USER_DATA,    GDT_GRAN_STANDARD);     /* user stack */

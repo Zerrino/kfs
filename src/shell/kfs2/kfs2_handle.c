@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kfs2_handle.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 20:14:06 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 21:26:55 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/11 11:54:15 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,11 @@ void display_gdt_memory_help(void) {
 
 void display_stack_operations_help(void) {
     terminal_writestring("\n=== Stack Operations ===\n");
-    terminal_writestring("  stack        - Print the kernel stack\n");
-    terminal_writestring("  push <hex>   - Push a value onto the stack\n");
-    terminal_writestring("  pop          - Pop a value from the stack\n");
-    terminal_writestring("  stacktest    - Demonstrate stack operations\n");
+    terminal_writestring("  stack        - Print the kernel data stack\n");
+    terminal_writestring("  userstack    - Print a stack that lives in the userspace\n");
+    terminal_writestring("  push <hex>   - Push a value onto the user stack\n");
+    terminal_writestring("  pop          - Pop a value from the pop stack\n");
+    terminal_writestring("  stacktest    - Demonstrate user stack operations\n");
 }
 
 void display_system_info_help(void) {
@@ -71,6 +72,8 @@ command_type_t get_gdt_memory_command_type(const char* command) {
 command_type_t get_stack_operations_command_type(const char* command) {
     if (ft_strcmp(command, "stack") == 0)
         return CMD_STACK;
+    else if (ft_strcmp(command, "userstack") == 0)
+        return CMD_USERSTACK;
     else if (ft_strcmp(command, "push") == 0)
         return CMD_PUSH;
     else if (ft_strcmp(command, "pop") == 0)
@@ -134,6 +137,9 @@ bool handle_stack_operations_commands(command_type_t cmd_type, const char* arg) 
     switch (cmd_type) {
         case CMD_STACK:
             handle_stack();
+            return true;
+        case CMD_USERSTACK:
+            handle_userstack();
             return true;
         case CMD_PUSH:
             handle_push(arg);

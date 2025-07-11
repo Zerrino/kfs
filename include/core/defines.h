@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   defines.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 16:54:34 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/11 11:55:02 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,9 @@
 #define COMMAND_BUFFER_SIZE     256
 
 /* ──────────── Stack Constants ──────────── */
-#define KERNEL_STACK_SIZE       1024
+#define KERNEL_STACK_SIZE           1024    /* Software stack size (entries) */
+#define KERNEL_EXECUTION_STACK_SIZE 16384   /* Hardware execution stack size (bytes) - 16KB */
+#define KERNEL_STACK_BASE           0x00090000  /* Base address for kernel execution stack */
 
 /* ──────────── Keyboard Constants ──────────── */
 #define KEYBOARD_DATA_PORT      0x60    /* Keyboard data port */

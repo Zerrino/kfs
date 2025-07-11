@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gdt.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 21:37:29 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/11 11:53:14 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,5 +30,7 @@ uint32_t stack_peek(void);
 int stack_is_empty(void);
 int stack_size(void);
 void print_kernel_stack(void);
+void print_kernel_execution_stack(void);
+void switch_to_kernel_stack(void);
 
 #endif

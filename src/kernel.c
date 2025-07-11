@@ -3,16 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   kernel.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/09 12:14:57 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/11 11:50:00 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/kernel.h"
 
 t_kernel	kernel = {0};
+
+/* ──────────── Kernel Execution Stack (GDT-integrated) ──────────── */
+uint8_t kernel_execution_stack[KERNEL_EXECUTION_STACK_SIZE] __attribute__((aligned(16)));
+uint32_t *kernel_stack_top = (uint32_t*)((uint8_t*)kernel_execution_stack + KERNEL_EXECUTION_STACK_SIZE);
 
 void terminal_initialize()
 {
@@ -42,8 +46,6 @@ void terminal_initialize()
 	IDT_Initialize();
 	ISR_Initialize();
 	IRQ_Initialize();
-	stack_push(0xCAFEBABE);
-	stack_push(0x12345678);
 	keyboard_init();
 	EnableInterrupts();
 }
@@ -75,6 +77,7 @@ void kernel_main(void)
 	kernel.terminal_buffer = (uint16_t *)VGA_MEMORY;
 
 	terminal_initialize();
+	switch_to_kernel_stack();
 	while (1)
 		__asm__ volatile ("hlt");
 }

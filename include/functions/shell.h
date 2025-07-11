@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 21:45:26 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/11 11:53:29 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ void handle_gdttest(void);
 /* ──────────── Functions from src/shell/kfs2/shell_stack.c ──────────── */
 
 void handle_stack(void);
+void handle_userstack(void);
 void handle_push(const char* arg);
 void handle_pop(void);
 void handle_stacktest(void);

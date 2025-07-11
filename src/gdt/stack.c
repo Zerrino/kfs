@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   stack.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:17 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 17:10:39 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/11 11:53:02 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,4 +126,146 @@ void print_kernel_stack() {
         print_stack_entry(i);
 
     terminal_writestring("=============================\n");
+}
+
+/* ──────────── Real Kernel Execution Stack Functions ──────────── */
+
+void print_kernel_execution_stack() {
+    uint32_t current_esp;
+    uint32_t stack_base = (uint32_t)kernel_execution_stack;
+    uint32_t stack_top = (uint32_t)kernel_stack_top;
+
+    /* Get current ESP */
+    __asm__ volatile ("mov %%esp, %0" : "=r" (current_esp));
+
+    terminal_writestring("=== Kernel Execution Stack (GDT-Integrated) ===\n");
+    terminal_writestring("GDT Kernel Stack Segment: 0x");
+    printnbr(GDT_KERNEL_STACK, 16);
+    terminal_writestring(" (Selector)\n");
+    terminal_writestring("Dedicated Stack Base:     0x");
+    printnbr(stack_base, 16);
+    terminal_writestring("\n");
+    terminal_writestring("Dedicated Stack Top:      0x");
+    printnbr(stack_top, 16);
+    terminal_writestring("\n");
+    terminal_writestring("Current ESP:              0x");
+    printnbr(current_esp, 16);
+    terminal_writestring("\n");
+    terminal_writestring("Stack Size:               ");
+    printnbr(KERNEL_EXECUTION_STACK_SIZE, 10);
+    terminal_writestring(" bytes (");
+    printnbr(KERNEL_EXECUTION_STACK_SIZE / 1024, 10);
+    terminal_writestring(" KB)\n");
+
+    /* Check if we're using the dedicated kernel stack */
+    if (current_esp <= stack_top && current_esp >= stack_base) {
+        terminal_writestring("Status:                   USING DEDICATED KERNEL STACK\n");
+        terminal_writestring("Integration:              LINKED TO GDT KERNEL STACK SEGMENT\n");
+        terminal_writestring("Implementation:           REPLACED BOOT STACK\n");
+        uint32_t used = stack_top - current_esp;
+        terminal_writestring("Stack Usage:              ");
+        printnbr(used, 10);
+        terminal_writestring(" bytes\n");
+        terminal_writestring("Stack Free:               ");
+        printnbr(KERNEL_EXECUTION_STACK_SIZE - used, 10);
+        terminal_writestring(" bytes\n");
+
+        /* Show some stack contents */
+        terminal_writestring("\n--- Kernel Call Stack Contents ---\n");
+        terminal_writestring("Address    | Value      | ASCII\n");
+        terminal_writestring("-----------|------------|--------\n");
+
+        for (int i = 0; i < 8 && (current_esp + (i * 4)) < stack_top; i++) {
+            uint32_t addr = current_esp + (i * 4);
+            uint32_t value = *(uint32_t*)addr;
+
+            terminal_writestring("0x");
+            printnbr(addr, 16);
+            terminal_writestring(" | 0x");
+            printnbr(value, 16);
+            terminal_writestring(" | ");
+            print_ascii_representation(value);
+            if (i == 0)
+                terminal_writestring(" <- ESP");
+            terminal_writestring("\n");
+        }
+    } else {
+        terminal_writestring("Status:                   USING BOOT STACK\n");
+        terminal_writestring("Integration:              BOOT STACK NOT REPLACED\n");
+        terminal_writestring("Note: The kernel should be using the dedicated execution stack.\n");
+        terminal_writestring("Check boot.s configuration.\n");
+    }
+    terminal_writestring("===============================================\n");
+}
+
+void switch_to_kernel_stack() {
+    /* Complete stack replacement: Copy boot stack content to kernel stack and switch */
+    uint32_t old_esp, old_ebp;
+    uint32_t boot_stack_top;
+
+    /* Get current stack pointers */
+    __asm__ volatile (
+        "mov %%esp, %0\n\t"
+        "mov %%ebp, %1"
+        : "=r" (old_esp), "=r" (old_ebp)
+    );
+
+    /* Define boot stack boundaries (from boot.s) */
+    extern uint8_t stack_top[];
+    boot_stack_top = (uint32_t)stack_top;
+
+    /* Calculate how much of the boot stack is actually used */
+    uint32_t used_stack_size = boot_stack_top - old_esp;
+
+    /* Make sure we don't exceed our kernel stack size */
+    if (used_stack_size > KERNEL_EXECUTION_STACK_SIZE - 512) {
+        used_stack_size = KERNEL_EXECUTION_STACK_SIZE - 512; /* Leave safety margin */
+    }
+
+    /* Calculate new stack positions - ENSURE we use our kernel_execution_stack */
+    uint32_t kernel_stack_base = (uint32_t)kernel_execution_stack;
+    uint32_t kernel_stack_top_addr = (uint32_t)kernel_stack_top;
+    uint32_t new_esp = kernel_stack_top_addr - used_stack_size;
+
+    /* Debug output */
+    terminal_writestring("  Old ESP: 0x");
+    printnbr(old_esp, 16);
+    terminal_writestring(", New ESP: 0x");
+    printnbr(new_esp, 16);
+    terminal_writestring("\n");
+    terminal_writestring("  Kernel stack range: 0x");
+    printnbr(kernel_stack_base, 16);
+    terminal_writestring(" - 0x");
+    printnbr(kernel_stack_top_addr, 16);
+    terminal_writestring("\n");
+    terminal_writestring("  Copying ");
+    printnbr(used_stack_size, 10);
+    terminal_writestring(" bytes of stack data\n");
+
+    /* Ensure new_esp is within our kernel stack bounds */
+    if (new_esp < kernel_stack_base) {
+        new_esp = kernel_stack_base + 256; /* Minimum safe position */
+        used_stack_size = kernel_stack_top_addr - new_esp;
+    }
+
+    /* Calculate new EBP relative to the new stack */
+    uint32_t ebp_offset = old_ebp - old_esp;
+    uint32_t new_ebp = new_esp + ebp_offset;
+
+    /* Copy the used portion of the boot stack to our kernel execution stack */
+    uint8_t *old_stack_data = (uint8_t*)old_esp;
+    uint8_t *new_stack_data = (uint8_t*)new_esp;
+
+    for (uint32_t i = 0; i < used_stack_size; i++) {
+        new_stack_data[i] = old_stack_data[i];
+    }
+
+    /* Atomic switch to our dedicated kernel execution stack */
+    __asm__ volatile (
+        "mov %0, %%esp\n\t"
+        "mov %1, %%ebp"
+        :
+        : "r" (new_esp), "r" (new_ebp)
+        : "memory"
+    );
 }
