@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   stack.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
+/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:17 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/11 11:53:02 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/12 23:47:43 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ static void print_padded_index(int index) {
         terminal_writestring("  ");
     else if (index < 100)
         terminal_writestring(" ");
-        
+
     printnbr(index, 10);
 }
 
@@ -228,6 +228,7 @@ void switch_to_kernel_stack() {
     uint32_t new_esp = kernel_stack_top_addr - used_stack_size;
 
     /* Debug output */
+    /*
     terminal_writestring("  Old ESP: 0x");
     printnbr(old_esp, 16);
     terminal_writestring(", New ESP: 0x");
@@ -241,6 +242,7 @@ void switch_to_kernel_stack() {
     terminal_writestring("  Copying ");
     printnbr(used_stack_size, 10);
     terminal_writestring(" bytes of stack data\n");
+    */
 
     /* Ensure new_esp is within our kernel stack bounds */
     if (new_esp < kernel_stack_base) {

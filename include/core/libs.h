@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libs.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 16:36:12 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/12 23:40:56 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # if !defined(__i386__)
 	#error "This tutorial needs to be compiled with a ix86-elf compiler"
 	# endif
-	
+
 #include <stdbool.h>
 
 /* Kernel-compatible type definitions */

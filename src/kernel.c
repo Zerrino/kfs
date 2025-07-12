@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kernel.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
+/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/11 11:50:00 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/12 23:56:18 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,12 +72,15 @@ void terminal_restore()
 	}
 }
 
-void kernel_main(void)
+void kernel_main(uint32_t magic, uint32_t multiboot_info_ptr)
 {
-	kernel.terminal_buffer = (uint16_t *)VGA_MEMORY;
 
+	kernel.terminal_buffer = (uint16_t *)VGA_MEMORY;
+	(void)multiboot_info_ptr;
 	terminal_initialize();
 	switch_to_kernel_stack();
+	printnbr(magic, 16);
+
 	while (1)
 		__asm__ volatile ("hlt");
 }

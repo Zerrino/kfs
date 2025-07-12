@@ -66,8 +66,8 @@ _start:
 	in assembly as languages such as C cannot function without a stack.
 	We start with the boot stack, then replace it with our kernel stack.
 	*/
-	mov $stack_top, %esp
 
+	mov		$stack_top, %esp
 	/*
 	This is a good place to initialize crucial processor state before the
 	high-level kernel is entered. It's best to minimize the early
@@ -87,6 +87,8 @@ _start:
 	stack since (pushed 0 bytes so far), so the alignment has thus been
 	preserved and the call is well defined.
 	*/
+	push	%ebx		/* 2nd argument */
+	push	%eax		/* 1er argument */
 	call kernel_main
 
 	/*
