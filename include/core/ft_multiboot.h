@@ -6,7 +6,7 @@
 /*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 03:11:59 by zerrino           #+#    #+#             */
-/*   Updated: 2025/07/13 04:13:09 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/07/13 04:42:58 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,6 +214,21 @@ typedef struct
 } pmm_t;
 
 extern pmm_t pmm;
+
+#define MAX_RESERVED  32                  /* noyau + modules + MBI …  */
+
+typedef struct {
+    uint64_t start;                       /* adresse physique alignée */
+    uint64_t end;                         /* end exclusive             */
+} reserved_range_t;
+
+/* tableau global : */
+extern reserved_range_t reserved_ranges[MAX_RESERVED];
+extern uint32_t         reserved_count;
+
+/* API */
+void add_reserved_region(uint64_t start, uint64_t end);
+int  is_reserved(uint64_t page_phys);     /* vrai ssi page à conserver */
 
 
 void	*phys_to_virt(uintptr_t p);

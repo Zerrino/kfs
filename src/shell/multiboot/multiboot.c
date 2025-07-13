@@ -6,7 +6,7 @@
 /*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 03:26:33 by zerrino           #+#    #+#             */
-/*   Updated: 2025/07/13 04:19:33 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/07/13 04:47:57 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,28 @@
 #define KERNEL_PHYS_BASE 0x0        /* tant que paging = identité        */
 
 pmm_t pmm = {0};
+
+reserved_range_t reserved_ranges[MAX_RESERVED];
+uint32_t         reserved_count = 0;
+
+
+extern uint32_t _kernel_start, _kernel_end;
+
+
+void add_reserved_region(uint64_t start, uint64_t end)
+{
+	if (reserved_count >= MAX_RESERVED)
+		return;
+	reserved_ranges[reserved_count++] = (reserved_range_t){ start, end };
+}
+
+int is_reserved(uint64_t p)
+{
+	for (uint32_t i = 0; i < reserved_count; ++i)
+		if (p >= reserved_ranges[i].start && p < reserved_ranges[i].end)
+			return 1;
+	return 0;
+}
 
 void	*phys_to_virt(uintptr_t p)
 {
@@ -30,7 +52,7 @@ static inline void push(uint32_t page_num)
 
 void *pmm_alloc_page(void)
 {
-	if (pmm.stack_top == 0) return NULL;          /* plus de RAM libre */
+	if (pmm.stack_top == 0) return NULL;
 	uint32_t page_num = pmm.stack[--pmm.stack_top];
 	return (void *)(page_num << 12);
 }
@@ -46,8 +68,31 @@ void add_region_to_pmm(uint64_t base, uint64_t length)
 	uint64_t last  = (base + length) & ~(PAGE_SIZE-1);        /* align dn */
 
 	for (uint64_t p = first; p < last; p += PAGE_SIZE)
-		push(p >> 12);       /* ajoute à la pile -> page DISPONIBLE */
+		if (!is_reserved(p))
+			push(p >> 12);
 }
+
+static void reserve_kernel_and_modules(const multiboot_info_t *mbi)
+{
+	/* le noyau */
+	add_reserved_region(((uintptr_t)&_kernel_start) & ~0xFFF,
+						(((uintptr_t)&_kernel_end + 0xFFF) & ~0xFFF));
+
+	/* potentiels modules grub */
+	if (mbi->flags & (1<<3))
+	{
+		const multiboot_module_t *mods = phys_to_virt(mbi->mods_addr);
+		for (uint32_t i = 0; i < mbi->mods_count; ++i)
+			add_reserved_region(mods[i].mod_start & ~0xFFF,
+								(mods[i].mod_end  + 0xFFF) & ~0xFFF);
+	}
+
+	/* la struct multiboot */
+	uint32_t mbi_phys = (uintptr_t)mbi;
+	add_reserved_region(mbi_phys & ~0xFFF,
+						(mbi_phys + sizeof(*mbi) + 0xFFF) & ~0xFFF);
+}
+
 
 void parse_multiboot1(const multiboot_info_t *mbi)
 {
@@ -82,6 +127,9 @@ void parse_multiboot1(const multiboot_info_t *mbi)
 			terminal_writestring("\n");
 		}
 	}
+
+	reserve_kernel_and_modules(mbi);
+
 	if (mbi->flags & (1 << 6))
 	{
 		const uint8_t *scan = phys_to_virt(mbi->mmap_addr);
@@ -96,12 +144,6 @@ void parse_multiboot1(const multiboot_info_t *mbi)
 			scan += e->size + 4;
 		}
 	}
-	terminal_writestring("page non used : ");
-	printnbr(pmm.stack_top, 10);
-	terminal_writestring(" - page used : ");
-	printnbr(MAX_PAGES - pmm.stack_top, 10);
-	terminal_writestring("\n");
-
 	terminal_writestring("page non used : ");
 	printnbr(pmm.stack_top, 10);
 	terminal_writestring(" - page used : ");
