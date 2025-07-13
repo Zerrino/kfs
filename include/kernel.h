@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kernel.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:14 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 14:40:36 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/13 03:15:19 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,5 +22,6 @@
 #include "core/structs.h"
 #include "core/globals.h"
 #include "core/functions.h"
+#include "core/ft_multiboot.h"
 
 #endif

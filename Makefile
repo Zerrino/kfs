@@ -2,7 +2,7 @@ TARGET    := i686-elf
 AS        := $(TARGET)-as
 CC        := $(TARGET)-gcc
 NASM      := nasm
-QEMU      := qemu-system-i386
+QEMU      := qemu-system-i386 -m 128
 MKGRUB    := $(TARGET)-grub-mkrescue
 ifeq ($(shell uname), Darwin)
 	MKGRUB := $(TARGET)-grub-mkrescue
