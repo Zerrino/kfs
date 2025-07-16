@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   string_utilitary.c                                 :+:      :+:    :+:   */
+/*   shell_write.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:26:11 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/09 12:20:49 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/15 17:56:07 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ size_t strlen(const char* str)
 	size_t len = 0;
 	while (str[len])
 		len++;
-	
+
 	return len;
 }
 
@@ -32,7 +32,7 @@ void terminal_putchar(char c)
 {
 	if (c == '\0')
 		return ;
-		
+
 	if (c == '\b')
 	{
 		if (0 < kernel.screens[kernel.screen_index].column)
@@ -86,6 +86,6 @@ void	printnbr(int nbr, int base)
 	terminal_putchar('-' * -(N(nbr)));
 	if (nbr == INT_MIN || base <= ABS(nbr))
 		printnbr(ABS(nbr / base), base);
-		
+
 	terminal_putchar(ABS(nbr % base) + '0' + (7 * (9 < ABS(nbr % base))));
 }

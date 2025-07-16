@@ -1,5 +1,5 @@
 TARGET    := i686-elf
-AS        := $(TARGET)-as
+AS        := nasm -f elf32 -I./
 CC        := $(TARGET)-gcc
 NASM      := nasm
 QEMU      := qemu-system-i386 -m 128

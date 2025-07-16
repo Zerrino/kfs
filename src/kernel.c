@@ -6,7 +6,7 @@
 /*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/13 03:28:57 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/07/16 14:15:03 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,19 +74,19 @@ void terminal_restore()
 
 void kernel_main(uint32_t magic, uint32_t multiboot_info_ptr)
 {
+	kernel.terminal_buffer = (uint16_t *)VGA_MEMORY;
+	(void)multiboot_info_ptr;
 	if (magic != MULTIBOOT_BOOTLOADER_MAGIC)
 	{
 		while (1)
 			__asm__ volatile ("hlt");
 	}
 
-	kernel.terminal_buffer = (uint16_t *)VGA_MEMORY;
 	terminal_initialize();
-	switch_to_kernel_stack();
 
 
-	multiboot_info_t *mbi = phys_to_virt(multiboot_info_ptr);
-	parse_multiboot1(mbi);
+	//multiboot_info_t *mbi = phys_to_virt(multiboot_info_ptr);
+	//parse_multiboot1(mbi);
 
 
 	while (1)

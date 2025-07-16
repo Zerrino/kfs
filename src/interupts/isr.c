@@ -3,14 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   isr.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 02:10:22 by zerrino           #+#    #+#             */
-/*   Updated: 2025/07/09 16:50:00 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/15 17:57:00 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/kernel.h"
+
+static void page_fault_handler(t_registers *regs)
+{
+	uint32_t cr2;
+	__asm__ volatile ("mov %%cr2, %0" : "=r"(cr2));
+
+	terminal_writestring("PAGE FAULT @ 0x");
+	printnbr(cr2, 16);
+	terminal_writestring("  err=");
+	printnbr(regs->error, 16);
+	terminal_writestring("");
+
+	/* décodage rapide des bits d’erreur */
+	if (regs->error & 0x1) terminal_writestring("  - page present\n");
+	if (regs->error & 0x2) terminal_writestring("  - ecriture\n");
+	if (regs->error & 0x4) terminal_writestring("  - en mode user\n");
+	if (regs->error & 0x8) terminal_writestring("  - reserve\n");
+	if (regs->error & 0x10)terminal_writestring("  - fetch instr\n");
+
+	kernelPanic();                         /* ou tentative de map */
+}
 
 const char *get_exception_message(uint32_t exception_num)
 {
@@ -334,6 +355,9 @@ void	ISR_InitializeGates()
 	IDT_SetGate(253, ISR253, GDT_KERNEL_CODE, IDT_FLAG_RIN0 | IDT_FLAG_GATE_32BIT_INT);
 	IDT_SetGate(254, ISR254, GDT_KERNEL_CODE, IDT_FLAG_RIN0 | IDT_FLAG_GATE_32BIT_INT);
 	IDT_SetGate(255, ISR255, GDT_KERNEL_CODE, IDT_FLAG_RIN0 | IDT_FLAG_GATE_32BIT_INT);
+
+
+	ISR_RegisterHandler(EXCEPTION_PAGE_FAULT, page_fault_handler); /* 14 */
 }
 
 void	ISR_Initialize()
