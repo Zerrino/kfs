@@ -6,7 +6,7 @@
 /*   By: Zerrino <Zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/25 15:57:40 by Zerrino          ###   ########.fr       */
+/*   Updated: 2025/07/26 23:21:46 by Zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ void kernel_main(uint32_t magic, uint32_t multiboot_info_ptr)
 
 
 	initMemory(mbi->mem_upper * 1024, physicalAllocStart);
+	kmallocInit(0x1000);
 	//parse_multiboot1(mbi);
 
 

@@ -6,7 +6,7 @@
 /*   By: Zerrino <Zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/25 15:33:38 by Zerrino          ###   ########.fr       */
+/*   Updated: 2025/07/26 23:19:24 by Zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,21 @@
 #define KERNEL_START 0xC0000000
 #define PAGE_FLAG_PRESENT	(1 << 0)
 #define PAGE_FLAG_WRITE		(1 << 1)
+#define PAGE_FLAG_OWNER		(1 << 9)
+#define KERNEL_MALLOC 0xD0000000
+#define REC_PAGEDIR ((uint32_t*)0xfffff000)
+#define REC_PAGETABLE(i) ((uint32_t*) (0xFFC00000 + ((i) << 12)))
 
-void	initMemory(uint32_t memHigh, uint32_t physicalAllocStart);
+uint32_t	*memGetCurrentPageDir();
+void		memChangePageDir(uint32_t* pd);
+void		syncPageDirs();
+void		memMapPage(uint32_t virtualAddr, uint32_t physicalAddr, uint32_t flags);
+uint32_t	pmmAllocPageFrame();
+void		kmallocInit(uint32_t initialHeapSize);
+void		changeHeapSize(int newSize);
+void		memMapPage(uint32_t virtualAddr, uint32_t physicalAddr, uint32_t flags);
+
+void		initMemory(uint32_t memHigh, uint32_t physicalAllocStart);
 
 /* ──────────── Functions from src/shell/keyboard.c ──────────── */
 
@@ -55,7 +68,7 @@ void *ft_memmove(void *dest, const void *src, size_t n);
 void *ft_memchr(const void *s, int c, size_t n);
 int ft_memcmp(const void *s1, const void *s2, size_t n);
 void ft_bzero(void *s, size_t n);
-int ft_strcmp(const char* s1, const char* s2) ;
+int ft_strcmp(const char* s1, const char* s2);
 
 /* ──────────── Functions from src/shell/kfs2.c ──────────── */
 
