@@ -1,5 +1,5 @@
 romimage: file=/usr/share/bochs/BIOS-bochs-legacy
-vgaromimage: file=/usr/share/bochs/VGABIOS-lgpl-latest
+vgaromimage: file=/usr/share/bochs/VGABIOS-lgpl-latest.bin
 ata0-slave: type=cdrom, path=build/chicken.iso, status=inserted
 boot: cdrom
-display_library: sdl
+display_library: x, options = "gui_debug"

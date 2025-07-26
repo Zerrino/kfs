@@ -53,6 +53,8 @@ higher_half:
 	push	eax
 	call kernel_main
 	cli
+	pop		eax
+	pop		ebx
 	.hang:
 		hlt
 		jmp .hang

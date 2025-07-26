@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
+/*   By: Zerrino <Zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/11 11:53:29 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/25 15:33:38 by Zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,13 @@
 #include "../core/enums.h"
 #include "../core/libs.h"
 #include "../core/structs.h"
+
+#define CEIL_DIV(a, b) (((a + b) - 1)/b)
+#define KERNEL_START 0xC0000000
+#define PAGE_FLAG_PRESENT	(1 << 0)
+#define PAGE_FLAG_WRITE		(1 << 1)
+
+void	initMemory(uint32_t memHigh, uint32_t physicalAllocStart);
 
 /* ──────────── Functions from src/shell/keyboard.c ──────────── */
 

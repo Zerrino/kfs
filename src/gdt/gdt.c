@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gdt.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
+/*   By: Zerrino <Zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:14 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/11 11:52:54 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/25 15:56:48 by Zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void gdt_install() {
     gdt_set_gate(GDT_USER_DATA_INDEX,    GDT_SEGMENT_BASE, GDT_SEGMENT_LIMIT, GDT_ACCESS_USER_DATA,    GDT_GRAN_STANDARD);     /* user data */
     gdt_set_gate(GDT_USER_STACK_INDEX,   GDT_SEGMENT_BASE, GDT_SEGMENT_LIMIT, GDT_ACCESS_USER_DATA,    GDT_GRAN_STANDARD);     /* user stack */
     kernel.gdt_pointer.limit = (sizeof(t_gdt_entry) * GDT_MAX_ENTRIES) - 1;
-    kernel.gdt_pointer.base = GDT_BASE_ADDRESS;
+    kernel.gdt_pointer.base = GDT_BASE_ADDRESS + KERNEL_START;
     gdt_flush(&kernel.gdt_pointer);
 }
 
