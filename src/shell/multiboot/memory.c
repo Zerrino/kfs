@@ -6,7 +6,7 @@
 /*   By: Zerrino <Zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 14:13:48 by zerrino           #+#    #+#             */
-/*   Updated: 2025/07/26 23:23:53 by Zerrino          ###   ########.fr       */
+/*   Updated: 2025/07/26 23:42:10 by Zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void	syncPageDirs()
 		{
 			uint32_t*	pageDir = pageDirs[i];
 
-			for (uint32_t j = 768; j < 1023; j++)
+			for (uint32_t i = 768; i < 1023; i++)
 			{
 				pageDir[i] = initial_page_dir[i] & ~PAGE_FLAG_OWNER;
 			}
@@ -137,22 +137,24 @@ uint32_t	pmmAllocPageFrame()
 	uint32_t	start = pageFrameMin / 8 + ((pageFrameMin & 7) != 0 ? 1:0);
 	uint32_t	end   = pageFrameMax / 8 - ((pageFrameMax & 7) != 0 ? 1:0);
 
-	for (uint32_t i = start; i < end; i++)
+	for (uint32_t b = start; b < end; b++)
 	{
-		uint8_t	byte = physicalMemoryBitmap[i];
+		uint8_t	byte = physicalMemoryBitmap[b];
 		if (byte == 0xff)
-			continue;
-		for (uint32_t j = 0; j < 8; j++)
 		{
-			bool	used = byte >> j & 1;
+			continue;
+		}
+		for (uint32_t i = 0; i < 8; i++)
+		{
+			bool	used = byte >> i & 1;
 
 			if (!used)
 			{
-				byte ^= (-1 ^byte) & (1 << j);
-				physicalMemoryBitmap[i] = byte;
+				byte ^= (-1 ^byte) & (1 << i);
+				physicalMemoryBitmap[b] = byte;
 				totalAlloc++;
 
-				uint32_t	addr = (i * 8 * j) * 0x1000;
+				uint32_t	addr = (b * 8 * i) * 0x1000;
 				return (addr);
 			}
 		}
