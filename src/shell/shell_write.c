@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell_write.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
+/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:26:11 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/15 17:56:07 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/08/02 19:58:49 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,11 +81,11 @@ void terminal_writestring(const char* data)
 	terminal_write(data, strlen(data));
 }
 
-void	printnbr(int nbr, int base)
+void	printnbr(uint32_t nbr, uint32_t base)
 {
-	terminal_putchar('-' * -(N(nbr)));
-	if (nbr == INT_MIN || base <= ABS(nbr))
-		printnbr(ABS(nbr / base), base);
+	//terminal_putchar('-' * -(N(nbr)));
+	if (base <= nbr)
+		printnbr(nbr / base, base);
 
-	terminal_putchar(ABS(nbr % base) + '0' + (7 * (9 < ABS(nbr % base))));
+	terminal_putchar(nbr % base + '0' + (7 * (9 < nbr % base)));
 }

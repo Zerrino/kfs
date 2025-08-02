@@ -9,10 +9,11 @@ boot: cdrom
 display_library: wx, options="gui_debug"
 
 # Débogueur Bochs activé
-panic: action=ask
-error: action=report
-info: action=report
-debug: action=report
-magic_break: enabled=1
+#panic: action=ask
+#error: action=report
+#info: action=report
+#debug: action=report
+#magic_break: enabled=1
 
 
+#megs: 64

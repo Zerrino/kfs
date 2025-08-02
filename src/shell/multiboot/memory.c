@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   memory.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Zerrino <Zerrino@student.42.fr>            +#+  +:+       +#+        */
+/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 14:13:48 by zerrino           #+#    #+#             */
-/*   Updated: 2025/07/26 23:42:10 by Zerrino          ###   ########.fr       */
+/*   Updated: 2025/08/02 20:20:13 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,9 @@ extern uint32_t initial_page_dir[1024];
 uint32_t	mem_num_vpages;
 
 #define NUM_PAGES_DIRS 256
-#define NUM_PAGES_FRAMES (0x10000000 / 0x1000 / 8)
+#define NUM_PAGES_FRAMES (0x10000000 / 0x1000)
+#define MIN(a,b)  (( (a) < (b) ) ? (a) : (b))
+
 
 uint8_t	physicalMemoryBitmap[NUM_PAGES_FRAMES / 8]; // later dynamic bit array
 
@@ -43,7 +45,7 @@ void	invalidate(uint32_t vaddr)
 void	initMemory(uint32_t memHigh, uint32_t physicalAllocStart)
 {
 	mem_num_vpages = 0;
-	initial_page_dir[0] = 0;
+	//initial_page_dir[0] = (0x00000000) | 0x000000E3;
 	invalidate(0);
 	initial_page_dir[1023] = ((uint32_t) initial_page_dir - KERNEL_START) | PAGE_FLAG_PRESENT | PAGE_FLAG_WRITE;
 	invalidate(0xFFFFF000);
@@ -90,7 +92,6 @@ void	syncPageDirs()
 void	memMapPage(uint32_t virtualAddr, uint32_t physicalAddr, uint32_t flags)
 {
 	uint32_t	*prevPageDir = 0;
-
 	if (virtualAddr >= KERNEL_START)
 	{
 		prevPageDir = memGetCurrentPageDir();
@@ -99,7 +100,6 @@ void	memMapPage(uint32_t virtualAddr, uint32_t physicalAddr, uint32_t flags)
 			memChangePageDir(initial_page_dir);
 		}
 	}
-
 	uint32_t	pdIndex = virtualAddr >> 22;
 	uint32_t	ptIndex = virtualAddr >> 12 & 0x3ff;
 
@@ -111,13 +111,11 @@ void	memMapPage(uint32_t virtualAddr, uint32_t physicalAddr, uint32_t flags)
 		uint32_t	ptPaddr = pmmAllocPageFrame();
 		pageDir[pdIndex] = ptPaddr | PAGE_FLAG_PRESENT | PAGE_FLAG_WRITE | PAGE_FLAG_OWNER | flags;
 		invalidate(virtualAddr);
-
 		for (uint32_t i = 0; i < 1024; i++)
 		{
 			pt[i] = 0;
 		}
 	}
-
 	pt[ptIndex] = physicalAddr | PAGE_FLAG_PRESENT | flags;
 	mem_num_vpages++;
 	invalidate(virtualAddr);
@@ -154,7 +152,7 @@ uint32_t	pmmAllocPageFrame()
 				physicalMemoryBitmap[b] = byte;
 				totalAlloc++;
 
-				uint32_t	addr = (b * 8 * i) * 0x1000;
+				uint32_t	addr = ((b << 3) + i) * 0x1000;
 				return (addr);
 			}
 		}

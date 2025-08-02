@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kernel.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Zerrino <Zerrino@student.42.fr>            +#+  +:+       +#+        */
+/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/26 23:21:46 by Zerrino          ###   ########.fr       */
+/*   Updated: 2025/08/02 20:16:12 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,10 @@ void terminal_restore()
 	}
 }
 
+extern uint32_t _kernel_start;
+extern uint32_t _kernel_end;
+
+
 void kernel_main(uint32_t magic, uint32_t multiboot_info_ptr)
 {
 	kernel.terminal_buffer = (uint16_t *)(0xC00B8000);
@@ -86,15 +90,22 @@ void kernel_main(uint32_t magic, uint32_t multiboot_info_ptr)
 	terminal_initialize();
 
 	multiboot_info_t *mbi = (multiboot_info_t *)multiboot_info_ptr;
+	uint32_t	physicalAllocStart = 0;
 
-	uint32_t	mod1 = *(uint32_t *)(mbi->mods_addr + 4);
-	uint32_t	physicalAllocStart = (mod1 + 0xFFF) & ~0xFFF;
-
-
+	if (!(mbi->flags & (1 << 3)) || mbi->mods_count == 0)
+		physicalAllocStart = ALIGN_UP(_kernel_end, 0x1000);
+	else
+	{
+		multiboot_module_t *mods = (void*) mbi->mods_addr;
+		uint32_t mod1_phys = mods[0].mod_start;
+		if (mod1_phys >= KERNEL_START)
+			mod1_phys = KERNEL_START;
+		physicalAllocStart = ALIGN_UP(mods[0].mod_end - ((mod1_phys >= KERNEL_START)?KERNEL_START:0), 0x1000);
+	}
 	initMemory(mbi->mem_upper * 1024, physicalAllocStart);
 	kmallocInit(0x1000);
 	//parse_multiboot1(mbi);
-
+	//gdt_install();
 
 	while (1)
 		__asm__ volatile ("hlt");
