@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   kfs2.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 21:19:52 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 21:40:59 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 16:01:54 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/kernel.h"
+#include "../../include/kfs.h"
 
 void display_kfs2_help(void) {
     display_core_system_help();

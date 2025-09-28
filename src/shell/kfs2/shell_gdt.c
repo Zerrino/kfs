@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   shell_gdt.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 20:14:06 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 20:39:01 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 16:01:54 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../include/kernel.h"
+#include "../../../include/kfs.h"
 
 void handle_gdt() {
     print_gdt_info();

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.h                                             :+:      :+:    :+:   */
+/*   kernel.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 21:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 21:30:00 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 19:30:37 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,24 @@
 #include "../core/libs.h"
 #include "../core/structs.h"
 
-/* ──────────── Functions from src/kernel.c ──────────── */
+/* ──────────── Functions from src/globals.c ──────────── */
 
-void kernel_main(void);
+void kernel_globals_init(void);
+
+/* ──────────── Functions from src/kernel/init.c ──────────── */
+
+void kfs2_init(void);
+void kfs3_init(void);
+void kernel_initialize(void);
+
+/* ──────────── Functions from src/kernel/kernel.c ──────────── */
+
 void kernel_initialize(void);
 void terminal_initialize(void);
 void terminal_offset(uint16_t offset);
 void terminal_restore(void);
 
-/* ──────────── Functions from src/shell.c ──────────── */
+/* ──────────── Functions from src/kernel/shell.c ──────────── */
 
 void shell_initialize(void);
 void handle_help(void);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   structs.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 16:54:17 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 19:32:22 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include "libs.h"
 #include "defines.h"
+#include "enums.h"
 
 /* ──────────── Interrupt Structures ──────────── */
 typedef struct s_idt_entry {
@@ -72,12 +73,87 @@ typedef struct s_screens {
 	uint16_t	offset;
 } t_screens;
 
+/* ──────────── Page Table Entry Structure ──────────── */
+typedef struct s_page_table_entry {
+	uint32_t present    : 1;   /* Page present in memory */
+	uint32_t writable   : 1;   /* Read-only if clear, readwrite if set */
+	uint32_t user       : 1;   /* Supervisor level only if clear */
+	uint32_t pwt        : 1;   /* Page write through */
+	uint32_t pcd        : 1;   /* Page cache disabled */
+	uint32_t accessed   : 1;   /* Has the page been accessed since last refresh? */
+	uint32_t dirty      : 1;   /* Has the page been written to since last refresh? */
+	uint32_t pat        : 1;   /* Page attribute table */
+	uint32_t global     : 1;   /* Global page */
+	uint32_t ignored    : 3;   /* Amalgamation of unused and reserved bits */
+	uint32_t frame      : 20;  /* Frame address (shifted right 12 bits) */
+} __attribute__((packed)) t_page_table_entry;
+
+/* ──────────── Page Directory Entry Structure ──────────── */
+typedef struct s_page_dir_entry {
+	uint32_t present    : 1;   /* Page table present in memory */
+	uint32_t writable   : 1;   /* Read-only if clear, readwrite if set */
+	uint32_t user       : 1;   /* Supervisor level only if clear */
+	uint32_t pwt        : 1;   /* Page write through */
+	uint32_t pcd        : 1;   /* Page cache disabled */
+	uint32_t accessed   : 1;   /* Has the page table been accessed since last refresh? */
+	uint32_t reserved   : 1;   /* Reserved bit */
+	uint32_t page_size  : 1;   /* 0 = 4KB page, 1 = 4MB page */
+	uint32_t ignored    : 4;   /* Amalgamation of unused and reserved bits */
+	uint32_t frame      : 20;  /* Frame address (shifted right 12 bits) */
+} __attribute__((packed)) t_page_dir_entry;
+
+/* ──────────── Page Table Structure ──────────── */
+typedef struct s_page_table {
+	t_page_table_entry pages[PAGES_PER_TABLE];
+} __attribute__((packed)) t_page_table;
+
+/* ──────────── Page Directory Structure ──────────── */
+typedef struct s_page_directory {
+	t_page_dir_entry tables[TABLES_PER_DIR];
+} __attribute__((packed)) t_page_directory;
+
+/* ──────────── Physical Memory Manager Structure ──────────── */
+typedef struct s_phys_mem_manager {
+	uint8_t *bitmap;            /* Bitmap for tracking allocated pages */
+	uint32_t total_pages;       /* Total number of pages */
+	uint32_t used_pages;        /* Number of used pages */
+	uint32_t free_pages;        /* Number of free pages */
+	int first_free_page;        /* Index of first free page (optimization, -1 if none) */
+} t_phys_mem_manager;
+
+/* ──────────── Virtual Memory Area Structure ──────────── */
+typedef struct s_vma {
+	uint32_t start_addr;        /* Start virtual address */
+	uint32_t end_addr;          /* End virtual address */
+	uint32_t flags;             /* Memory flags */
+	struct s_vma *next;         /* Next VMA in list */
+} t_vma;
+
+/* ──────────── Memory Block Structure ──────────── */
+typedef struct s_mem_block {
+	size_t size;                /* Size of the block */
+	int is_free;                /* 1 if free, 0 if allocated */
+	struct s_mem_block *next;   /* Next block in list */
+	struct s_mem_block *prev;   /* Previous block in list */
+} t_mem_block;
+
+/* ──────────── Kernel Heap Structure ──────────── */
+typedef struct s_kernel_heap {
+	uint32_t start_addr;        /* Heap start address */
+	uint32_t end_addr;          /* Heap end address */
+	uint32_t current_end;       /* Current heap end */
+	t_mem_block *first_block;   /* First memory block */
+} t_kernel_heap;
+
 /* ──────────── Main Kernel Structure ──────────── */
 typedef struct s_kernel {
+	/* ──────────── Interrupt Management ──────────── */
 	ISRHandler			ISRhandlers[256];
 	IRQHandler			IRQHandlers[16];
 	t_idt_entry			idt[IDT_ENTRIES];
 	t_idt_descryptor	idt_descriptor;
+
+	/* ──────────── Screen and Terminal Management ──────────── */
 	t_screens			screens[NB_SCREEN];
 	uint8_t				terminal_ctrl;
 	uint8_t				terminal_shift;
@@ -85,9 +161,20 @@ typedef struct s_kernel {
 	uint16_t			*terminal_buffer;
 	char				command_buffer[COMMAND_BUFFER_SIZE];
 	int					buffer_pos;
+
+	/* ──────────── Stack Management ──────────── */
 	uint32_t			kernel_stack[KERNEL_STACK_SIZE];
 	int					stack_pointer;
+
+	/* ──────────── GDT Management ──────────── */
+	t_gdt_entry			*gdt;
 	t_gdt_ptr			gdt_pointer;
+
+	/* ──────────── Memory Management ──────────── */
+	t_kernel_heap		kernel_heap;
+	t_page_directory	*kernel_directory;
+	t_page_directory	*current_directory;
+	t_phys_mem_manager	phys_mem_manager;
 } t_kernel;
 
 #endif

@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   inline_utils.c                                     :+:      :+:    :+:   */
+/*   vga_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:23:39 by alexafer          #+#    #+#             */
-/*   Updated: 2025/07/09 14:58:54 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 16:01:54 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/kernel.h"
+#include "../../../include/kfs.h"
 
 uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg)
 {

@@ -3,17 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   shell.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:20 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 21:18:44 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 20:00:16 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/kernel.h"
+#include "../../include/kfs.h"
 
 void shell_initialize() {
-    terminal_writestring("KFS Shell v1.0\n");
+    terminal_writestring("KFS Chicken Shell v");
+	printnbr(VERSION, 10);
+	terminal_writestring(".0\n");
     terminal_writestring("Type 'help' for available commands\n");
     terminal_writestring("> ");
 }
@@ -21,7 +23,11 @@ void shell_initialize() {
 void handle_help() {
     terminal_writestring("Available commands:\n");
     terminal_writestring("  help         - Display this help message\n");
-    display_kfs2_help(); // Display KFS2 advanced commands
+	if(VERSION == 2)
+    	display_kfs2_help();
+	
+	if(VERSION == 3)
+    	display_kfs3_help();
 }
 
 void handle_unknown(const char* command) {
@@ -60,6 +66,10 @@ command_type_t get_command_type(const char* command) {
     if (cmd_type != CMD_UNKNOWN)
         return cmd_type;
 
+    cmd_type = get_kfs3_command_type(command);
+    if (cmd_type != CMD_UNKNOWN)
+        return cmd_type;
+
     return CMD_UNKNOWN;
 }
 
@@ -89,6 +99,8 @@ void shell_process_command(const char* cmd) {
         /* General command was handled */
     } else if (handle_kfs2_commands(cmd_type, arg)) {
         /* KFS2 command was handled */
+    } else if (handle_kfs3_commands(cmd_type, arg)) {
+        /* KFS3 command was handled */
     } else if (cmd_type == CMD_UNKNOWN) {
         if (command[0] != '\0')
             handle_unknown(command);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   asm.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 14:45:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 16:04:56 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 15:46:49 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,5 +99,25 @@ extern void ISR240(void); extern void ISR241(void); extern void ISR242(void); ex
 extern void ISR244(void); extern void ISR245(void); extern void ISR246(void); extern void ISR247(void);
 extern void ISR248(void); extern void ISR249(void); extern void ISR250(void); extern void ISR251(void);
 extern void ISR252(void); extern void ISR253(void); extern void ISR254(void); extern void ISR255(void);
+
+/* ──────────── Assembly Memory Functions(memory.s) ──────────── */
+extern void        load_page_directory(uint32_t page_dir_phys);
+extern void        enable_paging_asm(void);
+extern void        disable_paging_asm(void);
+extern uint32_t    get_cr3(void);
+extern void        set_cr3(uint32_t page_dir);
+extern void        flush_tlb(void);
+extern void        flush_tlb_single(uint32_t addr);
+extern uint32_t    get_esp(void);
+extern uint32_t    get_ebp(void);
+extern void        memcpy_asm(void *dest, const void *src, size_t n);
+extern void        memset_asm(void *s, int c, size_t n);
+extern void        zero_page(void *page);
+extern int         is_paging_enabled(void);
+extern uint32_t    get_page_fault_addr(void);
+extern void        enable_write_protection(void);
+extern void        disable_write_protection(void);
+extern void        paging_flush_tlb(void);                
+extern void        paging_flush_tlb_single(uint32_t addr);
 
 #endif

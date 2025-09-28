@@ -6,13 +6,11 @@
 /*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:14 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/11 11:52:54 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 19:52:31 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/kernel.h"
-
-t_gdt_entry *gdt = (t_gdt_entry *)GDT_BASE_ADDRESS;
+#include "../../include/kfs.h"
 
 void gdt_set_gate(int num, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran) {
     gdt[num].base_low    = (base & 0xFFFF);
@@ -31,9 +29,9 @@ void gdt_install() {
     gdt_set_gate(GDT_USER_CODE_INDEX,    GDT_SEGMENT_BASE, GDT_SEGMENT_LIMIT, GDT_ACCESS_USER_CODE,    GDT_GRAN_STANDARD);     /* user code */
     gdt_set_gate(GDT_USER_DATA_INDEX,    GDT_SEGMENT_BASE, GDT_SEGMENT_LIMIT, GDT_ACCESS_USER_DATA,    GDT_GRAN_STANDARD);     /* user data */
     gdt_set_gate(GDT_USER_STACK_INDEX,   GDT_SEGMENT_BASE, GDT_SEGMENT_LIMIT, GDT_ACCESS_USER_DATA,    GDT_GRAN_STANDARD);     /* user stack */
-    kernel.gdt_pointer.limit = (sizeof(t_gdt_entry) * GDT_MAX_ENTRIES) - 1;
-    kernel.gdt_pointer.base = GDT_BASE_ADDRESS;
-    gdt_flush(&kernel.gdt_pointer);
+    kernel.gdt_pointer.limit = GDT_CALCULATE_LIMIT(GDT_MAX_ENTRIES);  /* GDT limit = (size * entries) - 1 */
+    kernel.gdt_pointer.base = GDT_BASE_ADDRESS;                       /* GDT base address in memory */
+    gdt_flush(&kernel.gdt_pointer);     /* Load the GDT into the processor */
 }
 
 void print_gdt_info() {

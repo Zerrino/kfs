@@ -6,7 +6,7 @@
 /*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/11 11:54:38 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 12:12:18 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,13 @@ typedef enum {
 	PIC_ICW4_SFNM			= 0x10,
 } PIC_ICW4;
 
+/* ──────────── Memory Panic Levels ──────────── */
+typedef enum e_panic_level {
+	PANIC_LEVEL_WARNING = 0,    /* Warning - system can continue */
+	PANIC_LEVEL_ERROR = 1,      /* Error - system should stop */
+	PANIC_LEVEL_FATAL = 2       /* Fatal - system must halt immediately */
+} t_panic_level;
+
 /* ──────────── Shell Command Enumeration ──────────── */
 typedef enum {
     CMD_HELP,
@@ -145,6 +152,22 @@ typedef enum {
     CMD_REBOOT,
     CMD_HALT,
     CMD_SHUTDOWN,
+    CMD_MEMSTATS,
+    CMD_MEMTEST,
+    CMD_MEMTEST1,
+    CMD_MEMTEST2,
+    CMD_MEMTEST3,
+    CMD_MEMTEST4,
+    CMD_MEMTEST5,
+    CMD_CRASHTEST,
+    CMD_CRASH1,
+    CMD_CRASH2,
+    CMD_CRASH3,
+    CMD_CRASH4,
+    CMD_CRASH5,
+    CMD_CRASH6,
+    CMD_VMEMSTATS,
+    CMD_MEMCHECK,
     CMD_UNKNOWN
 } command_type_t;
 

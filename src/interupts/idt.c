@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   idt.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 22:24:08 by zerrino           #+#    #+#             */
-/*   Updated: 2025/07/09 15:05:46 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/10 16:01:54 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/kernel.h"
+#include "../../include/kfs.h"
 
 //	uint16_t offset_1;        // offset bits 0..15
 //	uint16_t selector;        // a code segment selector in GDT or LDT
