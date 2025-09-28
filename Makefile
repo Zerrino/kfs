@@ -3,6 +3,7 @@ AS        := $(TARGET)-as
 CC        := $(TARGET)-gcc
 NASM      := nasm
 QEMU      := qemu-system-i386
+QEMU_RUN := env -i PATH="$(PATH)" HOME="$(HOME)" TERM="$(TERM)" SHELL="$(SHELL)" DISPLAY="$(DISPLAY)" XAUTHORITY="$(XAUTHORITY)" LD_LIBRARY_PATH="/usr/lib/x86_64-linux-gnu:/lib/x86_64-linux-gnu"
 MKGRUB    := $(TARGET)-grub-mkrescue
 ifeq ($(shell uname), Darwin)
 	MKGRUB := $(TARGET)-grub-mkrescue
@@ -72,10 +73,13 @@ $(ISO_IMG): $(KERNEL) utils/grub.cfg
 iso: $(ISO_IMG)
 
 run: $(KERNEL)
-	$(QEMU) -kernel $< -serial stdio
+	$(QEMU_RUN) $(QEMU) -kernel $< -serial stdio
+
+run-headless: $(KERNEL)
+	$(QEMU_RUN) $(QEMU) -nographic -kernel $< -serial mon:stdio
 
 runiso: $(ISO_IMG)
-	$(QEMU) -cdrom $< -serial stdio
+	$(QEMU_RUN) $(QEMU) -cdrom $< -serial stdio
 
 install-deps:
 	@echo 'Attempting to install required tooling...'
@@ -175,4 +179,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all iso run runiso clean fclean re check-deps install-deps install-cross
+.PHONY: run-headless all iso run runiso clean fclean re check-deps install-deps install-cross
