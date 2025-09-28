@@ -77,7 +77,7 @@ void kernel_main(void)
 	kernel.terminal_buffer = (uint16_t *)VGA_MEMORY;
 
 	terminal_initialize();
-	switch_to_kernel_stack();
+	// switch_to_kernel_stack();
 	while (1)
 		__asm__ volatile ("hlt");
 }

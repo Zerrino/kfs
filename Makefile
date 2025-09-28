@@ -43,8 +43,8 @@ BOOT_OBJ  := $(BUILD)/boot.o
 
 CFLAGS    := -std=gnu99 -ffreestanding -O2 -Wall -Wextra -Werror \
              -fno-builtin -fno-stack-protector -nostdlib -nodefaultlibs \
-             -Iinclude -m32
-LDFLAGS   := -T utils/linker.ld -nostdlib -ffreestanding -O2 -m32
+             -Iinclude -m32 -fno-pie
+LDFLAGS   := -T utils/linker.ld -nostdlib -ffreestanding -O2 -m32 -no-pie
 NASMFLAGS := -f elf32 -I./
 
 all: $(KERNEL)
