@@ -61,7 +61,6 @@
 # define NB_SCROLL 3
 
 /* ──────────── GDT Constants ──────────── */
-#define GDT_BASE_ADDRESS        0x00000800  /* GDT base address */
 #define GDT_MAX_ENTRIES         7           /* Number of GDT entries */
 /* The GDT limit is the size of the GDT minus 1 (as per Intel specification) */
 #define GDT_LIMIT_OFFSET        1           /* GDT limit = size - 1 */

@@ -21,7 +21,7 @@ void handle_sysinfo() {
     // GDT Info
     terminal_writestring("--- Global Descriptor Table ---\n");
     terminal_writestring("Location: 0x");
-    printnbr(GDT_BASE_ADDRESS, 16);
+    printnbr((uint32_t)gdt, 16);
     terminal_writestring("\n");
     terminal_writestring("Entries: 7 (Null, K-Code, K-Data, K-Stack, U-Code, U-Data, U-Stack)\n");
 

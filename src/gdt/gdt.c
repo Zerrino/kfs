@@ -30,7 +30,7 @@ void gdt_install() {
     gdt_set_gate(GDT_USER_DATA_INDEX,    GDT_SEGMENT_BASE, GDT_SEGMENT_LIMIT, GDT_ACCESS_USER_DATA,    GDT_GRAN_STANDARD);     /* user data */
     gdt_set_gate(GDT_USER_STACK_INDEX,   GDT_SEGMENT_BASE, GDT_SEGMENT_LIMIT, GDT_ACCESS_USER_DATA,    GDT_GRAN_STANDARD);     /* user stack */
     kernel.gdt_pointer.limit = GDT_CALCULATE_LIMIT(GDT_MAX_ENTRIES);  /* GDT limit = (size * entries) - 1 */
-    kernel.gdt_pointer.base = GDT_BASE_ADDRESS;                       /* GDT base address in memory */
+    kernel.gdt_pointer.base = (uint32_t)gdt;                    /* GDT base address in memory */
     gdt_flush(&kernel.gdt_pointer);     /* Load the GDT into the processor */
 }
 

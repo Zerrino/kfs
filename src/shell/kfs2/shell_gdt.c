@@ -68,7 +68,7 @@ void handle_segments() {
 void handle_memory() {
     terminal_writestring("=== Memory Layout ===\n");
     terminal_writestring("GDT Base Address:     0x");
-    printnbr(GDT_BASE_ADDRESS, 16);
+    printnbr((uint32_t)gdt, 16);
     terminal_writestring("\n");
 
     extern char _start, _end;
