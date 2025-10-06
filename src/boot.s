@@ -35,7 +35,7 @@ _start:
 	mov		cr3, ecx
 
 	mov		ecx, cr4
-	or		ecx, 0x10
+	or		ecx, (1 << 4) ; PAE EXTENSION FLAG
 	mov		cr4, ecx
 
 	mov		ecx, cr0
@@ -63,11 +63,11 @@ section .data
 align 4096
 global initial_page_dir
 initial_page_dir:
-	DD 10000011b
+	DD 10000011b			 ; 4K
 	TIMES 768-1 DD 0
 
-	DD (0 << 22) | 10000011b
-	DD (1 << 22) | 10000011b
-	DD (2 << 22) | 10000011b
-	DD (3 << 22) | 10000011b
+	DD (0 << 22) | 10000011b ; 4K
+	DD (1 << 22) | 10000011b ; 4K
+	DD (2 << 22) | 10000011b ; 4K
+	DD (3 << 22) | 10000011b ; 4K
 	TIMES 256-4 DD 0
