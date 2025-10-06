@@ -1,12 +1,12 @@
 romimage:    file=$BXSHARE/BIOS-bochs-latest
-vgaromimage: file=$BXSHARE/VGABIOS-lgpl-latest
+vgaromimage: file=$BXSHARE/VGABIOS-lgpl-latest.bin
 
 # Démarrer sur ton ISO
 ata0-slave: type=cdrom, path=build/chicken.iso, status=inserted
 boot: cdrom
 
 # GUI avec panneau de debug intégré (overlay)
-display_library: wx, options="gui_debug"
+display_library: sdl2, options="gui_debug"
 
 # Débogueur Bochs activé
 #panic: action=ask

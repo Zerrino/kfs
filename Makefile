@@ -67,7 +67,7 @@ $(ISO_IMG): $(KERNEL) utils/grub.cfg
 	@mkdir -p $(ISO_GRUB)
 	cp $(KERNEL)       $(ISO_BOOT)/
 	cp utils/grub.cfg        $(ISO_GRUB)/
-	$(MKGRUB) -o $@ $(ISO_DIR)
+	$(MKGRUB) -d /home/alexafer/sgoinfre/students/alexafer/usr/lib/grub/i386-pc -o $@ $(ISO_DIR)
 
 iso: $(ISO_IMG)
 
