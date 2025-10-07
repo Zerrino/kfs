@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 14:13:48 by zerrino           #+#    #+#             */
-/*   Updated: 2025/08/02 20:20:13 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/10/07 13:39:23 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	initMemory(uint32_t memHigh, uint32_t physicalAllocStart)
 	mem_num_vpages = 0;
 	//initial_page_dir[0] = (0x00000000) | 0x000000E3;
 	invalidate(0);
-	initial_page_dir[1023] = ((uint32_t) initial_page_dir - KERNEL_START) | PAGE_FLAG_PRESENT | PAGE_FLAG_WRITE;
+	//initial_page_dir[1023] = ((uint32_t) initial_page_dir - KERNEL_START) | PAGE_FLAG_PRESENT | PAGE_FLAG_WRITE;
 	invalidate(0xFFFFF000);
 
 	pm_init(physicalAllocStart, memHigh);

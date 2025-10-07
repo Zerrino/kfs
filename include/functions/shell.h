@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/08/02 20:14:16 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/10/07 12:40:40 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,11 @@
 #define CEIL_DIV(a,b)   (((a) + (b) - 1) / (b))
 #define ALIGN_UP(x, align)   ( ((x) + ((align) - 1)) & ~((align) - 1) )
 #define ALIGN_DOWN(x, align) ( (x) & ~((align) - 1) )
+
+
 #define KERNEL_START 0xC0000000
+
+
 #define PAGE_FLAG_PRESENT	(1 << 0)
 #define PAGE_FLAG_WRITE		(1 << 1)
 #define PAGE_FLAG_OWNER		(1 << 9)

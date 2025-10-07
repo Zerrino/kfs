@@ -1,19 +1,49 @@
 
 ENTRY(_start)
 
+/*
+PHDRS
+{
+	early PT_LOAD FLAGS(0x5);
+	text  PT_LOAD FLAGS(0x5);
+	data  PT_LOAD FLAGS(0x6);
+	rdata PT_LOAD FLAGS(0x4);
+}
+*/
+
 SECTIONS
 {
 	_kernel_start = .;
-	. = 0x00100000;
 
-	.multiboot ALIGN(4K):
+	. = 0x00000100;
+	.multiboot ALIGN(0K):
 	{
 		*(.multiboot)
 	}
-	.note.gnu.build-id ALIGN(4K):
+
+	. = 0x00001000;
+	
+	.pagedir ALIGN(4K) :
 	{
-		*(.note.gnu.build-id)
+		*(.pagedir)
 	}
+
+	. = ALIGN(4K);
+	
+	.kernel_stack (NOLOAD) : ALIGN(16)
+	{
+		*(.kernel_stack)
+		. = 0xa0000;
+	}
+
+	. = ALIGN(4K);
+
+	.hardware (NOLOAD) : ALIGN(16)
+	{
+		*(.hardware)
+		. = 0x00100000;
+	}
+
 
 	.boot ALIGN(4K) :
 	{
