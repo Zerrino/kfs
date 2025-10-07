@@ -61,13 +61,11 @@ higher_half:
 
 section .data
 align 4096
-global initial_page_dir
+global initial_page_dir ; 1024 P
 initial_page_dir:
-	DD 10000011b			 ; 4K
+	DD 10000011b			 ; 4MB
 	TIMES 768-1 DD 0
 
-	DD (0 << 22) | 10000011b ; 4K
-	DD (1 << 22) | 10000011b ; 4K
-	DD (2 << 22) | 10000011b ; 4K
-	DD (3 << 22) | 10000011b ; 4K
-	TIMES 256-4 DD 0
+	DD (0 << 22) | 10000011b ; 4MB
+	DD (0 << 22) | 10000011b ; 4MB
+	TIMES 256-2 DD 0
