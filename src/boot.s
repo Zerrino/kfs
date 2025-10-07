@@ -30,18 +30,20 @@ initial_page_4kb_dir:
 	TIMES 256-2 DD 0
 
 section .kernel_stack
+stack_bottom:
+	resb 0x9e000
+stack_top:
 
 section .hardware
-
-section .kernel_stack
+	;resb 0x100000 - 0x000a2000
 
 section .bss
 align 16
 	global stack_bottom
 	global stack_top
-stack_bottom:
-	resb 16384 * 8
-stack_top:
+;stack_bottom:
+;	resb 16384 * 8
+;stack_top:
 
 section .boot
 	global _start

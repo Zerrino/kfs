@@ -34,20 +34,19 @@ SECTIONS
 		*(.pagedir)
 	} : pagedir
 
-	. = ALIGN(4K);
+	/*. = ALIGN(4K); */
 	
 	.kernel_stack (NOLOAD) : ALIGN(16)
 	{
 		*(.kernel_stack)
-		. = 0xa0000;
+		. = 0xa0000 - 0x2000;
 	} : kernel_stack
-
-	. = ALIGN(4K);
+	/*. = ALIGN(4K); */
 
 	.hardware (NOLOAD) : ALIGN(16)
 	{
+		. = 0x00100000 - 0xa0000;
 		*(.hardware)
-		. = 0x00100000;
 	} : hardware
 
 
