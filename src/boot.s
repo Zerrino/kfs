@@ -19,31 +19,24 @@ align 4
 section .pagedir
 global inital_page_table
 global second_page_table
-align 4096
-global initial_page_4kb_dir
-initial_page_4kb_dir:
-	DD (inital_page_table - 0xC0000000)  + 00000011b	 ; 4KB
-	TIMES 768-1 DD 0
+global initial_page_dir
 
-	DD (inital_page_table - 0xC0000000)  + 00000011b	 ; 4KB
-	DD (second_page_table - 0xC0000000)  + 00000011b	 ; 4KB
-	TIMES 256-2 DD 0
+
+align 4096
+initial_page_dir:
+	DD (inital_page_table)  + 00000011b	 ; 4KB
+	DD (second_page_table)  + 00000011b	 ; 4KB
+	TIMES 256-2 DD 0 ; Kernel Space
+
+	TIMES 768-0 DD 0 ; User Space
 
 section .kernel_stack
+global stack_bottom
+global stack_top
+
 stack_bottom:
 	resb 0x9e000
 stack_top:
-
-section .hardware
-	;resb 0x100000 - 0x000a2000
-
-section .bss
-align 16
-	global stack_bottom
-	global stack_top
-;stack_bottom:
-;	resb 16384 * 8
-;stack_top:
 
 section .boot
 	global _start
@@ -52,7 +45,7 @@ section .boot
 _start:
 
 
-	mov		ecx, (initial_page_4kb_dir)
+	mov		ecx, (initial_page_dir)
 	mov		cr3, ecx
 
 	mov		ecx, cr4
@@ -63,12 +56,10 @@ _start:
 	or		ecx, 0x80000000
 	mov		cr0, ecx
 
-	jmp		higher_half
-
-
+	jmp		kernel_m
 section .text
-higher_half:
 
+kernel_m:
 	mov		esp, stack_top
 	push	ebx
 	push	eax
@@ -80,17 +71,11 @@ higher_half:
 		hlt
 		jmp .hang
 
-section .data
 
-align 4096
-global initial_page_dir ; 1024 P
-initial_page_dir:
-	DD 10000011b			 ; 4MB
-	TIMES 768-1 DD 0
 
-	DD (0 << 22) | 10000011b ; 4MB
-	TIMES 256-1 DD 0
 
+
+section .page_tables
 
 align 4096
 inital_page_table:
@@ -100,10 +85,15 @@ inital_page_table:
 %assign n n+1
 %endrep
 
-align 4096
 second_page_table:
 %assign n 1024
 %rep 1024
 	DD (n << 12) | 00000011b
 %assign n n+1
 %endrep
+
+
+segment .freememory
+global freemem_start
+freemem_start:
+	resb 0x10

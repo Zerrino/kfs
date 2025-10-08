@@ -8,12 +8,14 @@ PHDRS
 	pagedir			PT_LOAD FLAGS(0x6);
 	kernel_stack	PT_LOAD FLAGS(0x6);
 	hardware		PT_LOAD FLAGS(0x6);
-	boot			PT_LOAD FLAGS(0x5);
 
 
-	text  			PT_LOAD FLAGS(0x5);
-	data  			PT_LOAD FLAGS(0x6);
-	rdata 			PT_LOAD FLAGS(0x4);
+	kernel_code		PT_LOAD FLAGS(0x5);
+	data 			PT_LOAD FLAGS(0x6);
+	rdata			PT_LOAD FLAGS(0x4);
+
+	page_tables 	PT_LOAD FLAGS(0x6);
+	freemem			PT_LOAD FLAGS(0x6);
 }
 
 
@@ -34,14 +36,13 @@ SECTIONS
 		*(.pagedir)
 	} : pagedir
 
-	/*. = ALIGN(4K); */
 	
 	.kernel_stack (NOLOAD) : ALIGN(16)
 	{
 		*(.kernel_stack)
 		. = 0xa0000 - 0x2000;
+		_end = .;
 	} : kernel_stack
-	/*. = ALIGN(4K); */
 
 	.hardware (NOLOAD) : ALIGN(16)
 	{
@@ -53,31 +54,42 @@ SECTIONS
 	.boot ALIGN(4K) :
 	{
 		*(.boot)
-	} : boot
+	} : kernel_code
 
-	. += 0xC0000000;
-
-	.text ALIGN(4K) : AT (ADDR(.text) - 0xC0000000)
+	.text ALIGN(4K) : AT (ADDR(.text))
 	{
 		*(.text)
-	} : text
+	} : kernel_code
 
-	.rodata ALIGN(4K) : AT (ADDR(.rodata) - 0xC0000000)
-	{
-		*(.rodata)
-	} : rdata
-
-	.data ALIGN(4K) : AT (ADDR(.data) - 0xC0000000)
+	.data ALIGN(4K) : AT (ADDR(.data))
 	{
 		*(.data)
 	} : data
 
-	.bss ALIGN(4K) : AT (ADDR(.bss) - 0xC0000000)
+	.bss (NOLOAD) : AT (ADDR(.bss))
 	{
-		*(COMMON)
 		*(.bss)
-		_end = .;
 	} : data
+
+	.rodata ALIGN(4K) : AT (ADDR(.rodata))
+	{
+		*(.rodata)
+	} : rdata
+
+
+	. = 0x400000;
+
+	.page_tables ALIGN(0K):
+	{
+		*(.page_tables)
+	} : page_tables
+
+	. = 0x800000;
+
+	.freememory ALIGN(4K) : AT (ADDR(.freememory))
+	{
+		*(.freememory)
+	} : freemem
 
 	_kernel_end = .;
 }

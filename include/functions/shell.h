@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/10/07 12:40:40 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/10/08 10:50:07 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 #define ALIGN_DOWN(x, align) ( (x) & ~((align) - 1) )
 
 
-#define KERNEL_START 0xC0000000
+#define KERNEL_START 0x00400000
 
 
 #define PAGE_FLAG_PRESENT	(1 << 0)
