@@ -30,9 +30,9 @@ SECTIONS
 	} : multiboot
 
 	. = 0x00001000;
-	
 	.pagedir ALIGN(4K) :
 	{
+		_pagedir_start = .;
 		*(.pagedir)
 	} : pagedir
 
@@ -81,6 +81,7 @@ SECTIONS
 
 	.page_tables ALIGN(0K):
 	{
+		_pagetables_start = .;
 		*(.page_tables)
 	} : page_tables
 

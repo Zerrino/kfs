@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2025/10/08 11:01:23 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/10/08 14:42:58 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,6 @@ void terminal_restore()
 extern uint32_t _kernel_start;
 extern uint32_t _kernel_end;
 
-
 void kernel_main(uint32_t magic, uint32_t multiboot_info_ptr)
 {
 	kernel.terminal_buffer = (uint16_t *)(0x000B8000);
@@ -89,6 +88,17 @@ void kernel_main(uint32_t magic, uint32_t multiboot_info_ptr)
 
 	terminal_initialize();
 
+
+
+
+	uint32_t *page_directory = (uint32_t *)0x00001000;
+	uint32_t *page_tables = (uint32_t *)0x00400000;
+
+	terminal_writestring("\n");
+	printnbr((uint32_t)page_directory[2], 10);
+	terminal_writestring("\n");
+	printnbr((uint32_t)page_tables[1], 10);
+	terminal_writestring("\n");
 	//multiboot_info_t *mbi = (multiboot_info_t *)multiboot_info_ptr;
 
 	//initMemory(mbi->mem_upper * 1024, physicalAllocStart);

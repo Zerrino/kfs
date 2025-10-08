@@ -26,7 +26,9 @@ align 4096
 initial_page_dir:
 	DD (inital_page_table)  + 00000011b	 ; 4KB
 	DD (second_page_table)  + 00000011b	 ; 4KB
-	TIMES 256-2 DD 0 ; Kernel Space
+	DD 69
+	DD 42
+	TIMES 256-4 DD 0 ; Kernel Space
 
 	TIMES 768-0 DD 0 ; User Space
 
@@ -92,6 +94,7 @@ second_page_table:
 %assign n n+1
 %endrep
 
+DD 9
 
 segment .freememory
 global freemem_start
