@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2025/10/08 15:43:50 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/10/08 15:47:29 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,10 @@ void kernel_main(uint32_t magic, uint32_t multiboot_info_ptr)
 
 
 	terminal_initialize();
+
+
+
+
 
 
 

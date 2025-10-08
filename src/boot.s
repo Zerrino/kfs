@@ -25,6 +25,7 @@ global initial_page_dir
 align 4096
 initial_page_dir:
 	TIMES 256-0 DD 0 ; Kernel Space
+
 	TIMES 768-0 DD 0 ; User Space
 
 section .kernel_stack
@@ -40,6 +41,7 @@ section .boot
 	extern kernel_main
 
 _start:
+
 
 
 
