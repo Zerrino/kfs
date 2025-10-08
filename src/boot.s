@@ -24,12 +24,7 @@ global initial_page_dir
 
 align 4096
 initial_page_dir:
-	DD (inital_page_table)  + 00000011b	 ; 4KB
-	DD (second_page_table)  + 00000011b	 ; 4KB
-	DD 69
-	DD 42
-	TIMES 256-4 DD 0 ; Kernel Space
-
+	TIMES 256-0 DD 0 ; Kernel Space
 	TIMES 768-0 DD 0 ; User Space
 
 section .kernel_stack
@@ -47,16 +42,6 @@ section .boot
 _start:
 
 
-	mov		ecx, (initial_page_dir)
-	mov		cr3, ecx
-
-	mov		ecx, cr4
-	or		ecx, 0 ; PAE EXTENSION FLAG
-	mov		cr4, ecx
-
-	mov		ecx, cr0
-	or		ecx, 0x80000000
-	mov		cr0, ecx
 
 	jmp		kernel_m
 section .text
@@ -79,22 +64,22 @@ kernel_m:
 
 section .page_tables
 
-align 4096
+;align 4096
 inital_page_table:
-%assign n 0
-%rep 1024
-	DD (n << 12) | 00000011b
-%assign n n+1
-%endrep
+;%assign n 0
+;%rep 1024
+;	DD (n << 12) | 00000011b
+;%assign n n+1
+;%endrep
 
 second_page_table:
-%assign n 1024
-%rep 1024
-	DD (n << 12) | 00000011b
-%assign n n+1
-%endrep
+;%assign n 1024
+;%rep 1024;
+;	DD (n << 12) | 00000011b
+;%assign n n+1
+;%endrep
 
-DD 9
+;DD 9
 
 segment .freememory
 global freemem_start

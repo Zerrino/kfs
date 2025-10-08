@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/10/08 10:50:07 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/10/08 15:06:39 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void		kmallocInit(uint32_t initialHeapSize);
 void		changeHeapSize(int newSize);
 void		memMapPage(uint32_t virtualAddr, uint32_t physicalAddr, uint32_t flags);
 
-void		initMemory(uint32_t memHigh, uint32_t physicalAllocStart);
+void		initMemory();
 
 /* ──────────── Functions from src/shell/keyboard.c ──────────── */
 

@@ -79,13 +79,13 @@ SECTIONS
 
 	. = 0x400000;
 
-	.page_tables ALIGN(0K):
+	.page_tables (NOLOAD) :
 	{
 		_pagetables_start = .;
 		*(.page_tables)
+		. += 0x400000;
 	} : page_tables
 
-	. = 0x800000;
 
 	.freememory ALIGN(4K) : AT (ADDR(.freememory))
 	{

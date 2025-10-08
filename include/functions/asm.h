@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   asm.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Zerrino <Zerrino@student.42.fr>            +#+  +:+       +#+        */
+/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 14:45:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/25 15:37:44 by Zerrino          ###   ########.fr       */
+/*   Updated: 2025/10/08 15:04:47 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,10 @@
 #include "../core/structs.h"
 
 //extern uint32_t	inital_page_dir[1024];
+
+/*──────────── Activate Paging ──────────── */
+
+extern void activate_paging(void *page_dir);
 
 /* ──────────── GDT Assembly Functions (gdt_asm.s) ──────────── */
 extern void gdt_flush(t_gdt_ptr *gdt_ptr);
