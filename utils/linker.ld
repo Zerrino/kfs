@@ -6,6 +6,7 @@ PHDRS
 {
 	multiboot		PT_LOAD FLAGS(0x4);
 	pagedir			PT_LOAD FLAGS(0x6);
+	pagedir_info	PT_LOAD FLAGS(0x6);
 	kernel_stack	PT_LOAD FLAGS(0x6);
 	hardware		PT_LOAD FLAGS(0x6);
 
@@ -30,17 +31,23 @@ SECTIONS
 	} : multiboot
 
 	. = 0x00001000;
-	.pagedir ALIGN(4K) :
+	.pagedir (NOLOAD) :
 	{
 		_pagedir_start = .;
 		*(.pagedir)
+		. += 0x1000;
 	} : pagedir
 
+	.pagedir_info (NOLOAD) :
+	{
+		*(.pagedir_info)
+		. += 0x1000;
+	} : pagedir_info
 	
 	.kernel_stack (NOLOAD) : ALIGN(16)
 	{
 		*(.kernel_stack)
-		. = 0xa0000 - 0x2000;
+		. = 0xa0000 - 0x3000;
 		_end = .;
 	} : kernel_stack
 

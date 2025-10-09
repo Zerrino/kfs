@@ -6,17 +6,13 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/10/08 14:46:12 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/10/09 11:01:42 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef DEFINES_H
 # define DEFINES_H
 
-/* ────────────       PAGING       ──────────── */
-
-# define PAGE_DIRECTORY_MAX 1024
-# define PAGE_TABLES_MAX 1024*1024
 
 /* ──────────── VGA Display Constants ──────────── */
 # define VGA_WIDTH   80

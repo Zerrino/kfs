@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kernel.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
+/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 21:58:14 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/13 03:15:19 by zerrino          ###   ########.fr       */
+/*   Updated: 2025/10/09 11:02:21 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 /* ──────────── Main Kernel Header ──────────── */
 /* This header includes all necessary components for the kernel */
 
+#include "core/page.h"
 #include "core/libs.h"
 #include "core/defines.h"
 #include "core/enums.h"
