@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2025/12/21 04:37:53 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/12/21 04:57:52 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void kernel_main(uint32_t magic, uint32_t multiboot_info_ptr)
 		uint32_t lower_kb = mbi->mem_lower;
 		uint32_t upper_kb = mbi->mem_upper;
 
-		g_memory_limit = (uint32_t *)(uint32_t)((lower_kb + upper_kb) * 1024ULL);
+		g_memory_limit = (uint32_t)((lower_kb + upper_kb) * 1024ULL);
 	}
 	else
 	{

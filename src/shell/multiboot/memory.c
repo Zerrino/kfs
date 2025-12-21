@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 14:13:48 by zerrino           #+#    #+#             */
-/*   Updated: 2025/12/21 04:38:35 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/12/21 04:57:39 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 uint32_t    *page_directory = (uint32_t *)0x00001000;
 uint32_t    *page_directory_info = (uint32_t *)0x00002000;
 uint32_t    *page_tables = (uint32_t *)0x00400000;
-uint32_t    *kernel_heap_break = (uint32_t *)0x00800000;
+uint32_t    kernel_heap_break = 0x00800000;
 
 void    *get_physaddr(void *virtualaddr)
 {
@@ -41,10 +41,16 @@ void    unmap_page(void *virtualaddr)
 }
 
 // va incrementer de x, renvoie
-void    *kbrk(intptr_t increment)
+void    *kbrk(uint32_t increment)
 {
-    (void)increment;
-    return (0);
+    uint32_t    old;
+
+    increment = (increment + (1 << 12) - 1) & ~((1 << 12) - 1);
+    if (increment + kernel_heap_break > g_memory_limit)
+        return (0);
+    old = kernel_heap_break;
+    kernel_heap_break += increment;
+    return ((void *)old);
 }
 
 void    initMemory()
