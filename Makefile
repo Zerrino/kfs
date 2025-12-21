@@ -4,6 +4,8 @@ CC        := $(TARGET)-gcc
 NASM      := nasm
 QEMU      := qemu-system-i386 -m 128
 MKGRUB    := $(TARGET)-grub-mkrescue
+GRUB_DIR  := /usr/lib/grub/i386-pc/
+
 ifeq ($(shell uname), Darwin)
 	MKGRUB := $(TARGET)-grub-mkrescue
 else
@@ -67,7 +69,7 @@ $(ISO_IMG): $(KERNEL) utils/grub.cfg
 	@mkdir -p $(ISO_GRUB)
 	cp $(KERNEL)       $(ISO_BOOT)/
 	cp utils/grub.cfg        $(ISO_GRUB)/
-	$(MKGRUB) -d /home/alexafer/sgoinfre/students/alexafer/usr/lib/grub/i386-pc -o $@ $(ISO_DIR)
+	$(MKGRUB) -d $(GRUB_DIR) -o $@ $(ISO_DIR)
 
 iso: $(ISO_IMG)
 

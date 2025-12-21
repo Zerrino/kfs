@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 14:13:48 by zerrino           #+#    #+#             */
-/*   Updated: 2025/10/09 15:47:38 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/12/21 04:38:35 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 uint32_t    *page_directory = (uint32_t *)0x00001000;
 uint32_t    *page_directory_info = (uint32_t *)0x00002000;
 uint32_t    *page_tables = (uint32_t *)0x00400000;
+uint32_t    *kernel_heap_break = (uint32_t *)0x00800000;
 
 void    *get_physaddr(void *virtualaddr)
 {
@@ -31,9 +32,24 @@ void    map_page(void *physaddr, void *virtualaddr, unsigned int flags)
     ((uint32_t *)(page_directory[pd_index] & ~((1 << 12)-1)))[pt_index] = (uint32_t)physaddr | (flags & ((1 << 12)-1)) | 1;
 }
 
+void    unmap_page(void *virtualaddr)
+{
+    uint32_t    pd_index = ((uint32_t)virtualaddr >> 22);
+    uint32_t    pt_index = ((uint32_t)virtualaddr >> 12) & ((1<<10) - 1);
+
+    ((uint32_t *)(page_directory[pd_index] & ~((1 << 12)-1)))[pt_index] = 0;
+}
+
+// va incrementer de x, renvoie
+void    *kbrk(intptr_t increment)
+{
+    (void)increment;
+    return (0);
+}
+
 void    initMemory()
 {
-    int         i;
+    int i;
 
     i = 0;
 
@@ -58,12 +74,13 @@ void    initMemory()
     }
     activate_paging(page_directory);
 
-    terminal_writestring("\nvalue of the table index : 0x");
-    printnbr((uint32_t)get_physaddr((void *)0xc00000), 16);
+    terminal_writestring("\nvalue of the memory limit : 0x");
+    printnbr((uint32_t)g_memory_limit, 16);
     terminal_writestring("\n");
 
     char x[7] __attribute__((aligned(0x1000))) = "\nTest\n";
     char *test = (char *)0xb0000000;
     map_page((void *)(&x), (void*)0xb0000000, PT_FLAG_PRESENT | PT_FLAG_R_AND_W);
     terminal_writestring(test);
+    unmap_page((void*)0xb0000000);
 }

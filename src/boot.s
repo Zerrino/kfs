@@ -15,7 +15,7 @@ align 4
 	dd 800
 	dd 600
 	dd 32
-	
+
 section .pagedir
 global inital_page_table
 global second_page_table
@@ -85,3 +85,7 @@ segment .freememory
 global freemem_start
 freemem_start:
 	resb 0x10
+
+section .bss
+	global g_memory_limit
+	g_memory_limit: resb 0x4
