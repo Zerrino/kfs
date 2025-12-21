@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 14:13:48 by zerrino           #+#    #+#             */
-/*   Updated: 2025/12/21 04:57:39 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/12/21 04:58:59 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void    *kbrk(uint32_t increment)
     uint32_t    old;
 
     increment = (increment + (1 << 12) - 1) & ~((1 << 12) - 1);
-    if (increment + kernel_heap_break > g_memory_limit)
+    if (kernel_heap_break > g_memory_limit - increment)
         return (0);
     old = kernel_heap_break;
     kernel_heap_break += increment;
