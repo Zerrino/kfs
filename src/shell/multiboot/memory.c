@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 14:13:48 by zerrino           #+#    #+#             */
-/*   Updated: 2025/12/22 19:57:10 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/12/22 19:59:15 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,8 @@ void    *kmalloc(uint32_t size)
                 h->magic = 0xCAFEBABE;
                 return ((void *)(h + 1));
             }
+            if (h->magic != 0 && h->magic != 0xCAFEBABE && h->magic != (0xCAFEBABE | 1))
+                break;
             kfree_ptr += sizeof(h) + h->size;
         }
     }
