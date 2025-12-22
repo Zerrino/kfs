@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/10/09 11:01:57 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/12/22 19:00:41 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,12 @@ typedef struct s_idt_entry {
 	uint8_t		flags;
 	uint16_t	base_high;
 } __attribute__((packed)) t_idt_entry;
+
+typedef struct s_khdr
+{
+    uint32_t size;
+    uint32_t magic;
+}	khdr_t;
 
 typedef struct s_idt_descryptor {
 	uint16_t	limit;
