@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 14:45:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/10/08 15:04:47 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/12/23 18:20:37 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include "../core/structs.h"
 
 //extern uint32_t	inital_page_dir[1024];
+
+extern void enter_user_mode(uint32_t user_stack, void (*entry)(void));
 
 /*──────────── Activate Paging ──────────── */
 

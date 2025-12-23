@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 14:13:48 by zerrino           #+#    #+#             */
-/*   Updated: 2025/12/23 18:15:12 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/12/23 18:38:59 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,6 +220,13 @@ void    kfree(void *ptr)
     }
 }
 
+void    user_test(void)
+{
+
+    while (1)
+        ;
+}
+
 void    initMemory()
 {
     int i;
@@ -268,24 +275,6 @@ void    initMemory()
     test[4] = 't';
     test[5] = '\0';
     terminal_writestring(test);
-
-    char *test2 = (char *)vmalloc(sizeof(char) * 20);
-    test[0] = 's';
-    test[1] = 'a';
-    test[2] = 'l';
-    test[3] = 'u';
-    test[4] = 't';
-    test[5] = '\0';
-    terminal_writestring(test);
-    vfree(test2);
-    test[0] = 't';
-    test[1] = 'e';
-    test[2] = 's';
-    test[3] = 't';
-    test[4] = 't';
-    test[5] = '\0';
-    terminal_writestring(test2);
-
 
 
 }
