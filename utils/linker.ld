@@ -43,7 +43,7 @@ SECTIONS
 		*(.pagedir_info)
 		. += 0x1000;
 	} : pagedir_info
-	
+
 	.kernel_stack (NOLOAD) : ALIGN(16)
 	{
 		*(.kernel_stack)

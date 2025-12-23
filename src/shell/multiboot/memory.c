@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 14:13:48 by zerrino           #+#    #+#             */
-/*   Updated: 2025/12/22 19:59:15 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/12/23 18:15:12 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,18 @@
 uint32_t    *page_directory = (uint32_t *)0x00001000;
 uint32_t    *page_directory_info = (uint32_t *)0x00002000;
 uint32_t    *page_tables = (uint32_t *)0x00400000;
-uint32_t    kernel_heap_break = 0x00800000;
+
+
+uint32_t    kernel_mem_ptr = 0x00800000;
+
+uint32_t    kernel_heap_break = 0x10000000;
+uint32_t    kernel_heap_limit = 0x40000000;
+
+uint32_t    user_heap_break = 0x40000000;
+uint32_t    user_heap_limit = 0xE0000000;
+
 uint32_t    kfree_ptr = 0x0;
+uint32_t    vfree_ptr = 0x0;
 
 void    *get_physaddr(void *virtualaddr)
 {
@@ -57,15 +67,95 @@ void    mmap(void *physaddr, void *virtualaddr, uint32_t size, unsigned int flag
     }
 }
 
+void    *vbrk(uint32_t increment)
+{
+    uint32_t    old;
+
+    increment = (increment + (1 << 12) - 1) & ~((1 << 12) - 1);
+    if (kernel_mem_ptr > g_memory_limit - increment)
+        return (0);
+    if (user_heap_break > user_heap_limit - increment)
+        return (0);
+    mmap((void *)kernel_mem_ptr, (void *)user_heap_break, increment, PT_FLAG_PRESENT | PT_FLAG_R_AND_W | PT_FLAG_USER);
+    kernel_mem_ptr += increment;
+    old = user_heap_break;
+    user_heap_break += increment;
+    return ((void *)old);
+}
+
+void    *vmalloc(uint32_t size)
+{
+    uint32_t    total;
+    khdr_t      *h;
+
+    size = (size + 15) & ~(15);
+    total = size + sizeof(khdr_t);
+    if (vfree_ptr != 0)
+    {
+        while (vfree_ptr < user_heap_break)
+        {
+            h = (khdr_t *)vfree_ptr;
+            if (h->magic == (0xBABECAFE | 1) && h->size >= size)
+            {
+                h->magic = 0xBABECAFE;
+                return ((void *)(h + 1));
+            }
+            if (h->magic != 0 && h->magic != 0xBABECAFE && h->magic != (0xBABECAFE | 1))
+                break;
+            vfree_ptr += sizeof(h) + h->size;
+        }
+    }
+    h = vbrk(total);
+    if (!h)
+        return (0);
+    h->size = size;
+    h->magic = 0xBABECAFE;
+    return ((void *)(h + 1));
+}
+
+uint32_t vsize(void *ptr)
+{
+    khdr_t *h;
+
+    h = ((khdr_t *)ptr) - 1;
+    if (h->magic != 0xBABECAFE && h->magic != (0xBABECAFE | 1))
+        return (0);
+    return (h->size);
+}
+
+void    vfree(void *ptr)
+{
+    khdr_t      *h;
+    uint32_t    i;
+
+    if (vsize(ptr) == 0)
+        return ;
+    h = ((khdr_t *)ptr) - 1;
+    if (h->magic != 0xBABECAFE)
+        return ;
+    h->magic |= 1;
+    vfree_ptr = (uint32_t)h;
+    i = 0;
+    while (i < h->size)
+    {
+        ((uint8_t *)ptr)[i] = 0;
+        i++;
+    }
+}
+
+
 void    *kbrk(uint32_t increment)
 {
     uint32_t    old;
 
     increment = (increment + (1 << 12) - 1) & ~((1 << 12) - 1);
-    if (kernel_heap_break > g_memory_limit - increment)
+    if (kernel_mem_ptr > g_memory_limit - increment)
         return (0);
+    if (kernel_heap_break > kernel_heap_limit - increment)
+        return (0);
+    mmap((void *)kernel_mem_ptr, (void *)kernel_heap_break, increment, PT_FLAG_PRESENT | PT_FLAG_R_AND_W);
+    kernel_mem_ptr += increment;
     old = kernel_heap_break;
-    mmap((void *)old, (void *)old, increment, PT_FLAG_PRESENT | PT_FLAG_R_AND_W);
     kernel_heap_break += increment;
     return ((void *)old);
 }
@@ -162,17 +252,12 @@ void    initMemory()
     terminal_writestring("\n");
 
     char *test = (char *)kmalloc(sizeof(char) * 20);
-
     test[0] = 's';
     test[1] = 'a';
     test[2] = 'l';
     test[3] = 'u';
     test[4] = 't';
     test[5] = '\0';
-
-    terminal_writestring("\nvalue of the memory limit : 0x");
-    printnbr((uint32_t)kernel_heap_break, 16);
-    terminal_writestring("\n");
     terminal_writestring(test);
     kfree(test);
     test = (char *)kmalloc(sizeof(char) * 10);
@@ -183,7 +268,24 @@ void    initMemory()
     test[4] = 't';
     test[5] = '\0';
     terminal_writestring(test);
-    terminal_writestring("\nvalue of the memory limit : 0x");
-    printnbr((uint32_t)kernel_heap_break, 16);
-    terminal_writestring("\n");
+
+    char *test2 = (char *)vmalloc(sizeof(char) * 20);
+    test[0] = 's';
+    test[1] = 'a';
+    test[2] = 'l';
+    test[3] = 'u';
+    test[4] = 't';
+    test[5] = '\0';
+    terminal_writestring(test);
+    vfree(test2);
+    test[0] = 't';
+    test[1] = 'e';
+    test[2] = 's';
+    test[3] = 't';
+    test[4] = 't';
+    test[5] = '\0';
+    terminal_writestring(test2);
+
+
+
 }
