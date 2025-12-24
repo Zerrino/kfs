@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 14:13:48 by zerrino           #+#    #+#             */
-/*   Updated: 2025/12/23 18:38:59 by alexafer         ###   ########.fr       */
+/*   Updated: 2025/12/23 18:50:02 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,28 +253,4 @@ void    initMemory()
         i++;
     }
     activate_paging(page_directory);
-
-    terminal_writestring("\nvalue of the memory limit : 0x");
-    printnbr((uint32_t)kernel_heap_break, 16);
-    terminal_writestring("\n");
-
-    char *test = (char *)kmalloc(sizeof(char) * 20);
-    test[0] = 's';
-    test[1] = 'a';
-    test[2] = 'l';
-    test[3] = 'u';
-    test[4] = 't';
-    test[5] = '\0';
-    terminal_writestring(test);
-    kfree(test);
-    test = (char *)kmalloc(sizeof(char) * 10);
-    test[0] = 't';
-    test[1] = 'e';
-    test[2] = 's';
-    test[3] = 't';
-    test[4] = 't';
-    test[5] = '\0';
-    terminal_writestring(test);
-
-
 }
