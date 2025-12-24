@@ -2,7 +2,15 @@ TARGET    := i686-elf
 AS        := nasm -f elf32 -I./
 CC        := $(TARGET)-gcc
 NASM      := nasm
-QEMU      := qemu-system-i386 -m 128
+# Prefer a system qemu binary if present (avoid snap packaging lib issues).
+QEMU_BIN  := $(shell if [ -x /usr/bin/qemu-system-i386 ]; then echo /usr/bin/qemu-system-i386; elif command -v qemu-system-i386 >/dev/null 2>&1; then command -v qemu-system-i386; else echo qemu-system-i386; fi)
+QEMU      := $(QEMU_BIN) -m 128
+# Run wrapper to clear common LD_* variables that can cause snap/lib conflicts
+QEMU_RUN  := env -i PATH=/usr/bin:/bin HOME=$(HOME)
+# Run QEMU with GUI: preserve display-related env vars so a window can open
+QEMU_RUN_GUI := env -i PATH=/usr/bin:/bin HOME=$(HOME) \
+	DISPLAY=$(DISPLAY) XAUTHORITY=$(XAUTHORITY) XDG_RUNTIME_DIR=$(XDG_RUNTIME_DIR) \
+	DBUS_SESSION_BUS_ADDRESS=$(DBUS_SESSION_BUS_ADDRESS)
 MKGRUB    := $(TARGET)-grub-mkrescue
 GRUB_DIR  := /usr/lib/grub/i386-pc/
 
@@ -23,7 +31,7 @@ BINUTILS_URL := https://ftp.gnu.org/gnu/binutils/$(BINUTILS_ARCHIVE)
 GCC_URL := https://ftp.gnu.org/gnu/gcc/gcc-$(GCC_VER)/$(GCC_ARCHIVE)
 export PATH := $(CROSS_BIN):$(PATH)
 
-DEPS      := $(AS) $(CC) $(NASM) $(QEMU) $(MKGRUB)
+DEPS      := $(word 1,$(AS)) $(word 1,$(CC)) $(word 1,$(NASM)) $(word 1,$(QEMU)) $(word 1,$(MKGRUB))
 
 SRC_DIR   := src
 BUILD     := build
@@ -80,7 +88,13 @@ run-headless: $(KERNEL)
 	$(QEMU_RUN) $(QEMU) -nographic -kernel $< -serial mon:stdio
 
 runiso: $(ISO_IMG)
-	$(QEMU_RUN) $(QEMU) -cdrom $< -serial stdio
+	$(QEMU_RUN) $(QEMU) -nographic -cdrom $<
+	
+run-gui: $(KERNEL)
+	$(QEMU_RUN_GUI) $(QEMU) -kernel $<
+
+runiso-gui: $(ISO_IMG)
+	$(QEMU_RUN_GUI) $(QEMU) -cdrom $<
 
 install-deps:
 	@echo 'Attempting to install required tooling...'
