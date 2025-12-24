@@ -56,4 +56,19 @@ void outb(uint16_t port, uint8_t value);
 void outw(uint16_t port, uint16_t value);
 void iowait(void);
 
+/* ──────────── Functions from src/interupts/signals.c ──────────── */
+
+void SIG_Init(void);
+int SIG_RegisterHandler(int signal, SignalHandler handler);
+bool SIG_Schedule(int signal, t_registers *regs);
+void SIG_ProcessPending(void);
+size_t SIG_PendingCount(void);
+
+/* ──────────── Functions from src/interupts/panic.c ──────────── */
+
+void panic_init(void);
+void panic_capture_state(t_registers *regs, const char *reason);
+void panic_clean_registers(void);
+void panic_halt(t_registers *regs, const char *reason);
+
 #endif

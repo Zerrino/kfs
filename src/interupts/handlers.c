@@ -16,5 +16,8 @@ void	timer(t_registers* regs)
 {
 	(void)regs;
 	static int timer_count = 0;
+
 	timer_count++;
+	if ((timer_count & 0xF) == 0)
+		SIG_ProcessPending();
 }

@@ -22,6 +22,7 @@ void handle_help() {
     terminal_writestring("Available commands:\n");
     terminal_writestring("  help         - Display this help message\n");
     display_kfs2_help(); // Display KFS2 advanced commands
+    display_kfs4_help(); // Display KFS4 interrupts & signals commands
 }
 
 void handle_unknown(const char* command) {
@@ -60,6 +61,10 @@ command_type_t get_command_type(const char* command) {
     if (cmd_type != CMD_UNKNOWN)
         return cmd_type;
 
+    cmd_type = get_kfs4_command_type(command);
+    if (cmd_type != CMD_UNKNOWN)
+        return cmd_type;
+
     return CMD_UNKNOWN;
 }
 
@@ -89,6 +94,8 @@ void shell_process_command(const char* cmd) {
         /* General command was handled */
     } else if (handle_kfs2_commands(cmd_type, arg)) {
         /* KFS2 command was handled */
+    } else if (handle_kfs4_commands(cmd_type, arg)) {
+        /* KFS4 command was handled */
     } else if (cmd_type == CMD_UNKNOWN) {
         if (command[0] != '\0')
             handle_unknown(command);

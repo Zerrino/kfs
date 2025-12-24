@@ -94,6 +94,14 @@
 #define KERNEL_EXECUTION_STACK_SIZE 16384   /* Hardware execution stack size (bytes) - 16KB */
 #define KERNEL_STACK_BASE           0x00090000  /* Base address for kernel execution stack */
 
+/* ──────────── Signal System Constants ──────────── */
+#define MAX_SIGNALS                32      /* Number of software signals supported */
+#define MAX_SIGNAL_QUEUE           16      /* Pending signal queue depth */
+#define SIGNAL_USER_TEST           0       /* Default user-test signal id */
+
+/* ──────────── Panic Snapshot Constants ──────────── */
+#define PANIC_STACK_SNAPSHOT_WORDS 64      /* Words captured from the current stack */
+
 /* ──────────── Keyboard Constants ──────────── */
 #define KEYBOARD_DATA_PORT      0x60    /* Keyboard data port */
 #define KEYBOARD_STATUS_PORT    0x64    /* Keyboard status/command port */

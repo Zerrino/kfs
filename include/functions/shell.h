@@ -79,8 +79,11 @@ int ft_strcmp(const char* s1, const char* s2);
 /* ──────────── Functions from src/shell/kfs2.c ──────────── */
 
 void display_kfs2_help(void);
+void display_kfs4_help(void);
 command_type_t get_kfs2_command_type(const char* command);
+command_type_t get_kfs4_command_type(const char* command);
 bool handle_kfs2_commands(command_type_t cmd_type, const char* arg);
+bool handle_kfs4_commands(command_type_t cmd_type, const char* arg);
 
 /* ──────────── Functions from src/shell/kfs2/shell_core.c ──────────── */
 
@@ -119,6 +122,12 @@ command_type_t get_core_system_command_type(const char* command);
 command_type_t get_gdt_memory_command_type(const char* command);
 command_type_t get_stack_operations_command_type(const char* command);
 command_type_t get_system_info_command_type(const char* command);
+
+/* ──────────── Functions from src/shell/kfs4.c ──────────── */
+
+void handle_signals_status(void);
+void handle_sigraise(const char *arg);
+void handle_panicinfo(void);
 bool handle_core_system_commands(command_type_t cmd_type, const char* arg);
 bool handle_gdt_memory_commands(command_type_t cmd_type, const char* arg);
 bool handle_stack_operations_commands(command_type_t cmd_type, const char* arg);

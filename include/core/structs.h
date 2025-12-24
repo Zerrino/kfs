@@ -45,6 +45,19 @@ typedef struct s_registers {
 
 typedef void (*ISRHandler)(t_registers *regs);
 typedef void (*IRQHandler)(t_registers *regs);
+typedef void (*SignalHandler)(t_registers *regs, int signal);
+
+typedef struct s_signal_event {
+	int				id;
+	t_registers		context;
+} t_signal_event;
+
+typedef struct s_panic_context {
+	t_registers		regs;
+	uint32_t		stack[PANIC_STACK_SNAPSHOT_WORDS];
+	size_t			stack_words;
+	const char		*reason;
+} t_panic_context;
 
 /* ──────────── GDT Structures ──────────── */
 typedef struct s_gdt_entry {
@@ -82,6 +95,13 @@ typedef struct s_screens {
 typedef struct s_kernel {
 	ISRHandler			ISRhandlers[256];
 	IRQHandler			IRQHandlers[16];
+	SignalHandler		signal_handlers[MAX_SIGNALS];
+	t_signal_event		signal_queue[MAX_SIGNAL_QUEUE];
+	size_t				signal_queue_head;
+	size_t				signal_queue_tail;
+	bool				signal_queue_full;
+	bool				processing_signals;
+	int					last_signal_id;
 	t_idt_entry			idt[IDT_ENTRIES];
 	t_idt_descryptor	idt_descriptor;
 	t_screens			screens[NB_SCREEN];
@@ -94,6 +114,7 @@ typedef struct s_kernel {
 	uint32_t			kernel_stack[KERNEL_STACK_SIZE];
 	int					stack_pointer;
 	t_gdt_ptr			gdt_pointer;
+	t_panic_context		panic_context;
 } t_kernel;
 
 #endif

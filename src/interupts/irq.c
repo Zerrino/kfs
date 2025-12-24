@@ -28,6 +28,7 @@ void	IRQ_Handler(t_registers* regs)
 	}
 
 	PIC_SendEOF(irq);
+	SIG_ProcessPending();
 }
 
 void	IRQ_Initialize()
@@ -42,7 +43,7 @@ void	IRQ_Initialize()
 
 	IRQ_RegisterHandler(0, timer);
 	IRQ_RegisterHandler(1, keyboard_handler);
-	//PIC_Unmask(0); // Timer
+	PIC_Unmask(0); // Timer
 	PIC_Unmask(1); // Keyboard
 }
 

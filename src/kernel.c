@@ -41,6 +41,8 @@ void terminal_initialize()
 		}
 	}
 
+	panic_init();
+	SIG_Init();
 	DisableInterrupts();
 	gdt_install();
 	IDT_Initialize();

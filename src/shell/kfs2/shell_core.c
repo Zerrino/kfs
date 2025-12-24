@@ -41,7 +41,7 @@ void handle_reboot() {
 
 void handle_halt() {
     terminal_writestring("System halted\n");
-    __asm__ volatile("hlt");
+    panic_halt(NULL, "halt command");
 }
 
 void handle_shutdown() {
@@ -51,5 +51,5 @@ void handle_shutdown() {
     outw(APM_SHUTDOWN_PORT, SHUTDOWN_CMD);  /* APM shutdown */
 
     terminal_writestring("Shutdown failed, halting CPU\n");
-    __asm__ volatile("cli; hlt");
+    panic_halt(NULL, "shutdown fallback");
 }
