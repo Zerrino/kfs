@@ -48,6 +48,7 @@ void terminal_initialize()
 	IDT_Initialize();
 	ISR_Initialize();
 	IRQ_Initialize();
+	syscall_init();
 	keyboard_init();
 	EnableInterrupts();
 }

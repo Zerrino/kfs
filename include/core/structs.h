@@ -46,6 +46,15 @@ typedef struct s_registers {
 typedef void (*ISRHandler)(t_registers *regs);
 typedef void (*IRQHandler)(t_registers *regs);
 typedef void (*SignalHandler)(t_registers *regs, int signal);
+typedef uint32_t (*syscall_handler_t)(uint32_t eax, uint32_t ebx, uint32_t ecx, uint32_t edx, uint32_t esi);
+
+typedef struct s_key_layout {
+	const char	*name;
+	uint16_t	map[128];
+	uint16_t	map_shift[128];
+	uint16_t	map_altgr[128];
+	uint16_t	map_altgr_shift[128];
+} t_key_layout;
 
 typedef struct s_signal_event {
 	int				id;
@@ -102,11 +111,18 @@ typedef struct s_kernel {
 	bool				signal_queue_full;
 	bool				processing_signals;
 	int					last_signal_id;
+	const t_key_layout	*keyboard_layout;
+	const t_key_layout	*keyboard_layouts[4];
+	size_t				keyboard_layout_count;
+	syscall_handler_t	syscall_table[MAX_SYSCALLS];
+	uint32_t			last_syscall_ret;
+	int					last_syscall_id;
 	t_idt_entry			idt[IDT_ENTRIES];
 	t_idt_descryptor	idt_descriptor;
 	t_screens			screens[NB_SCREEN];
 	uint8_t				terminal_ctrl;
 	uint8_t				terminal_shift;
+	uint8_t				terminal_altgr;
 	uint8_t				screen_index;
 	uint16_t			*terminal_buffer;
 	char				command_buffer[COMMAND_BUFFER_SIZE];

@@ -71,4 +71,10 @@ void panic_capture_state(t_registers *regs, const char *reason);
 void panic_clean_registers(void);
 void panic_halt(t_registers *regs, const char *reason);
 
+/* ──────────── Functions from src/interupts/syscall.c ──────────── */
+
+void syscall_init(void);
+int syscall_register(int id, syscall_handler_t handler);
+uint32_t syscall_invoke(int id, uint32_t ebx, uint32_t ecx, uint32_t edx, uint32_t esi);
+
 #endif

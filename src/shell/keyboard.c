@@ -12,6 +12,19 @@
 
 #include "../include/kernel.h"
 
+uint16_t	keyboard_translate_scancode(uint8_t scancode, bool shifted, bool altgr)
+{
+	if (kernel.keyboard_layout == NULL)
+		return (0);
+	if (altgr && shifted && kernel.keyboard_layout->map_altgr_shift[scancode] != 0)
+		return (kernel.keyboard_layout->map_altgr_shift[scancode]);
+	if (altgr && kernel.keyboard_layout->map_altgr[scancode] != 0)
+		return (kernel.keyboard_layout->map_altgr[scancode]);
+	if (shifted && kernel.keyboard_layout->map_shift[scancode] != 0)
+		return (kernel.keyboard_layout->map_shift[scancode]);
+	return (kernel.keyboard_layout->map[scancode]);
+}
+
 void keyboard_init() {
     while (inb(KEYBOARD_STATUS_PORT) & KEYBOARD_STATUS_READY); // Wait for keyboard controller to be ready
     outb(KEYBOARD_DATA_PORT, KEYBOARD_CMD_RESET); // Reset keyboard
@@ -22,6 +35,8 @@ void keyboard_init() {
 
     while (inb(KEYBOARD_STATUS_PORT) & KEYBOARD_STATUS_READY); // Enable keyboard
     outb(KEYBOARD_STATUS_PORT, KEYBOARD_CMD_ENABLE);
+    keyboard_layouts_init();
+    kernel.terminal_altgr = 0;
 }
 
 static void	left_arrow()
@@ -127,14 +142,6 @@ void keyboard_handler(t_registers* regs)
 {
     (void)regs; // Suppress unused parameter warning
 
-    static const char scancode_to_ascii[] = {
-        0, 27,'1','2','3','4','5','6','7','8','9','0','-','=', '\b',    /* 0-14 */
-        '\t','q','w','e','r','t','y','u','i','o','p','[',']','\n',      /* 15-28 */
-        0,'a','s','d','f','g','h','j','k','l',';','\'','`',             /* 29-41 */
-        0,'\\','z','x','c','v','b','n','m',',','.','/', 0,'*',          /* 42-55 */
-        0,' '                                                           /* 56 */
-    };
-
     uint8_t scancode = inb(KEYBOARD_DATA_PORT);
     if (!(scancode & 0x80))
     {
@@ -142,13 +149,16 @@ void keyboard_handler(t_registers* regs)
         if (scancode == SCANCODE_LEFT_ARROW || scancode == SCANCODE_RIGHT_ARROW ||
             scancode == SCANCODE_DOWN_ARROW || scancode == SCANCODE_UP_ARROW ||
             scancode == SCANCODE_CTRL_PRESS || scancode == SCANCODE_LSHIFT_PRESS ||
-            scancode == SCANCODE_RSHIFT_PRESS)
+            scancode == SCANCODE_RSHIFT_PRESS || scancode == SCANCODE_ALT_PRESS)
         {
+            if (scancode == SCANCODE_ALT_PRESS)
+                kernel.terminal_altgr = 1;
             update_cursor(scancode);
             return;
         }
 
-        char c = scancode_to_ascii[scancode];
+        uint16_t cp = keyboard_translate_scancode(scancode, kernel.terminal_shift, kernel.terminal_altgr);
+        char c = (cp <= 0x7F) ? (char)cp : '?';
         if (c)
         {
             /* Handle ESC key to exit shell mode */
@@ -182,5 +192,7 @@ void keyboard_handler(t_registers* regs)
             kernel.terminal_ctrl = 0;
         else if (scancode == SCANCODE_LSHIFT_RELEASE || scancode == SCANCODE_RSHIFT_RELEASE) /* Shift release */
             kernel.terminal_shift = 0;
+        else if (scancode == SCANCODE_ALT_RELEASE)
+            kernel.terminal_altgr = 0;
     }
 }

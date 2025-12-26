@@ -45,6 +45,9 @@ void	display_kfs4_help(void)
 	terminal_writestring("  signals      - Show signal handlers and queue state\n");
 	terminal_writestring("  sigraise <n> - Schedule software signal <n> (default 0)\n");
 	terminal_writestring("  panicinfo    - Dump last panic snapshot\n");
+	terminal_writestring("  layout [n]   - List or set keyboard layout (qwerty_us/azerty_be)\n");
+	terminal_writestring("  getline      - Blocking read line demo\n");
+	terminal_writestring("  syscall      - Run test syscall (int 0x80)\n");
 }
 
 void	handle_signals_status(void)
@@ -126,6 +129,41 @@ void	handle_panicinfo(void)
 		terminal_writestring("empty\n");
 }
 
+void	handle_layout_command(const char *arg)
+{
+	if (arg == NULL || *arg == '\0')
+	{
+		keyboard_list_layouts();
+		return ;
+	}
+	if (!keyboard_set_layout(arg))
+		terminal_writestring("Unknown layout\n");
+}
+
+void	handle_getline_demo(void)
+{
+	char	buffer[128];
+	size_t	len;
+
+	terminal_writestring("getline> ");
+	len = kgetline(buffer, sizeof(buffer));
+	terminal_writestring("You typed (");
+	printnbr((uint32_t)len, 10);
+	terminal_writestring(" chars): ");
+	terminal_writestring(buffer);
+	terminal_writestring("\n");
+}
+
+void	handle_syscall_demo(void)
+{
+	uint32_t ret;
+
+	ret = syscall_invoke(SYSCALL_TEST_ID, 0x11, 0x22, 0x33, 0x44);
+	terminal_writestring("syscall ret = 0x");
+	printnbr(ret, 16);
+	terminal_writestring("\n");
+}
+
 command_type_t	get_kfs4_command_type(const char *command)
 {
 	if (ft_strcmp(command, "kfs4") == 0)
@@ -136,6 +174,12 @@ command_type_t	get_kfs4_command_type(const char *command)
 		return (CMD_SIGRAISE);
 	if (ft_strcmp(command, "panicinfo") == 0)
 		return (CMD_PANICINFO);
+	if (ft_strcmp(command, "layout") == 0)
+		return (CMD_LAYOUT);
+	if (ft_strcmp(command, "getline") == 0)
+		return (CMD_GETLINE);
+	if (ft_strcmp(command, "syscall") == 0)
+		return (CMD_SYSCALL);
 	return (CMD_UNKNOWN);
 }
 
@@ -154,6 +198,15 @@ bool	handle_kfs4_commands(command_type_t cmd_type, const char *arg)
 			return (true);
 		case CMD_PANICINFO:
 			handle_panicinfo();
+			return (true);
+		case CMD_LAYOUT:
+			handle_layout_command(arg);
+			return (true);
+		case CMD_GETLINE:
+			handle_getline_demo();
+			return (true);
+		case CMD_SYSCALL:
+			handle_syscall_demo();
 			return (true);
 		default:
 			return (false);

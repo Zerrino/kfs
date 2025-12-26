@@ -48,6 +48,11 @@ void		initMemory();
 void keyboard_init(void);
 void keyboard_handler(t_registers *regs);
 void update_cursor(int scancode);
+void keyboard_layouts_init(void);
+const t_key_layout *keyboard_find_layout(const char *name);
+bool keyboard_set_layout(const char *name);
+void keyboard_list_layouts(void);
+uint16_t keyboard_translate_scancode(uint8_t scancode, bool shifted, bool altgr);
 
 /* ──────────── Functions from src/shell/shell_write.c ──────────── */
 

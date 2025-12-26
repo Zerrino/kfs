@@ -1,24 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   functions.h                                        :+:      :+:    :+:   */
+/*   get_line.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/17 21:58:14 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 21:46:24 by rperez-t         ###   ########.fr       */
+/*   Created: 2025/12/27 15:30:00 by rperez-t          #+#    #+#             */
+/*   Updated: 2025/12/27 15:30:00 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FUNCTIONS_H
-# define FUNCTIONS_H
+#ifndef GET_LINE_H
+# define GET_LINE_H
 
-/* ──────────── Function Prototypes ──────────── */
-#include "../functions/asm.h"
-#include "../functions/gdt.h"
-#include "../functions/interrupts.h"
-#include "../functions/get_line.h"
-#include "../functions/main.h"
-#include "../functions/shell.h"
+#include "../core/libs.h"
+
+/* Blocking read from keyboard until newline; returns number of chars stored (excluding terminator). */
+size_t	kgetline(char *buffer, size_t max_len);
 
 #endif

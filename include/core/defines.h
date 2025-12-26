@@ -99,6 +99,10 @@
 #define MAX_SIGNAL_QUEUE           16      /* Pending signal queue depth */
 #define SIGNAL_USER_TEST           0       /* Default user-test signal id */
 
+/* ──────────── Syscall Constants ──────────── */
+#define MAX_SYSCALLS              32       /* Number of syscall entries supported */
+#define SYSCALL_TEST_ID           0        /* Demo syscall id */
+
 /* ──────────── Panic Snapshot Constants ──────────── */
 #define PANIC_STACK_SNAPSHOT_WORDS 64      /* Words captured from the current stack */
 
@@ -119,6 +123,8 @@
 #define SCANCODE_LSHIFT_RELEASE 170     /* Left Shift key release */
 #define SCANCODE_RSHIFT_PRESS   54      /* Right Shift key press */
 #define SCANCODE_RSHIFT_RELEASE 182     /* Right Shift key release */
+#define SCANCODE_ALT_PRESS      56      /* Alt/AltGr key press */
+#define SCANCODE_ALT_RELEASE    184     /* Alt/AltGr key release */
 #define SCANCODE_LEFT_ARROW     75      /* Left arrow key */
 #define SCANCODE_RIGHT_ARROW    77      /* Right arrow key */
 #define SCANCODE_UP_ARROW       72      /* Up arrow key */
