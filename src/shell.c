@@ -24,7 +24,11 @@ void shell_initialize() {
 void handle_help() {
     terminal_writestring("Available commands:\n");
     terminal_writestring("  help         - Display this help message\n");
-    display_kfs2_help(); // Display KFS2 advanced commands
+    terminal_writestring("  kfs1         - Show KFS1 menu\n");
+    terminal_writestring("  kfs2         - Show KFS2 menu\n");
+    terminal_writestring("  kfs3         - Show KFS3 menu\n");
+    terminal_writestring("  kfs4         - Show KFS4 menu\n");
+    terminal_writestring("  memtest      - Run memory allocation demo\n");
 }
 
 void handle_unknown(const char* command) {
@@ -36,6 +40,16 @@ void handle_unknown(const char* command) {
 command_type_t get_general_command_type(const char* command) {
     if (ft_strcmp(command, "help") == 0)
         return CMD_HELP;
+    if (ft_strcmp(command, "kfs1") == 0)
+        return CMD_KFS1;
+    if (ft_strcmp(command, "kfs2") == 0)
+        return CMD_KFS2MENU;
+    if (ft_strcmp(command, "kfs3") == 0)
+        return CMD_KFS3;
+    if (ft_strcmp(command, "kfs4") == 0)
+        return CMD_KFS4;
+    if (ft_strcmp(command, "memtest") == 0)
+        return CMD_MEMTEST;
 
     return CMD_UNKNOWN;
 }
@@ -45,6 +59,21 @@ bool handle_general_commands(command_type_t cmd_type, const char* arg) {
     switch (cmd_type) {
         case CMD_HELP:
             handle_help();
+            return true;
+        case CMD_KFS1:
+            display_kfs1_help();
+            return true;
+        case CMD_KFS2MENU:
+            display_kfs2_help();
+            return true;
+        case CMD_KFS3:
+            display_kfs3_help();
+            return true;
+        case CMD_KFS4:
+            display_kfs4_help();
+            return true;
+        case CMD_MEMTEST:
+            handle_memtest();
             return true;
         default:
             return false;

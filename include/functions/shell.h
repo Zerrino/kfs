@@ -81,6 +81,10 @@ int ft_strcmp(const char* s1, const char* s2);
 /* ──────────── Functions from src/shell/kfs2.c ──────────── */
 
 void display_kfs2_help(void);
+void display_kfs1_help(void);
+void display_kfs3_help(void);
+void display_kfs4_help(void);
+void handle_memtest(void);
 command_type_t get_kfs2_command_type(const char* command);
 bool handle_kfs2_commands(command_type_t cmd_type, const char* arg);
 
