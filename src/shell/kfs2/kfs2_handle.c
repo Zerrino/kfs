@@ -18,6 +18,9 @@ void display_core_system_help(void) {
     terminal_writestring("  reboot       - Reboot the system\n");
     terminal_writestring("  halt         - Halt the system\n");
     terminal_writestring("  shutdown     - Shutdown the system\n");
+    terminal_writestring("  layout       - Switch keyboard layout (qwerty/azerty)\n");
+    terminal_writestring("  getline      - Read a line of input\n");
+    terminal_writestring("  syscall      - Trigger a demo syscall\n");
 }
 
 void display_gdt_memory_help(void) {
@@ -52,6 +55,12 @@ command_type_t get_core_system_command_type(const char* command) {
         return CMD_HALT;
     else if (ft_strcmp(command, "shutdown") == 0)
         return CMD_SHUTDOWN;
+    else if (ft_strcmp(command, "layout") == 0)
+        return CMD_LAYOUT;
+    else if (ft_strcmp(command, "getline") == 0)
+        return CMD_GETLINE;
+    else if (ft_strcmp(command, "syscall") == 0)
+        return CMD_SYSCALL;
 
     return CMD_UNKNOWN;
 }
@@ -106,6 +115,15 @@ bool handle_core_system_commands(command_type_t cmd_type, const char* arg) {
             return true;
         case CMD_SHUTDOWN:
             handle_shutdown();
+            return true;
+        case CMD_LAYOUT:
+            handle_layout(arg);
+            return true;
+        case CMD_GETLINE:
+            handle_getline();
+            return true;
+        case CMD_SYSCALL:
+            handle_syscall(arg);
             return true;
         default:
             return false;

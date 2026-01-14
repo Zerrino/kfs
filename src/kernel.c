@@ -46,8 +46,18 @@ void terminal_initialize()
 	IDT_Initialize();
 	ISR_Initialize();
 	IRQ_Initialize();
+	signal_init();
+	signal_register(SIGNAL_TIMER_TICK, signal_timer_handler);
+	signal_register(SIGNAL_KEYBOARD, signal_keyboard_handler);
+	signal_register(SIGNAL_SYSCALL, signal_syscall_handler);
 	keyboard_init();
+	syscalls_init();
 	EnableInterrupts();
+
+	kernel.keyboard_layout = KEYBOARD_LAYOUT_QWERTY;
+	kernel.line_capture_active = 0;
+	kernel.skip_next_prompt = 0;
+	kernel.line_pos = 0;
 }
 
 void terminal_offset(uint16_t offset)
@@ -115,5 +125,8 @@ void kernel_main(uint32_t magic, uint32_t multiboot_info_ptr)
 	//gdt_install();
 
 	while (1)
+	{
 		__asm__ volatile ("hlt");
+		signal_dispatch();
+	}
 }

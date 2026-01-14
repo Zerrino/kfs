@@ -48,6 +48,8 @@ void		initMemory();
 void keyboard_init(void);
 void keyboard_handler(t_registers *regs);
 void update_cursor(int scancode);
+void keyboard_set_layout(uint8_t layout);
+uint8_t keyboard_get_layout(void);
 
 /* ──────────── Functions from src/shell/shell_write.c ──────────── */
 
@@ -88,6 +90,9 @@ void handle_clear(void);
 void handle_reboot(void);
 void handle_halt(void);
 void handle_shutdown(void);
+void handle_layout(const char *arg);
+void handle_getline(void);
+void handle_syscall(const char *arg);
 
 /* ──────────── Functions from src/shell/kfs2/shell_gdt.c ──────────── */
 

@@ -15,7 +15,10 @@
 void shell_initialize() {
     terminal_writestring("KFS Shell v1.0\n");
     terminal_writestring("Type 'help' for available commands\n");
-    terminal_writestring("> ");
+    if (kernel.skip_next_prompt)
+        kernel.skip_next_prompt = 0;
+    else
+        terminal_writestring("> ");
 }
 
 void handle_help() {

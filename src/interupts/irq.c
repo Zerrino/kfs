@@ -27,6 +27,11 @@ void	IRQ_Handler(t_registers* regs)
 		terminal_writestring("\n");
 	}
 
+	if (irq == 0)
+		signal_schedule(SIGNAL_TIMER_TICK, regs);
+	else if (irq == 1)
+		signal_schedule(SIGNAL_KEYBOARD, regs);
+
 	PIC_SendEOF(irq);
 }
 
@@ -42,7 +47,7 @@ void	IRQ_Initialize()
 
 	IRQ_RegisterHandler(0, timer);
 	IRQ_RegisterHandler(1, keyboard_handler);
-	//PIC_Unmask(0); // Timer
+	PIC_Unmask(0); // Timer
 	PIC_Unmask(1); // Keyboard
 }
 

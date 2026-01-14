@@ -41,7 +41,7 @@ void handle_reboot() {
 
 void handle_halt() {
     terminal_writestring("System halted\n");
-    __asm__ volatile("hlt");
+    kernel_halt("System halted");
 }
 
 void handle_shutdown() {
@@ -51,5 +51,67 @@ void handle_shutdown() {
     outw(APM_SHUTDOWN_PORT, SHUTDOWN_CMD);  /* APM shutdown */
 
     terminal_writestring("Shutdown failed, halting CPU\n");
-    __asm__ volatile("cli; hlt");
+    kernel_halt("Shutdown failed");
+}
+
+static uint32_t parse_uint(const char *arg)
+{
+	uint32_t value = 0;
+	int i = 0;
+
+	if (arg == NULL)
+		return 0;
+	while (arg[i] == ' ')
+		i++;
+	while (arg[i] >= '0' && arg[i] <= '9')
+	{
+		value = value * 10 + (uint32_t)(arg[i] - '0');
+		i++;
+	}
+	return value;
+}
+
+void handle_layout(const char *arg)
+{
+	if (arg == NULL || arg[0] == '\0')
+	{
+		terminal_writestring("Usage: layout qwerty|azerty\n");
+		return;
+	}
+	if (ft_strcmp(arg, "qwerty") == 0)
+	{
+		keyboard_set_layout(KEYBOARD_LAYOUT_QWERTY);
+		terminal_writestring("Layout set to qwerty\n");
+	}
+	else if (ft_strcmp(arg, "azerty") == 0)
+	{
+		keyboard_set_layout(KEYBOARD_LAYOUT_AZERTY);
+		terminal_writestring("Layout set to azerty\n");
+	}
+	else
+		terminal_writestring("Unknown layout\n");
+}
+
+void handle_getline(void)
+{
+	if (kernel.line_capture_active)
+	{
+		terminal_writestring("getline already active\n");
+		return;
+	}
+	kernel.line_capture_active = 1;
+	kernel.line_pos = 0;
+	kernel.skip_next_prompt = 1;
+	terminal_writestring("Enter line: ");
+}
+
+void handle_syscall(const char *arg)
+{
+	uint32_t num = parse_uint(arg);
+	uint32_t result = 0;
+
+	__asm__ volatile ("int $0x80" : "=a"(result) : "a"(num) : "memory");
+	terminal_writestring("syscall result: 0x");
+	printnbr(result, 16);
+	terminal_writestring("\n");
 }

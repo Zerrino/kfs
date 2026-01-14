@@ -30,7 +30,7 @@ static void page_fault_handler(t_registers *regs)
 	if (regs->error & 0x8) terminal_writestring("  - reserve\n");
 	if (regs->error & 0x10)terminal_writestring("  - fetch instr\n");
 
-	kernelPanic();                         /* ou tentative de map */
+	KPANIC_DUMP("Page fault");
 }
 
 const char *get_exception_message(uint32_t exception_num)
@@ -385,7 +385,7 @@ void	__attribute__((cdecl)) ISR_Handler(t_registers* regs)
 		terminal_writestring("  ");
 		terminal_writestring(get_exception_message(regs->interrupt));
 		terminal_writestring("\nKERNEL PANIC!\n");
-		kernelPanic();
+		KPANIC_DUMP("Unhandled exception");
 	}
 }
 

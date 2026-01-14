@@ -45,6 +45,20 @@ typedef struct s_registers {
 
 typedef void (*ISRHandler)(t_registers *regs);
 typedef void (*IRQHandler)(t_registers *regs);
+typedef void (*SignalHandler)(uint8_t signal, const t_registers *regs);
+
+typedef struct s_signal_event {
+	uint8_t		signal;
+	uint8_t		has_regs;
+	t_registers	regs;
+} t_signal_event;
+
+typedef struct s_signal_queue {
+	t_signal_event	events[SIGNAL_QUEUE_SIZE];
+	uint32_t		head;
+	uint32_t		tail;
+	uint32_t		count;
+} t_signal_queue;
 
 /* ──────────── GDT Structures ──────────── */
 typedef struct s_gdt_entry {
@@ -82,18 +96,32 @@ typedef struct s_screens {
 typedef struct s_kernel {
 	ISRHandler			ISRhandlers[256];
 	IRQHandler			IRQHandlers[16];
+	SignalHandler		signal_handlers[SIGNAL_MAX];
+	t_signal_queue		signal_queue;
+	uint32_t			signal_counts[SIGNAL_MAX];
+	uint8_t				signal_last;
 	t_idt_entry			idt[IDT_ENTRIES];
 	t_idt_descryptor	idt_descriptor;
 	t_screens			screens[NB_SCREEN];
 	uint8_t				terminal_ctrl;
 	uint8_t				terminal_shift;
+	uint8_t				keyboard_layout;
 	uint8_t				screen_index;
 	uint16_t			*terminal_buffer;
 	char				command_buffer[COMMAND_BUFFER_SIZE];
 	int					buffer_pos;
+	uint8_t				line_capture_active;
+	uint8_t				skip_next_prompt;
+	char				line_buffer[COMMAND_BUFFER_SIZE];
+	int					line_pos;
 	uint32_t			kernel_stack[KERNEL_STACK_SIZE];
 	int					stack_pointer;
 	t_gdt_ptr			gdt_pointer;
+	uint32_t			panic_stack_esp;
+	uint32_t			panic_stack_ebp;
+	uint32_t			panic_stack_count;
+	uint8_t				panic_stack_valid;
+	uint32_t			panic_stack_snapshot[PANIC_STACK_SNAPSHOT_WORDS];
 } t_kernel;
 
 #endif
