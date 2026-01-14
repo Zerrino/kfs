@@ -17,6 +17,8 @@
 /* This header includes all necessary components for the kernel */
 
 #include "core/page.h"
+#include "core/kmem.h"
+#include "core/heap.h"
 #include "core/libs.h"
 #include "core/defines.h"
 #include "core/enums.h"
