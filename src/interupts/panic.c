@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   panic.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/27 14:40:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/12/27 14:40:00 by rperez-t         ###   ########.fr       */
+/*   Updated: 2026/01/14 13:00:15 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,9 @@ void	panic_clean_registers(void)
 		"xor %%edx, %%edx\n"
 		"xor %%esi, %%esi\n"
 		"xor %%edi, %%edi\n"
-		"xor %%ebp, %%ebp\n"
 		:
 		:
-		: "eax", "ebx", "ecx", "edx", "esi", "edi", "ebp"
+		: "eax", "ebx", "ecx", "edx", "esi", "edi"
 	);
 }
 
