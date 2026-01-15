@@ -46,6 +46,10 @@ void terminal_initialize()
 	IDT_Initialize();
 	ISR_Initialize();
 	IRQ_Initialize();
+	signal_init();
+	signal_register(SIGNAL_TIMER_TICK, signal_timer_handler);
+	signal_register(SIGNAL_KEYBOARD, signal_keyboard_handler);
+	signal_register(SIGNAL_SYSCALL, signal_syscall_handler);
 	keyboard_init();
 	EnableInterrupts();
 }
@@ -115,5 +119,8 @@ void kernel_main(uint32_t magic, uint32_t multiboot_info_ptr)
 	//gdt_install();
 
 	while (1)
+	{
 		__asm__ volatile ("hlt");
+		signal_dispatch();
+	}
 }

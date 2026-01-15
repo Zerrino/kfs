@@ -103,4 +103,15 @@ void handle_interrupts() {
     terminal_writestring("  Total gates:      256\n");
     terminal_writestring("  ISR handlers:     0-31 (CPU exceptions)\n");
     terminal_writestring("  IRQ handlers:     32-47 (Hardware interrupts)\n");
+
+    terminal_writestring("\nSignals:\n");
+    terminal_writestring("  Timer ticks:      ");
+    printnbr(kernel.signal_counts[SIGNAL_TIMER_TICK], 10);
+    terminal_writestring("\n");
+    terminal_writestring("  Key events:       ");
+    printnbr(kernel.signal_counts[SIGNAL_KEYBOARD], 10);
+    terminal_writestring("\n");
+    terminal_writestring("  Last signal:      ");
+    printnbr(kernel.signal_last, 10);
+    terminal_writestring("\n");
 }

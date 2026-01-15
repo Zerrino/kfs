@@ -20,6 +20,9 @@
 /* ──────────── Functions from src/interupts/handlers.c ──────────── */
 
 void timer(t_registers* regs);
+void signal_timer_handler(uint8_t signal, const t_registers *regs);
+void signal_keyboard_handler(uint8_t signal, const t_registers *regs);
+void signal_syscall_handler(uint8_t signal, const t_registers *regs);
 
 /* ──────────── Functions from src/interupts/isr.c ──────────── */
 
