@@ -1,25 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   functions.h                                        :+:      :+:    :+:   */
+/*   panic.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/17 21:58:14 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 21:46:24 by rperez-t         ###   ########.fr       */
+/*   Created: 2025/12/24 13:10:00 by rperez-t          #+#    #+#             */
+/*   Updated: 2025/12/24 13:10:00 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FUNCTIONS_H
-# define FUNCTIONS_H
+#ifndef PANIC_H
+# define PANIC_H
 
-/* ──────────── Function Prototypes ──────────── */
-#include "../functions/asm.h"
-#include "../functions/gdt.h"
-#include "../functions/interrupts.h"
-#include "../functions/panic.h"
-#include "../functions/main.h"
-#include "../functions/signals.h"
-#include "../functions/shell.h"
+# include "../core/libs.h"
+
+void	panic_save_stack(void);
+void	panic_clean_registers(void);
+void	kernel_panic(const char *message, const char *file, int line, int dump);
+void	kernel_halt(const char *message);
+
+# define KPANIC(msg) kernel_panic((msg), __FILE__, __LINE__, 0)
+# define KPANIC_DUMP(msg) kernel_panic((msg), __FILE__, __LINE__, 1)
 
 #endif

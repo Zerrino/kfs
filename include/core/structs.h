@@ -112,6 +112,11 @@ typedef struct s_kernel {
 	uint32_t			kernel_stack[KERNEL_STACK_SIZE];
 	int					stack_pointer;
 	t_gdt_ptr			gdt_pointer;
+	uint32_t			panic_stack_esp;
+	uint32_t			panic_stack_ebp;
+	uint32_t			panic_stack_count;
+	uint8_t				panic_stack_valid;
+	uint32_t			panic_stack_snapshot[PANIC_STACK_SNAPSHOT_WORDS];
 } t_kernel;
 
 #endif
