@@ -53,3 +53,31 @@ void handle_shutdown() {
     terminal_writestring("Shutdown failed, halting CPU\n");
     __asm__ volatile("cli; hlt");
 }
+
+static uint32_t parse_uint(const char *arg)
+{
+	uint32_t value = 0;
+	int i = 0;
+
+	if (arg == NULL)
+		return 0;
+	while (arg[i] == ' ')
+		i++;
+	while (arg[i] >= '0' && arg[i] <= '9')
+	{
+		value = value * 10 + (uint32_t)(arg[i] - '0');
+		i++;
+	}
+	return value;
+}
+
+void handle_syscall(const char *arg)
+{
+	uint32_t num = parse_uint(arg);
+	uint32_t result = 0;
+
+	__asm__ volatile ("int $0x80" : "=a"(result) : "a"(num) : "memory");
+	terminal_writestring("syscall result: 0x");
+	printnbr(result, 16);
+	terminal_writestring("\n");
+}

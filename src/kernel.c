@@ -51,6 +51,7 @@ void terminal_initialize()
 	signal_register(SIGNAL_KEYBOARD, signal_keyboard_handler);
 	signal_register(SIGNAL_SYSCALL, signal_syscall_handler);
 	keyboard_init();
+	syscalls_init();
 	EnableInterrupts();
 }
 

@@ -20,6 +20,16 @@ DisableInterrupts:
 	cli
 	ret
 
+global clear_registers
+clear_registers:
+	push ebx
+	xor eax, eax
+	xor ebx, ebx
+	xor ecx, ecx
+	xor edx, edx
+	pop ebx
+	ret
+
 global i686_outb
 i686_outb:
 	[bits 32]

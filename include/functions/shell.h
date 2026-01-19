@@ -88,6 +88,7 @@ void handle_clear(void);
 void handle_reboot(void);
 void handle_halt(void);
 void handle_shutdown(void);
+void handle_syscall(const char *arg);
 
 /* ──────────── Functions from src/shell/kfs2/shell_gdt.c ──────────── */
 

@@ -139,6 +139,7 @@ typedef enum {
     CMD_STACKTEST,
     CMD_SYSINFO,
     CMD_INTERRUPTS,
+    CMD_SYSCALL,
     CMD_PUSH,
     CMD_POP,
     CMD_CLEAR,
