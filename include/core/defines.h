@@ -36,6 +36,10 @@
 /* ──────────── Panic Snapshot Constants ──────────── */
 # define PANIC_STACK_SNAPSHOT_WORDS 64
 
+/* ──────────── Keyboard Layout Constants ──────────── */
+# define KEYBOARD_LAYOUT_QWERTY 0
+# define KEYBOARD_LAYOUT_AZERTY 1
+
 /* ──────────── PIC 8259 Ports ──────────── */
 #define PIC1_CMD    0x20    /* Command register (Master)  */
 #define PIC1_DATA   0x21    /* Data register    (Master)  */

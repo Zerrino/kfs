@@ -105,10 +105,15 @@ typedef struct s_kernel {
 	t_screens			screens[NB_SCREEN];
 	uint8_t				terminal_ctrl;
 	uint8_t				terminal_shift;
+	uint8_t				keyboard_layout;
 	uint8_t				screen_index;
 	uint16_t			*terminal_buffer;
 	char				command_buffer[COMMAND_BUFFER_SIZE];
 	int					buffer_pos;
+	uint8_t				line_capture_active;
+	uint8_t				skip_next_prompt;
+	char				line_buffer[COMMAND_BUFFER_SIZE];
+	int					line_pos;
 	uint32_t			kernel_stack[KERNEL_STACK_SIZE];
 	int					stack_pointer;
 	t_gdt_ptr			gdt_pointer;

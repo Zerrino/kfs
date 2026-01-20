@@ -32,6 +32,11 @@ void handle_clear() {
 
 	kernel.screens[kernel.screen_index].row = 0;
 	kernel.screens[kernel.screen_index].column = 0;
+	kernel.buffer_pos = 0;
+	kernel.command_buffer[0] = '\0';
+	kernel.line_capture_active = 0;
+	kernel.line_pos = 0;
+	kernel.line_buffer[0] = '\0';
 }
 
 void handle_reboot() {
@@ -52,6 +57,40 @@ void handle_shutdown() {
 
     terminal_writestring("Shutdown failed, halting CPU\n");
     __asm__ volatile("cli; hlt");
+}
+
+void handle_layout(const char *arg)
+{
+	if (arg == NULL || arg[0] == '\0')
+	{
+		terminal_writestring("Usage: layout qwerty|azerty\n");
+		return;
+	}
+	if (ft_strcmp(arg, "qwerty") == 0)
+	{
+		keyboard_set_layout(KEYBOARD_LAYOUT_QWERTY);
+		terminal_writestring("Layout set to qwerty\n");
+	}
+	else if (ft_strcmp(arg, "azerty") == 0)
+	{
+		keyboard_set_layout(KEYBOARD_LAYOUT_AZERTY);
+		terminal_writestring("Layout set to azerty\n");
+	}
+	else
+		terminal_writestring("Unknown layout\n");
+}
+
+void handle_getline(void)
+{
+	if (kernel.line_capture_active)
+	{
+		terminal_writestring("getline already active\n");
+		return;
+	}
+	kernel.line_capture_active = 1;
+	kernel.line_pos = 0;
+	kernel.skip_next_prompt = 1;
+	terminal_writestring("Enter line: ");
 }
 
 static uint32_t parse_uint(const char *arg)

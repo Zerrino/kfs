@@ -24,6 +24,64 @@ void keyboard_init() {
     outb(KEYBOARD_STATUS_PORT, KEYBOARD_CMD_ENABLE);
 }
 
+static const char scancode_to_ascii_qwerty[] = {
+	0, 27,'1','2','3','4','5','6','7','8','9','0','-','=', '\b',
+	'\t','q','w','e','r','t','y','u','i','o','p','[',']','\n',
+	0,'a','s','d','f','g','h','j','k','l',';','\'','`',
+	0,'\\','z','x','c','v','b','n','m',',','.','/', 0,'*',
+	0,' '
+};
+
+static const char scancode_to_ascii_azerty[] = {
+	0, 27,'1','2','3','4','5','6','7','8','9','0','-','=', '\b',
+	'\t','a','z','e','r','t','y','u','i','o','p','[',']','\n',
+	0,'q','s','d','f','g','h','j','k','l',';','\'','`',
+	0,'\\','w','x','c','v','b','n','m',',','.','/', 0,'*',
+	0,' '
+};
+
+void keyboard_set_layout(uint8_t layout)
+{
+	if (layout == KEYBOARD_LAYOUT_AZERTY || layout == KEYBOARD_LAYOUT_QWERTY)
+		kernel.keyboard_layout = layout;
+}
+
+uint8_t keyboard_get_layout(void)
+{
+	return kernel.keyboard_layout;
+}
+
+static void line_capture_handle_char(char c)
+{
+	if (c == '\n')
+	{
+		kernel.line_buffer[kernel.line_pos] = '\0';
+		terminal_putchar('\n');
+		terminal_writestring("line: ");
+		terminal_writestring(kernel.line_buffer);
+		terminal_writestring("\n> ");
+		kernel.line_capture_active = 0;
+		kernel.line_pos = 0;
+		return;
+	}
+	if (c == '\b')
+	{
+		if (kernel.line_pos > 0)
+		{
+			kernel.line_pos--;
+			terminal_putchar('\b');
+			terminal_putchar(' ');
+			terminal_putchar('\b');
+		}
+		return;
+	}
+	if (' ' <= c && c <= '~' && kernel.line_pos < COMMAND_BUFFER_SIZE - 1)
+	{
+		kernel.line_buffer[kernel.line_pos++] = c;
+		terminal_putchar(c);
+	}
+}
+
 static void	left_arrow()
 {
 	if (kernel.terminal_ctrl && kernel.terminal_shift)
@@ -127,13 +185,10 @@ void keyboard_handler(t_registers* regs)
 {
     (void)regs; // Suppress unused parameter warning
 
-    static const char scancode_to_ascii[] = {
-        0, 27,'1','2','3','4','5','6','7','8','9','0','-','=', '\b',    /* 0-14 */
-        '\t','q','w','e','r','t','y','u','i','o','p','[',']','\n',      /* 15-28 */
-        0,'a','s','d','f','g','h','j','k','l',';','\'','`',             /* 29-41 */
-        0,'\\','z','x','c','v','b','n','m',',','.','/', 0,'*',          /* 42-55 */
-        0,' '                                                           /* 56 */
-    };
+	const char *scancode_to_ascii = scancode_to_ascii_qwerty;
+
+	if (kernel.keyboard_layout == KEYBOARD_LAYOUT_AZERTY)
+		scancode_to_ascii = scancode_to_ascii_azerty;
 
     uint8_t scancode = inb(KEYBOARD_DATA_PORT);
     if (!(scancode & 0x80))
@@ -151,6 +206,11 @@ void keyboard_handler(t_registers* regs)
         char c = scancode_to_ascii[scancode];
         if (c)
         {
+			if (kernel.line_capture_active)
+			{
+				line_capture_handle_char(c);
+				return;
+			}
             /* Handle ESC key to exit shell mode */
             if (c == SCANCODE_ESC) /* ESC key */
             {

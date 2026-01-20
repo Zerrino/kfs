@@ -53,6 +53,11 @@ void terminal_initialize()
 	keyboard_init();
 	syscalls_init();
 	EnableInterrupts();
+
+	kernel.keyboard_layout = KEYBOARD_LAYOUT_QWERTY;
+	kernel.line_capture_active = 0;
+	kernel.skip_next_prompt = 0;
+	kernel.line_pos = 0;
 }
 
 void terminal_offset(uint16_t offset)

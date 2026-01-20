@@ -48,6 +48,8 @@ void		initMemory();
 void keyboard_init(void);
 void keyboard_handler(t_registers *regs);
 void update_cursor(int scancode);
+void keyboard_set_layout(uint8_t layout);
+uint8_t keyboard_get_layout(void);
 
 /* ──────────── Functions from src/shell/shell_write.c ──────────── */
 
@@ -79,6 +81,10 @@ int ft_strcmp(const char* s1, const char* s2);
 /* ──────────── Functions from src/shell/kfs2.c ──────────── */
 
 void display_kfs2_help(void);
+void display_kfs1_help(void);
+void display_kfs3_help(void);
+void display_kfs4_help(void);
+void handle_memtest(void);
 command_type_t get_kfs2_command_type(const char* command);
 bool handle_kfs2_commands(command_type_t cmd_type, const char* arg);
 
@@ -88,6 +94,8 @@ void handle_clear(void);
 void handle_reboot(void);
 void handle_halt(void);
 void handle_shutdown(void);
+void handle_layout(const char *arg);
+void handle_getline(void);
 void handle_syscall(const char *arg);
 
 /* ──────────── Functions from src/shell/kfs2/shell_gdt.c ──────────── */
