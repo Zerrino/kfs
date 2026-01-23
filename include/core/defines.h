@@ -33,12 +33,12 @@
 # define SIGNAL_KEYBOARD   1
 # define SIGNAL_SYSCALL    2
 
-/* ──────────── Panic Snapshot Constants ──────────── */
-# define PANIC_STACK_SNAPSHOT_WORDS 64
-
 /* ──────────── Keyboard Layout Constants ──────────── */
 # define KEYBOARD_LAYOUT_QWERTY 0
 # define KEYBOARD_LAYOUT_AZERTY 1
+
+/* ──────────── Panic Snapshot Constants ──────────── */
+# define PANIC_STACK_SNAPSHOT_WORDS 64
 
 /* ──────────── PIC 8259 Ports ──────────── */
 #define PIC1_CMD    0x20    /* Command register (Master)  */
