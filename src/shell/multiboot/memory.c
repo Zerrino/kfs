@@ -12,11 +12,6 @@
 
 #include "../../../include/kernel.h"
 
-uint32_t    *page_directory = (uint32_t *)0x00001000;
-uint32_t    *page_directory_info = (uint32_t *)0x00002000;
-uint32_t    *page_tables = (uint32_t *)0x00400000;
-
-
 uint32_t    kernel_mem_ptr = 0x00800000;
 
 uint32_t    kernel_heap_break = 0x10000000;
@@ -30,25 +25,32 @@ uint32_t    vfree_ptr = 0x0;
 
 void    *get_physaddr(void *virtualaddr)
 {
-    uint32_t    pd_index = ((uint32_t)virtualaddr >> 22);
-    uint32_t    pt_index = ((uint32_t)virtualaddr >> 12) & ((1<<10)-1);
-    return (void *)(((uint32_t *)(page_directory[pd_index] & ~((1 << 12)-1)))[pt_index] & ~((1 << 12)-1));
+    t_mempage *page = get_page((uint32_t)virtualaddr, current_directory);
+    uint32_t offset = (uint32_t)virtualaddr & (PAGE_SIZE - 1);
+
+    if (!page || page->frame == 0)
+        return 0;
+    return (void *)((page->frame * PAGE_SIZE) + offset);
 }
 
 void    map_page(void *physaddr, void *virtualaddr, unsigned int flags)
 {
-    uint32_t    pd_index = ((uint32_t)virtualaddr >> 22);
-    uint32_t    pt_index = ((uint32_t)virtualaddr >> 12) & ((1<<10) - 1);
+    t_mempage *page = create_page((uint32_t)virtualaddr, current_directory);
+    int is_kernel = (flags & PT_FLAG_USER) == 0;
+    int is_writeable = (flags & PT_FLAG_R_AND_W) != 0;
 
-    ((uint32_t *)(page_directory[pd_index] & ~((1 << 12)-1)))[pt_index] = (uint32_t)physaddr | (flags & ((1 << 12)-1)) | 1;
+    if (!page)
+        return;
+    alloc_frame_at(page, (uint32_t)physaddr, is_kernel, is_writeable);
 }
 
 void    unmap_page(void *virtualaddr)
 {
-    uint32_t    pd_index = ((uint32_t)virtualaddr >> 22);
-    uint32_t    pt_index = ((uint32_t)virtualaddr >> 12) & ((1<<10) - 1);
+    t_mempage *page = get_page((uint32_t)virtualaddr, current_directory);
 
-    ((uint32_t *)(page_directory[pd_index] & ~((1 << 12)-1)))[pt_index] = 0;
+    if (!page)
+        return;
+    free_frame(page);
 }
 
 void    mmap(void *physaddr, void *virtualaddr, uint32_t size, unsigned int flags)
@@ -162,6 +164,8 @@ void    *kbrk(uint32_t increment)
 
 void    *kmalloc(uint32_t size)
 {
+    if (kheap != NULL)
+        return heap_alloc(size, 0, kheap);
     uint32_t    total;
     khdr_t      *h;
 
@@ -192,6 +196,8 @@ void    *kmalloc(uint32_t size)
 
 uint32_t ksize(void *ptr)
 {
+    if (kheap != NULL)
+        return heap_block_size(ptr);
     khdr_t *h;
 
     h = ((khdr_t *)ptr) - 1;
@@ -202,6 +208,11 @@ uint32_t ksize(void *ptr)
 
 void    kfree(void *ptr)
 {
+    if (kheap != NULL)
+    {
+        heap_free(ptr, kheap);
+        return ;
+    }
     khdr_t      *h;
     uint32_t    i;
 
@@ -229,28 +240,8 @@ void    user_test(void)
 
 void    initMemory()
 {
-    int i;
+    extern uint32_t _kernel_end;
 
-    i = 0;
-
-    while (i < 1024)
-    {
-        page_directory[i] = (uint32_t)(&page_tables[i << 10]) | PD_FLAG_PRESENT | PD_FLAG_R_AND_W;
-        i++;
-    }
-    i = 0;
-    while (i < 1024)
-    {
-        page_directory_info[i] = 0;
-        i++;
-    }
-    i = 0;
-    while (i < (1024 << 10))
-    {
-        page_tables[i] = 0;
-        if (i < (2 << 10))
-            page_tables[i] = (i << 12) | PT_FLAG_PRESENT | PT_FLAG_R_AND_W;
-        i++;
-    }
-    activate_paging(page_directory);
+    kernel_mem_ptr = ((uint32_t)&_kernel_end + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1);
+    init_paging();
 }
