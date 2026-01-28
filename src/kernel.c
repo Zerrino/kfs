@@ -109,12 +109,6 @@ void kernel_main(uint32_t magic, uint32_t multiboot_info_ptr)
 	terminal_initialize();
 
 
-
-
-
-
-
-
 	initMemory();
 
 	//multiboot_info_t *mbi = (multiboot_info_t *)multiboot_info_ptr;
