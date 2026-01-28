@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kernel.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-t@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2025/12/23 18:40:21 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/01/14 22:45:52 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ void kernel_main(uint32_t magic, uint32_t multiboot_info_ptr)
 
 
 
-	//initMemory();
+	initMemory();
 
 	//multiboot_info_t *mbi = (multiboot_info_t *)multiboot_info_ptr;
 
