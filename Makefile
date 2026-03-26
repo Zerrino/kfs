@@ -14,7 +14,7 @@ endif
 
 PREFIX    ?= $(HOME)/.kfs
 CROSS_BIN := $(PREFIX)/bin
-CROSS_BUILD := $(BUILD)/toolchain
+CROSS_BUILD = $(BUILD)/toolchain
 BINUTILS_VER := 2.41
 GCC_VER := 13.2.0
 BINUTILS_ARCHIVE := binutils-$(BINUTILS_VER).tar.xz
@@ -87,14 +87,14 @@ install-deps:
 	@if command -v brew >/dev/null 2>&1; then \
 		echo 'Detected Homebrew'; \
 		brew tap nativeos/i686-elf-toolchain >/dev/null 2>&1 || true; \
-		brew install nativeos/i686-elf-toolchain/i686-elf-binutils nativeos/i686-elf-toolchain/i686-elf-gcc nasm qemu gmp mpfr libmpc isl; \
+		brew install nativeos/i686-elf-toolchain/i686-elf-binutils nativeos/i686-elf-toolchain/i686-elf-gcc nasm qemu gmp mpfr libmpc isl curl; \
 		brew install xorriso || true; \
 		brew install grub || true; \
 	elif command -v apt-get >/dev/null 2>&1; then \
 		echo 'Detected apt-get'; \
 		echo 'You may be prompted for your password.'; \
 		sudo apt-get update; \
-		sudo apt-get install -y build-essential nasm qemu-system-x86 grub-pc-bin xorriso mtools \
+		sudo apt-get install -y build-essential nasm qemu-system-x86 grub-pc-bin xorriso mtools curl wget \
 			libgmp-dev libmpfr-dev libmpc-dev texinfo flex bison; \
 		if ! command -v i686-elf-gcc >/dev/null 2>&1; then \
 			echo 'apt-get does not provide i686-elf-gcc by default.'; \
