@@ -44,6 +44,7 @@ void display_system_info_help(void) {
     terminal_writestring("\n=== System Info ===\n");
     terminal_writestring("  sysinfo      - Show complete system information\n");
     terminal_writestring("  interrupts   - Show interrupt status\n");
+    terminal_writestring("  sigtest [ticks] - Wait ticks and show signal deltas\n");
 }
 
 command_type_t get_core_system_command_type(const char* command) {
@@ -98,6 +99,8 @@ command_type_t get_system_info_command_type(const char* command) {
         return CMD_SYSINFO;
     else if (ft_strcmp(command, "interrupts") == 0)
         return CMD_INTERRUPTS;
+    else if (ft_strcmp(command, "sigtest") == 0)
+        return CMD_SIGTEST;
 
     return CMD_UNKNOWN;
 }
@@ -180,6 +183,9 @@ bool handle_system_info_commands(command_type_t cmd_type, const char* arg) {
             return true;
         case CMD_INTERRUPTS:
             handle_interrupts();
+            return true;
+        case CMD_SIGTEST:
+            handle_sigtest(arg);
             return true;
         default:
             return false;

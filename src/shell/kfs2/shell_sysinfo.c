@@ -115,3 +115,66 @@ void handle_interrupts() {
     printnbr(kernel.signal_last, 10);
     terminal_writestring("\n");
 }
+
+static uint32_t parse_ticks_arg(const char *arg)
+{
+    uint32_t value;
+    int i;
+
+    if (arg == NULL || arg[0] == '\0')
+        return 100;
+    value = 0;
+    i = 0;
+    while (arg[i] == ' ')
+        i++;
+    while (arg[i] >= '0' && arg[i] <= '9')
+    {
+        value = value * 10 + (uint32_t)(arg[i] - '0');
+        i++;
+    }
+    if (value == 0)
+        return 100;
+    if (value > 5000)
+        return 5000;
+    return value;
+}
+
+void handle_sigtest(const char *arg)
+{
+    uint32_t wait_ticks;
+    uint32_t timer_start;
+    uint32_t key_start;
+    uint32_t syscall_start;
+
+    wait_ticks = parse_ticks_arg(arg);
+    timer_start = kernel.signal_counts[SIGNAL_TIMER_TICK];
+    key_start = kernel.signal_counts[SIGNAL_KEYBOARD];
+    syscall_start = kernel.signal_counts[SIGNAL_SYSCALL];
+
+    terminal_writestring("sigtest: waiting ");
+    printnbr(wait_ticks, 10);
+    terminal_writestring(" timer ticks. Type keys now...\n");
+
+    while ((kernel.signal_counts[SIGNAL_TIMER_TICK] - timer_start) < wait_ticks)
+    {
+        __asm__ volatile ("hlt");
+        signal_dispatch();
+    }
+
+    terminal_writestring("sigtest results:\n");
+    terminal_writestring("  timer delta:    ");
+    printnbr(kernel.signal_counts[SIGNAL_TIMER_TICK] - timer_start, 10);
+    terminal_writestring("\n");
+    terminal_writestring("  keyboard delta: ");
+    printnbr(kernel.signal_counts[SIGNAL_KEYBOARD] - key_start, 10);
+    terminal_writestring("\n");
+    terminal_writestring("  syscall delta:  ");
+    printnbr(kernel.signal_counts[SIGNAL_SYSCALL] - syscall_start, 10);
+    terminal_writestring("\n");
+    terminal_writestring("  queue pending:  ");
+    printnbr(kernel.signal_queue.count, 10);
+    terminal_writestring("\n");
+    terminal_writestring("  last signal:    ");
+    printnbr(kernel.signal_last, 10);
+    terminal_writestring("\n");
+}

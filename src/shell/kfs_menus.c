@@ -40,6 +40,7 @@ void display_kfs4_help(void)
 	terminal_writestring("=== KFS4 (Interrupts) ===\n");
 	terminal_writestring("  Mandatory demos:\n");
 	terminal_writestring("    - interrupts (status + signals)\n");
+	terminal_writestring("    - sigtest [ticks] (live signal test)\n");
 	terminal_writestring("    - keyboard IRQs\n");
 	terminal_writestring("    - panic path (page fault)\n");
 	terminal_writestring("  Bonus demos:\n");

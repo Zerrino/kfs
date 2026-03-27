@@ -117,6 +117,7 @@ void handle_stacktest(void);
 
 void handle_sysinfo(void);
 void handle_interrupts(void);
+void handle_sigtest(const char *arg);
 
 /* ──────────── Functions from src/shell/kfs2/kfs2_handle.c ──────────── */
 

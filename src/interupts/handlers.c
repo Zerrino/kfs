@@ -21,16 +21,18 @@ void	timer(t_registers* regs)
 
 void	signal_timer_handler(uint8_t signal, const t_registers *regs)
 {
-	(void)regs;
 	kernel.signal_counts[signal]++;
 	kernel.signal_last = signal;
+	if (regs != NULL)
+		timer((t_registers *)regs);
 }
 
 void	signal_keyboard_handler(uint8_t signal, const t_registers *regs)
 {
-	(void)regs;
 	kernel.signal_counts[signal]++;
 	kernel.signal_last = signal;
+	if (regs != NULL)
+		keyboard_handler((t_registers *)regs);
 }
 
 void	signal_syscall_handler(uint8_t signal, const t_registers *regs)

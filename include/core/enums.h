@@ -139,6 +139,7 @@ typedef enum {
     CMD_STACKTEST,
     CMD_SYSINFO,
     CMD_INTERRUPTS,
+    CMD_SIGTEST,
     CMD_LAYOUT,
     CMD_GETLINE,
     CMD_SYSCALL,

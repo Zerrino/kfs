@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   isr.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-t@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 02:10:22 by zerrino           #+#    #+#             */
-/*   Updated: 2025/07/15 17:57:00 by zerrino          ###   ########.fr       */
+/*   Updated: 2026/03/27 21:42:12 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -371,7 +371,9 @@ void	ISR_Initialize()
 void	__attribute__((cdecl)) ISR_Handler(t_registers* regs)
 {
 	if (kernel.ISRhandlers[regs->interrupt] != NULL)
+	{
 		kernel.ISRhandlers[regs->interrupt](regs);
+	}
 	else if (32 <= regs->interrupt)
 	{
 		terminal_writestring("Unhandled interrupt : ");
