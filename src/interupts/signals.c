@@ -20,6 +20,27 @@ static int	interrupts_enabled(void)
 	return (eflags & EFLAGS_INTERRUPT_FLAG) != 0;
 }
 
+static void	signal_queue_push_locked(uint16_t signal, const t_registers *regs)
+{
+	t_signal_event	*event;
+
+	event = &kernel.signal_queue.events[kernel.signal_queue.tail];
+	event->signal = (uint8_t)signal;
+	event->has_regs = (regs != NULL);
+	if (regs != NULL)
+		event->regs = *regs;
+	kernel.signal_queue.tail = (kernel.signal_queue.tail + 1) % SIGNAL_QUEUE_SIZE;
+	kernel.signal_queue.count++;
+}
+
+static void	signal_drop_oldest_locked(void)
+{
+	if (kernel.signal_queue.count == 0)
+		return ;
+	kernel.signal_queue.head = (kernel.signal_queue.head + 1) % SIGNAL_QUEUE_SIZE;
+	kernel.signal_queue.count--;
+}
+
 void	signal_init(void)
 {
 	for (int i = 0; i < SIGNAL_MAX; i++)
@@ -41,7 +62,6 @@ void	signal_register(uint16_t signal, SignalHandler handler)
 
 int	signal_schedule(uint16_t signal, const t_registers *regs)
 {
-	t_signal_event *event;
 	int				restore_interrupts;
 
 	if (signal >= SIGNAL_MAX)
@@ -50,17 +70,21 @@ int	signal_schedule(uint16_t signal, const t_registers *regs)
 	DisableInterrupts();
 	if (kernel.signal_queue.count >= SIGNAL_QUEUE_SIZE)
 	{
+		if (signal == SIGNAL_TIMER_TICK)
+		{
+			if (restore_interrupts)
+				EnableInterrupts();
+			return 0;
+		}
+		signal_drop_oldest_locked();
+	}
+	if (kernel.signal_queue.count >= SIGNAL_QUEUE_SIZE)
+	{
 		if (restore_interrupts)
 			EnableInterrupts();
 		return -1;
 	}
-	event = &kernel.signal_queue.events[kernel.signal_queue.tail];
-	event->signal = (uint8_t)signal;
-	event->has_regs = (regs != NULL);
-	if (regs != NULL)
-		event->regs = *regs;
-	kernel.signal_queue.tail = (kernel.signal_queue.tail + 1) % SIGNAL_QUEUE_SIZE;
-	kernel.signal_queue.count++;
+	signal_queue_push_locked(signal, regs);
 	if (restore_interrupts)
 		EnableInterrupts();
 	return 0;
