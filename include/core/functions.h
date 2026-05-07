@@ -17,9 +17,6 @@
 #include "../functions/asm.h"
 #include "../functions/gdt.h"
 #include "../functions/interrupts.h"
-#include "../functions/panic.h"
-#include "../functions/signals.h"
-#include "../functions/syscalls.h"
 #include "../functions/main.h"
 #include "../functions/shell.h"
 

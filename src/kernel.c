@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kernel.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.42belgium.be    +#+  +:+       +#+        */
+/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2026/03/27 21:49:48 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/12/23 18:40:21 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,18 +46,8 @@ void terminal_initialize()
 	IDT_Initialize();
 	ISR_Initialize();
 	IRQ_Initialize();
-	signal_init();
-	signal_register(SIGNAL_TIMER_TICK, signal_timer_handler);
-	signal_register(SIGNAL_KEYBOARD, signal_keyboard_handler);
-	signal_register(SIGNAL_SYSCALL, signal_syscall_handler);
 	keyboard_init();
-	syscalls_init();
 	EnableInterrupts();
-
-	kernel.keyboard_layout = KEYBOARD_LAYOUT_QWERTY;
-	kernel.line_capture_active = 0;
-	kernel.skip_next_prompt = 0;
-	kernel.line_pos = 0;
 }
 
 void terminal_offset(uint16_t offset)
@@ -109,7 +99,13 @@ void kernel_main(uint32_t magic, uint32_t multiboot_info_ptr)
 	terminal_initialize();
 
 
-	initMemory();
+
+
+
+
+
+
+	//initMemory();
 
 	//multiboot_info_t *mbi = (multiboot_info_t *)multiboot_info_ptr;
 
@@ -119,8 +115,5 @@ void kernel_main(uint32_t magic, uint32_t multiboot_info_ptr)
 	//gdt_install();
 
 	while (1)
-	{
 		__asm__ volatile ("hlt");
-		signal_dispatch();
-	}
 }

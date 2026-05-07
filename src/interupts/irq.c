@@ -18,11 +18,7 @@ void	IRQ_Handler(t_registers* regs)
 	int	irq;
 
 	irq = regs->interrupt - PIC1_OFFSET;
-	if (irq == 0)
-		signal_schedule(SIGNAL_TIMER_TICK, regs);
-	else if (irq == 1)
-		signal_schedule(SIGNAL_KEYBOARD, regs);
-	else if (0 <= irq && irq < 16 && kernel.IRQHandlers[irq] != NULL)
+	if (kernel.IRQHandlers[irq] != NULL)
 		kernel.IRQHandlers[irq](regs);
 	else
 	{
@@ -43,7 +39,10 @@ void	IRQ_Initialize()
 
 	for (size_t i = 0; i < 16; i++)
 		ISR_RegisterHandler(PIC1_OFFSET + i, IRQ_Handler);
-	PIC_Unmask(0); // Timer
+
+	IRQ_RegisterHandler(0, timer);
+	IRQ_RegisterHandler(1, keyboard_handler);
+	//PIC_Unmask(0); // Timer
 	PIC_Unmask(1); // Keyboard
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   isr.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.42belgium.be    +#+  +:+       +#+        */
+/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 02:10:22 by zerrino           #+#    #+#             */
-/*   Updated: 2026/03/27 21:42:12 by rperez-t         ###   ########.fr       */
+/*   Updated: 2025/07/15 17:57:00 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static void page_fault_handler(t_registers *regs)
 	if (regs->error & 0x8) terminal_writestring("  - reserve\n");
 	if (regs->error & 0x10)terminal_writestring("  - fetch instr\n");
 
-	KPANIC_DUMP("Page fault");
+	kernelPanic();                         /* ou tentative de map */
 }
 
 const char *get_exception_message(uint32_t exception_num)
@@ -371,9 +371,7 @@ void	ISR_Initialize()
 void	__attribute__((cdecl)) ISR_Handler(t_registers* regs)
 {
 	if (kernel.ISRhandlers[regs->interrupt] != NULL)
-	{
 		kernel.ISRhandlers[regs->interrupt](regs);
-	}
 	else if (32 <= regs->interrupt)
 	{
 		terminal_writestring("Unhandled interrupt : ");
@@ -387,7 +385,7 @@ void	__attribute__((cdecl)) ISR_Handler(t_registers* regs)
 		terminal_writestring("  ");
 		terminal_writestring(get_exception_message(regs->interrupt));
 		terminal_writestring("\nKERNEL PANIC!\n");
-		KPANIC_DUMP("Unhandled exception");
+		kernelPanic();
 	}
 }
 
