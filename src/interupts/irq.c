@@ -6,7 +6,7 @@
 /*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 20:34:40 by zerrino           #+#    #+#             */
-/*   Updated: 2026/05/08 15:09:38 by reborn           ###   ########.fr       */
+/*   Updated: 2026/05/08 15:10:05 by reborn           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	IRQ_Initialize()
 
 	ISR_RegisterHandler(PIC1_OFFSET + 0, timer);
 	ISR_RegisterHandler(PIC1_OFFSET + 1, keyboard_handler);
-	//PIC_Unmask(0); // Timer
+	PIC_Unmask(0); // Timer
 	PIC_Unmask(1); // Keyboard
 }
 
