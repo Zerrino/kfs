@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   irq.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 20:34:40 by zerrino           #+#    #+#             */
-/*   Updated: 2025/08/02 16:00:22 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/05/08 15:09:38 by reborn           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/kernel.h"
 
-
+/*
 void	IRQ_Handler(t_registers* regs)
 {
 	int	irq;
@@ -29,6 +29,7 @@ void	IRQ_Handler(t_registers* regs)
 
 	PIC_SendEOF(irq);
 }
+*/
 
 void	IRQ_Initialize()
 {
@@ -37,11 +38,11 @@ void	IRQ_Initialize()
 	for (int j = 0; j < 16; j++)
 		PIC_Mask(j);
 
-	for (size_t i = 0; i < 16; i++)
-		ISR_RegisterHandler(PIC1_OFFSET + i, IRQ_Handler);
+	//for (size_t i = 0; i < 16; i++)
+	//	ISR_RegisterHandler(PIC1_OFFSET + i, IRQ_Handler);
 
-	IRQ_RegisterHandler(0, timer);
-	IRQ_RegisterHandler(1, keyboard_handler);
+	ISR_RegisterHandler(PIC1_OFFSET + 0, timer);
+	ISR_RegisterHandler(PIC1_OFFSET + 1, keyboard_handler);
 	//PIC_Unmask(0); // Timer
 	PIC_Unmask(1); // Keyboard
 }

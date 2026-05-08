@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   isr.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
+/*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 02:10:22 by zerrino           #+#    #+#             */
-/*   Updated: 2025/07/15 17:57:00 by zerrino          ###   ########.fr       */
+/*   Updated: 2026/05/08 15:09:00 by reborn           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -370,20 +370,33 @@ void	ISR_Initialize()
 
 void	__attribute__((cdecl)) ISR_Handler(t_registers* regs)
 {
-	if (kernel.ISRhandlers[regs->interrupt] != NULL)
-		kernel.ISRhandlers[regs->interrupt](regs);
-	else if (32 <= regs->interrupt)
+	int	irq;
+	int	isr;
+
+	irq = regs->interrupt - PIC1_OFFSET;
+	isr = regs->interrupt;
+
+	
+	if (kernel.ISRhandlers[isr] != NULL)
+	{
+		kernel.ISRhandlers[isr](regs);
+		if (irq >= 0 && irq < 16)
+		{
+			PIC_SendEOF(irq);
+		}
+	}
+	else if (32 <= isr)
 	{
 		terminal_writestring("Unhandled interrupt : ");
-		printnbr(regs->interrupt, 10);
+		printnbr(isr, 10);
 		terminal_writestring("\n");
 	}
 	else
 	{
 		terminal_writestring("Unhandled exception : ");
-		printnbr(regs->interrupt, 10);
+		printnbr(isr, 10);
 		terminal_writestring("  ");
-		terminal_writestring(get_exception_message(regs->interrupt));
+		terminal_writestring(get_exception_message(isr));
 		terminal_writestring("\nKERNEL PANIC!\n");
 		kernelPanic();
 	}
