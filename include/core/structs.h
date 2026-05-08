@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   structs.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/12/22 19:00:41 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/05/08 15:01:14 by reborn           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,31 @@ typedef struct s_idt_descryptor {
 	uint32_t	base;
 } __attribute__((packed)) t_idt_descryptor;
 
-typedef struct s_registers {
-	uint32_t	ds;
-	uint32_t	edi, esi, ebp, kern_esp, ebx, edx, ecx, eax;
-	uint32_t	interrupt, error;
-	uint32_t	eip, cs, eflags, esp, ss;
-} __attribute__((packed)) t_registers;
+typedef struct s_registers
+{
+	uint32_t gs;
+	uint32_t fs;
+	uint32_t es;
+	uint32_t ds;
+
+	uint32_t edi;
+	uint32_t esi;
+	uint32_t ebp;
+	uint32_t esp;
+	uint32_t ebx;
+	uint32_t edx;
+	uint32_t ecx;
+	uint32_t eax;
+
+	uint32_t interrupt;
+	uint32_t error;
+
+	uint32_t eip;
+	uint32_t cs;
+	uint32_t eflags;
+	uint32_t useresp;
+	uint32_t ss;
+}	__attribute__((packed)) t_registers;
 
 typedef void (*ISRHandler)(t_registers *regs);
 typedef void (*IRQHandler)(t_registers *regs);

@@ -36,28 +36,46 @@ ISR%1:
 
 
 isr_common:
-    pusha               ; pushes in order: eax, ecx, edx, ebx, esp, ebp, esi, edi
+	pusha
 
-    xor eax, eax        ; push ds
-    mov ax, ds
-    push eax
+	xor eax, eax
+	mov ax, ds
+	push eax
 
-    mov ax, GDT_KERNEL_DATA  ; use kernel data segment
-    mov ds, ax
-    mov es, ax
-    mov fs, ax
-    mov gs, ax
+	xor eax, eax
+	mov ax, es
+	push eax
 
-    push esp            ; pass pointer to stack to C, so we can access all the pushed information
-    call ISR_Handler
-    add esp, 4
+	xor eax, eax
+	mov ax, fs
+	push eax
 
-    pop eax             ; restore old segment
-    mov ds, ax
-    mov es, ax
-    mov fs, ax
-    mov gs, ax
+	xor eax, eax
+	mov ax, gs
+	push eax
 
-    popa                ; pop what we pushed with pusha
-    add esp, 8          ; remove error code and interrupt number
-    iret                ; will pop: cs, eip, eflags, ss, esp
+	mov ax, GDT_KERNEL_DATA
+	mov ds, ax
+	mov es, ax
+	mov fs, ax
+	mov gs, ax
+
+	push esp
+	call ISR_Handler
+	add esp, 4
+
+	pop eax
+	mov gs, ax
+
+	pop eax
+	mov fs, ax
+
+	pop eax
+	mov es, ax
+
+	pop eax
+	mov ds, ax
+
+	popa
+	add esp, 8
+	iret
