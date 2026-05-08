@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   keyboard.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
+/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:33:23 by alexafer          #+#    #+#             */
-/*   Updated: 2026/05/08 10:48:36 by reborn           ###   ########.fr       */
+/*   Updated: 2025/07/11 11:20:44 by rperez-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,15 +127,6 @@ void keyboard_handler(t_registers* regs)
 {
     (void)regs; // Suppress unused parameter warning
 
-	int	i;
-
-	i = 0;
-	while (i < 10000000)
-	{
-		terminal_writestring("");
-		i++;
-	}
-
     static const char scancode_to_ascii[] = {
         0, 27,'1','2','3','4','5','6','7','8','9','0','-','=', '\b',    /* 0-14 */
         '\t','q','w','e','r','t','y','u','i','o','p','[',']','\n',      /* 15-28 */
@@ -144,7 +135,7 @@ void keyboard_handler(t_registers* regs)
         0,' '                                                           /* 56 */
     };
 
-    uint8_t scancode = regs->edi;
+    uint8_t scancode = inb(KEYBOARD_DATA_PORT);
     if (!(scancode & 0x80))
     {
         /* Handle special keys first (arrows, ctrl, shift, etc.) */

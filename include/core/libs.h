@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libs.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
+/*   By: zerrino <zerrino@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2026/05/08 10:21:01 by reborn           ###   ########.fr       */
+/*   Updated: 2025/07/13 03:16:46 by zerrino          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 /* This tutorial will only work for the 32-bit ix86 targets. */
 # if !defined(__i386__)
 	#error "This tutorial needs to be compiled with a ix86-elf compiler"
-# endif
+	# endif
 
 #include <stdbool.h>
 #include <stdint.h>
