@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   structs.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/12/22 19:00:41 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/05/08 10:50:45 by reborn           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,15 @@ typedef struct s_screens {
 	uint16_t	offset;
 } t_screens;
 
+# define SIGNAL_QUEUE_SIZE 1
+
+void	execute_signal();
+
 /* ──────────── Main Kernel Structure ──────────── */
 typedef struct s_kernel {
+	ISRHandler			signal_queue[SIGNAL_QUEUE_SIZE];
+	t_registers			signal_regs[SIGNAL_QUEUE_SIZE];
+	int					signal_ptr;
 	ISRHandler			ISRhandlers[256];
 	IRQHandler			IRQHandlers[16];
 	t_idt_entry			idt[IDT_ENTRIES];

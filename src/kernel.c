@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kernel.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2025/12/23 18:40:21 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/05/08 10:50:35 by reborn           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,5 +115,18 @@ void kernel_main(uint32_t magic, uint32_t multiboot_info_ptr)
 	//gdt_install();
 
 	while (1)
-		__asm__ volatile ("hlt");
+	{
+		t_registers	regs;
+
+		if (kernel.signal_ptr > 0)
+		{
+			DisableInterrupts();
+			kernel.signal_ptr--;
+			ft_memcpy(&regs, &kernel.signal_regs[kernel.signal_ptr], sizeof(t_registers));
+			EnableInterrupts();
+			kernel.signal_queue[kernel.signal_ptr](&regs);
+			//EnableInterrupts();
+		}
+	}
+		//__asm__ volatile ("hlt");
 }
