@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:33:23 by alexafer          #+#    #+#             */
-/*   Updated: 2026/05/13 15:38:17 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/05/13 16:00:40 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,15 +125,15 @@ void	update_cursor(int scancode)
 
 void keyboard_handler(t_registers* regs)
 {
+	/* Pour faire lag et tester
 	int	i;
-
 	i = 0;
 	while (i < 10000000)
 	{
 		terminal_writestring("");
 		i++;
 	}
-
+	*/
 
 
     static const char scancode_to_ascii[] = {
