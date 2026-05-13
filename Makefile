@@ -4,7 +4,7 @@ CC        := $(TARGET)-gcc
 NASM      := nasm
 QEMU      := qemu-system-i386 -m 128
 MKGRUB    := $(TARGET)-grub-mkrescue
-GRUB_DIR  := /usr/lib/grub/i386-pc/
+GRUB_DIR  := /opt/homebrew/Cellar/i686-elf-grub/2.12/lib/i686-elf/grub/i386-pc/
 
 ifeq ($(shell uname), Darwin)
 	MKGRUB := $(TARGET)-grub-mkrescue
@@ -42,10 +42,10 @@ C_OBJ     := $(patsubst $(SRC_DIR)/%.c,$(BUILD)/%.o,$(C_SRC))
 ASM_OBJ   := $(patsubst $(SRC_DIR)/%.s,$(BUILD)/%.o,$(ASM_SRC))
 BOOT_OBJ  := $(BUILD)/boot.o
 
-CFLAGS    := -std=gnu99 -ffreestanding -O2 -Wall -Wextra -Werror \
+CFLAGS    := -std=gnu99 -ffreestanding  -Wall -Wextra -Werror \
              -fno-builtin -fno-stack-protector -nostdlib -nodefaultlibs \
              -Iinclude -m32
-LDFLAGS   := -T utils/linker.ld -nostdlib -ffreestanding -O2 -m32
+LDFLAGS   := -T utils/linker.ld -nostdlib -ffreestanding  -m32
 NASMFLAGS := -f elf32 -I./
 
 all: $(KERNEL)

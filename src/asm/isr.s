@@ -7,6 +7,7 @@ extern ISR_Handler
 
 global	ISR%1
 ISR%1:
+	cli
 	push	0
 	push	%1
 	jmp		isr_common
@@ -17,6 +18,7 @@ ISR%1:
 
 global	ISR%1
 ISR%1:
+	cli
 	push	%1
 	jmp		isr_common
 
@@ -36,6 +38,7 @@ ISR%1:
 
 
 isr_common:
+
 	pusha
 
 	xor eax, eax

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   irq.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
+/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 20:34:40 by zerrino           #+#    #+#             */
-/*   Updated: 2026/05/08 15:10:05 by reborn           ###   ########.fr       */
+/*   Updated: 2026/05/13 13:50:43 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,9 @@ void	IRQ_Initialize()
 	PIC_Unmask(1); // Keyboard
 }
 
+/*
 void		IRQ_RegisterHandler(int irq, IRQHandler handler)
 {
 	kernel.IRQHandlers[irq] = handler;
 }
+*/
