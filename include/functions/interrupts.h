@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   interrupts.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2026/05/13 16:11:47 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/05/14 01:34:51 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,5 +59,8 @@ void iowait(void);
 /* ──────────── Functions from src/interupts/syscall.c ──────────── */
 void	init_syscall();
 void	syscall_handler(t_registers *regs);
+
+/* ──────────── Functions from src/interupts/signals.c ──────────── */
+void	init_signals();
 
 #endif

@@ -4,7 +4,7 @@ CC        := $(TARGET)-gcc
 NASM      := nasm
 QEMU      := qemu-system-i386 -m 128
 MKGRUB    := $(TARGET)-grub-mkrescue
-GRUB_DIR  := /opt/homebrew/Cellar/i686-elf-grub/2.12/lib/i686-elf/grub/i386-pc/
+GRUB_DIR  := /usr/lib/grub/i386-pc/
 
 ifeq ($(shell uname), Darwin)
 	MKGRUB := $(TARGET)-grub-mkrescue

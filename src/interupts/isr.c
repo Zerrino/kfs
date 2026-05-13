@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   isr.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 02:10:22 by zerrino           #+#    #+#             */
-/*   Updated: 2026/05/13 16:54:26 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/05/14 01:48:12 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -404,12 +404,24 @@ void	__attribute__((cdecl)) ISR_Handler(t_registers* regs)
 					break;
 			}
 		}
+
+		if (kernel.signalSize < SIGNAL_QUEUE_SIZE)
+		{
+			ft_memcpy(&kernel.signalEnd->regs, regs, sizeof(t_registers));
+			kernel.signalEnd->ISRsignals = kernel.ISRhandlers[isr];
+			kernel.signalEnd = kernel.signalEnd->next;
+			kernel.signalSize++;
+		}
+
+		/*
 		if (kernel.signal_ptr < SIGNAL_QUEUE_SIZE)
 		{
 			ft_memcpy(&kernel.signal_regs[kernel.signal_ptr], regs, sizeof(t_registers));
 			kernel.ISRSignalsQueue[kernel.signal_ptr] = kernel.ISRhandlers[isr];
 			kernel.signal_ptr++;
 		}
+		*/
+
 		if (irq >= 0 && irq < 16)
 		{
 			PIC_SendEOF(irq);

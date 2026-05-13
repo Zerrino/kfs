@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kernel.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2026/05/13 16:54:54 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/05/14 01:35:35 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ void terminal_initialize()
 	}
 
 	DisableInterrupts();
+	init_signals();
 	gdt_install();
 	IDT_Initialize();
 	ISR_Initialize();
