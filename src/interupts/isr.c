@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 02:10:22 by zerrino           #+#    #+#             */
-/*   Updated: 2026/05/13 15:36:00 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/05/13 15:47:26 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -379,10 +379,18 @@ void	__attribute__((cdecl)) ISR_Handler(t_registers* regs)
 
 	if (kernel.ISRhandlers[isr] != NULL)
 	{
+		if (isr < 32)
+		{
+			kernel.ISRhandlers[isr](regs);
+			return ;
+		}
 		if (irq >= 0 && irq < 16)
 		{
 			switch (irq)
 			{
+				case 0:
+					kernel.tick++;
+					break;
 				case 1:
 					regs->edi = inb(KEYBOARD_DATA_PORT);
 					break;

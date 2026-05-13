@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2026/05/13 15:41:15 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/05/13 15:46:50 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ typedef struct s_screens {
 /* ──────────── Main Kernel Structure ──────────── */
 typedef struct s_kernel
 {
+	uint32_t			tick;
 	int					signal_ptr;
 	ISRHandler			ISRSignalsQueue[SIGNAL_QUEUE_SIZE];
 	t_registers			signal_regs[SIGNAL_QUEUE_SIZE];
