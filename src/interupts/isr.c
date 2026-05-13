@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 02:10:22 by zerrino           #+#    #+#             */
-/*   Updated: 2026/05/13 16:06:35 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/05/13 16:54:26 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -392,6 +392,9 @@ void	__attribute__((cdecl)) ISR_Handler(t_registers* regs)
 			{
 				case 0:
 					kernel.tick++;
+					kernel.ISRhandlers[isr](regs);
+					PIC_SendEOF(irq);
+					return ;
 					break;
 				case 1:
 					regs->edi = inb(KEYBOARD_DATA_PORT);

@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2026/05/13 16:23:14 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/05/13 16:54:54 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,12 +117,6 @@ void kernel_main(uint32_t magic, uint32_t multiboot_info_ptr)
 
 	while (1)
 	{
-		if (kernel.signal_ptr > 0)
-		{
-			kernel.signal_ptr--;
-			t_registers	regs;
-			ft_memcpy(&regs, &kernel.signal_regs[kernel.signal_ptr], sizeof(t_registers));
-			kernel.ISRSignalsQueue[kernel.signal_ptr](&regs);
-		}
+		__asm__("hlt");
 	}
 }

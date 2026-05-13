@@ -23,11 +23,8 @@ global handle_syscall
 handle_syscall:
 
 	mov eax,	1
-
 	mov esi,	hello
-
 	mov edx,	hello_len
-
 	int 0x80
 
 	ret

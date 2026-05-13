@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:33:23 by alexafer          #+#    #+#             */
-/*   Updated: 2026/05/13 16:00:40 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/05/13 16:39:51 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,8 @@ void keyboard_handler(t_registers* regs)
         0,'\\','z','x','c','v','b','n','m',',','.','/', 0,'*',          /* 42-55 */
         0,' '                                                           /* 56 */
     };
+
+
 
     uint8_t scancode = regs->edi;
     if (!(scancode & 0x80))
