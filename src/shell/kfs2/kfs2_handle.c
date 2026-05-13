@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kfs2_handle.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
+/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 20:14:06 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/11 11:54:15 by rperez-t         ###   ########.fr       */
+/*   Updated: 2026/05/13 16:18:09 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,8 @@ command_type_t get_core_system_command_type(const char* command) {
         return CMD_HALT;
     else if (ft_strcmp(command, "shutdown") == 0)
         return CMD_SHUTDOWN;
-
+    else if (ft_strcmp(command, "syscall") == 0)
+        return CMD_SYSCALL;
     return CMD_UNKNOWN;
 }
 
@@ -106,6 +107,9 @@ bool handle_core_system_commands(command_type_t cmd_type, const char* arg) {
             return true;
         case CMD_SHUTDOWN:
             handle_shutdown();
+            return true;
+        case CMD_SYSCALL:
+            handle_syscall();
             return true;
         default:
             return false;

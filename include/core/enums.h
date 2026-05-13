@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   enums.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-tstudent.s19.be>          +#+  +:+       +#+        */
+/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/11 11:54:38 by rperez-t         ###   ########.fr       */
+/*   Updated: 2026/05/13 16:17:42 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,7 @@ typedef enum {
     CMD_REBOOT,
     CMD_HALT,
     CMD_SHUTDOWN,
+	CMD_SYSCALL,
     CMD_UNKNOWN
 } command_type_t;
 
@@ -184,5 +185,9 @@ typedef enum {
     EXCEPTION_RESERVED_31 = 31,            /* Reserved */
     EXCEPTION_MAX = 32                     /* Maximum exception number */
 } cpu_exception_t;
+
+typedef enum {
+	ISR_SYSCALL = 0x80
+} isr_calls_t;
 
 #endif

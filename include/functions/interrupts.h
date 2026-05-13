@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   interrupts.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rperez-t <rperez-t@student.s19.be>         +#+  +:+       +#+        */
+/*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2025/07/09 21:37:58 by rperez-t         ###   ########.fr       */
+/*   Updated: 2026/05/13 16:11:47 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,9 @@ uint8_t inb(uint16_t port);
 void outb(uint16_t port, uint8_t value);
 void outw(uint16_t port, uint16_t value);
 void iowait(void);
+
+/* ──────────── Functions from src/interupts/syscall.c ──────────── */
+void	init_syscall();
+void	syscall_handler(t_registers *regs);
 
 #endif

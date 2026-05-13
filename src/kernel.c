@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:54:32 by alexafer          #+#    #+#             */
-/*   Updated: 2026/05/13 15:33:48 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/05/13 16:23:14 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ void terminal_initialize()
 	ISR_Initialize();
 	IRQ_Initialize();
 	keyboard_init();
+	init_syscall();
 	EnableInterrupts();
 }
 

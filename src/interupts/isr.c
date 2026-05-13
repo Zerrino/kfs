@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 02:10:22 by zerrino           #+#    #+#             */
-/*   Updated: 2026/05/13 16:01:54 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/05/13 16:06:35 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ static void page_fault_handler(t_registers *regs)
 
 	kernelPanic();                         /* ou tentative de map */
 }
+
 
 const char *get_exception_message(uint32_t exception_num)
 {
@@ -358,6 +359,7 @@ void	ISR_InitializeGates()
 
 
 	ISR_RegisterHandler(EXCEPTION_PAGE_FAULT, page_fault_handler); /* 14 */
+	ISR_RegisterHandler(ISR_SYSCALL, syscall_handler); /* 0x80 */
 }
 
 void	ISR_Initialize()

@@ -1,12 +1,35 @@
 
 [bits 32]
 
+section .data
+
+	hello: db 10, "hello", 10
+
+	hello_len equ $ - hello
+
+section .text
+
+
+
 global crash_me
 
 crash_me:
 	int		50
 	mov		eax, 0
 	div		eax
+	ret
+
+global handle_syscall
+handle_syscall:
+
+	mov eax, 1       ; syscall number dans ton kernel
+
+	mov esi, hello   ; buffer
+
+	mov edx, hello_len
+
+	int 0x80
+
 	ret
 
 

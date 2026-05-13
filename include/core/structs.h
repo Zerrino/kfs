@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:30:00 by rperez-t          #+#    #+#             */
-/*   Updated: 2026/05/13 16:02:00 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/05/13 16:08:58 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,9 @@ typedef struct s_registers
 	uint32_t ss;
 }	__attribute__((packed)) t_registers;
 
-typedef void (*ISRHandler)(t_registers *regs);
-typedef void (*IRQHandler)(t_registers *regs);
+typedef void		(*ISRHandler)(t_registers *regs);
+typedef void		(*IRQHandler)(t_registers *regs);
+typedef uint32_t	(*SYSCALLHandler)(t_registers *regs);
 
 /* ──────────── GDT Structures ──────────── */
 typedef struct s_gdt_entry {
@@ -108,6 +109,7 @@ typedef struct s_kernel
 	ISRHandler			ISRSignalsQueue[SIGNAL_QUEUE_SIZE];
 	t_registers			signal_regs[SIGNAL_QUEUE_SIZE];
 	ISRHandler			ISRhandlers[256];
+	SYSCALLHandler		SYSCALLHandlers[256];
 	t_idt_entry			idt[IDT_ENTRIES];
 	t_idt_descryptor	idt_descriptor;
 	t_screens			screens[NB_SCREEN];
