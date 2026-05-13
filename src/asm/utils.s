@@ -22,11 +22,11 @@ crash_me:
 global handle_syscall
 handle_syscall:
 
-	mov eax, 1       ; syscall number dans ton kernel
+	mov eax,	1
 
-	mov esi, hello   ; buffer
+	mov esi,	hello
 
-	mov edx, hello_len
+	mov edx,	hello_len
 
 	int 0x80
 
