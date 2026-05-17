@@ -78,6 +78,7 @@ void keyboard_init()
 	kernel.keyboard_line_ready = 0;
 	kernel.keyboard_extended = 0;
 	kernel.keyboard_caps = 0;
+	kernel.terminal_alt = 0;
 	kernel.keyboard_layout = KEYBOARD_LAYOUT_QWERTY;
 	while (inb(KEYBOARD_STATUS_PORT) & KEYBOARD_STATUS_READY)
 		;
@@ -203,6 +204,36 @@ static void keyboard_move_right(void)
 	keyboard_cursor_right();
 }
 
+static void keyboard_move_home(void)
+{
+	while (!kernel.keyboard_line_ready && kernel.keyboard_line_cursor > 0)
+		keyboard_move_left();
+}
+
+static void keyboard_move_end(void)
+{
+	while (!kernel.keyboard_line_ready &&
+			kernel.keyboard_line_cursor < kernel.keyboard_line_len)
+		keyboard_move_right();
+}
+
+static void keyboard_delete(void)
+{
+	uint32_t cursor;
+
+	if (kernel.keyboard_line_ready ||
+			kernel.keyboard_line_cursor >= kernel.keyboard_line_len)
+		return ;
+	cursor = kernel.keyboard_line_cursor;
+	while (cursor + 1 < kernel.keyboard_line_len)
+	{
+		kernel.keyboard_line[cursor] = kernel.keyboard_line[cursor + 1];
+		cursor++;
+	}
+	kernel.keyboard_line_len--;
+	keyboard_redraw_from_cursor();
+}
+
 static void keyboard_push_char(char c)
 {
 	if (kernel.keyboard_count == KEYBOARD_BUFFER_SIZE)
@@ -269,6 +300,15 @@ void update_cursor(int scancode)
 		case SCANCODE_RIGHT_ARROW:
 			keyboard_move_right();
 			break;
+		case SCANCODE_HOME:
+			keyboard_move_home();
+			break;
+		case SCANCODE_END:
+			keyboard_move_end();
+			break;
+		case SCANCODE_DELETE:
+			keyboard_delete();
+			break;
 		default:
 			break;
 	}
@@ -310,6 +350,8 @@ void keyboard_handler(t_registers* regs)
 	{
 		if (!kernel.keyboard_extended && scancode == SCANCODE_CTRL_RELEASE)
 			kernel.terminal_ctrl = 0;
+		else if (!kernel.keyboard_extended && scancode == SCANCODE_ALT_RELEASE)
+			kernel.terminal_alt = 0;
 		else if (!kernel.keyboard_extended && (scancode == SCANCODE_LSHIFT_RELEASE ||
 				scancode == SCANCODE_RSHIFT_RELEASE))
 			kernel.terminal_shift = 0;
@@ -318,13 +360,16 @@ void keyboard_handler(t_registers* regs)
 	}
 	if (!kernel.keyboard_extended && scancode == SCANCODE_CTRL_PRESS)
 		kernel.terminal_ctrl = 1;
+	else if (!kernel.keyboard_extended && scancode == SCANCODE_ALT_PRESS)
+		kernel.terminal_alt = 1;
 	else if (!kernel.keyboard_extended && (scancode == SCANCODE_LSHIFT_PRESS ||
 			scancode == SCANCODE_RSHIFT_PRESS))
 		kernel.terminal_shift = 1;
 	else if (!kernel.keyboard_extended && scancode == SCANCODE_CAPS_LOCK)
 		kernel.keyboard_caps = !kernel.keyboard_caps;
 	else if (scancode == SCANCODE_LEFT_ARROW || scancode == SCANCODE_RIGHT_ARROW ||
-			scancode == SCANCODE_DOWN_ARROW || scancode == SCANCODE_UP_ARROW)
+			scancode == SCANCODE_HOME || scancode == SCANCODE_END ||
+			scancode == SCANCODE_DELETE)
 		update_cursor(scancode);
 	else
 	{

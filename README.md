@@ -60,13 +60,14 @@ current KFS4 interrupt work.
   - Backspace edits the kernel line buffer and redraws VGA.
   - Left/right move inside the current kernel line.
   - Up/down do not move through the VGA buffer.
-  - Remaining polish: delete, home/end, and optional command history.
-- Syscall bonus is started but not complete.
-  - `int 0x80` and syscall number `1` / write exist.
-  - A fuller base should define syscall numbers, argument conventions, return
-    values, and error behavior in headers.
+  - Delete, Home, End, and Alt press/release tracking are implemented.
+  - Remaining optional polish: command history.
+- Syscall bonus base is implemented.
+  - `SYS_WRITE` is defined as syscall number `1`.
+  - ABI is documented: `eax` is syscall number, `esi` is buffer, `edx` is length, return value is written back to `eax`.
+  - Unknown syscalls return `(uint32_t)-1` in `eax`.
 
 ## Suggested Next Order
 
-1. Add optional keyboard editing polish: delete, home/end, and command history.
+1. Add optional command history for up/down arrows.
 2. Boot-test timer, keyboard, shell commands, page fault panic, and `int 0x80`.

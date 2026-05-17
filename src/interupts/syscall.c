@@ -35,16 +35,20 @@ void	init_syscall()
 		kernel.SYSCALLHandlers[i] = 0;
 		i++;
 	}
-	kernel.SYSCALLHandlers[1] = &SYS_write;
+	kernel.SYSCALLHandlers[SYS_WRITE] = &SYS_write;
 }
 
 void syscall_handler(t_registers *regs)
 {
-	int	eax;
+	uint32_t	eax;
 
-	eax = regs->eax;
-	if (eax < 0 || eax >= 256)
+	if (regs == NULL)
 		return ;
-	if (kernel.SYSCALLHandlers[eax] != NULL)
-		eax = kernel.SYSCALLHandlers[eax](regs);
+	eax = regs->eax;
+	if (eax >= 256 || kernel.SYSCALLHandlers[eax] == NULL)
+	{
+		regs->eax = (uint32_t)-1;
+		return ;
+	}
+	regs->eax = kernel.SYSCALLHandlers[eax](regs);
 }

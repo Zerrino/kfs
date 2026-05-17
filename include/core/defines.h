@@ -111,16 +111,21 @@
 #define SCANCODE_ENTER          28      /* Enter key scancode */
 #define SCANCODE_CTRL_PRESS     29      /* Ctrl key press */
 #define SCANCODE_CTRL_RELEASE   157     /* Ctrl key release */
+#define SCANCODE_ALT_PRESS      56      /* Alt key press */
+#define SCANCODE_ALT_RELEASE    184     /* Alt key release */
 #define SCANCODE_LSHIFT_PRESS   42      /* Left Shift key press */
 #define SCANCODE_LSHIFT_RELEASE 170     /* Left Shift key release */
 #define SCANCODE_RSHIFT_PRESS   54      /* Right Shift key press */
 #define SCANCODE_RSHIFT_RELEASE 182     /* Right Shift key release */
 #define SCANCODE_CAPS_LOCK      58      /* Caps lock key */
 #define SCANCODE_E0_PREFIX      224     /* Extended scancode prefix */
+#define SCANCODE_HOME           71      /* Home key */
+#define SCANCODE_UP_ARROW       72      /* Up arrow key */
 #define SCANCODE_LEFT_ARROW     75      /* Left arrow key */
 #define SCANCODE_RIGHT_ARROW    77      /* Right arrow key */
-#define SCANCODE_UP_ARROW       72      /* Up arrow key */
+#define SCANCODE_END            79      /* End key */
 #define SCANCODE_DOWN_ARROW     80      /* Down arrow key */
+#define SCANCODE_DELETE         83      /* Delete key */
 
 /* ──────────── System Control Constants ──────────── */
 #define REBOOT_PORT             0x64    /* Keyboard controller port for reboot */
@@ -128,6 +133,9 @@
 #define ACPI_SHUTDOWN_PORT      0xB004  /* ACPI shutdown port */
 #define APM_SHUTDOWN_PORT       0x604   /* APM shutdown port */
 #define SHUTDOWN_CMD            0x2000  /* Shutdown command */
+
+/* ──────────── Syscall Constants ──────────── */
+#define SYS_WRITE               1       /* eax=1, esi=buffer, edx=length, ret=eax */
 
 /* ──────────── CPU Flags ──────────── */
 #define EFLAGS_INTERRUPT_FLAG   0x200   /* Interrupt flag in EFLAGS register */

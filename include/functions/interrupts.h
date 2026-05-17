@@ -57,6 +57,11 @@ void outw(uint16_t port, uint16_t value);
 void iowait(void);
 
 /* ──────────── Functions from src/interupts/syscall.c ──────────── */
+/*
+** Syscall ABI:
+** eax = syscall number, esi = buffer pointer, edx = byte length.
+** Return value is written back to eax.
+*/
 void	init_syscall();
 void	syscall_handler(t_registers *regs);
 

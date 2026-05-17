@@ -131,6 +131,7 @@ typedef struct s_kernel
 	t_screens			screens[NB_SCREEN];
 	uint8_t				terminal_ctrl;
 	uint8_t				terminal_shift;
+	uint8_t				terminal_alt;
 	uint8_t				screen_index;
 	uint16_t			*terminal_buffer;
 	char				keyboard_buffer[KEYBOARD_BUFFER_SIZE];
