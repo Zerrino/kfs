@@ -111,13 +111,10 @@ typedef struct s_signal {
 typedef struct s_kernel
 {
 	uint32_t			tick;
-	int					signal_ptr;
 	int					signalSize;
 	t_signal			*signalBegin;
 	t_signal			*signalEnd;
 	t_signal			signalQueue[SIGNAL_QUEUE_SIZE];
-	ISRHandler			ISRSignalsQueue[SIGNAL_QUEUE_SIZE];
-	t_registers			signal_regs[SIGNAL_QUEUE_SIZE];
 	ISRHandler			ISRhandlers[256];
 	SYSCALLHandler		SYSCALLHandlers[256];
 	t_idt_entry			idt[IDT_ENTRIES];

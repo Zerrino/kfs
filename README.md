@@ -24,9 +24,10 @@ current KFS4 interrupt work.
 
 ### Mandatory items still missing or needing cleanup
 
-- Add a clear public API for scheduling signals.
-  - The internal queue exists, but there is no obvious function such as
-    `signal_schedule(handler, regs)` or equivalent for kernel code to call.
+- Signal scheduling API is implemented.
+  - `signal_schedule(handler, regs)` queues a deferred callback.
+  - `signal_dispatch_next()` runs one queued callback from the timer path.
+  - Exceptions, IRQ0, IRQ1, and syscalls stay immediate.
 - Finish the panic / halt cleanup interface.
   - `kernelPanic()` currently disables interrupts and halts.
   - The subject asks for an interface to clean registers before panic / halt.
@@ -68,7 +69,6 @@ current KFS4 interrupt work.
 
 ## Suggested Next Order
 
-1. Add an explicit signal scheduling function and use it from ISR/IRQ code.
-2. Implement panic register cleanup plus stack snapshot/dump.
-3. Add optional keyboard editing polish: delete, home/end, and command history.
-4. Boot-test timer, keyboard, shell commands, page fault panic, and `int 0x80`.
+1. Implement panic register cleanup plus stack snapshot/dump.
+2. Add optional keyboard editing polish: delete, home/end, and command history.
+3. Boot-test timer, keyboard, shell commands, page fault panic, and `int 0x80`.

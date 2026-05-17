@@ -61,6 +61,8 @@ void	init_syscall();
 void	syscall_handler(t_registers *regs);
 
 /* ──────────── Functions from src/interupts/signals.c ──────────── */
-void	init_signals();
+void	init_signals(void);
+int		signal_schedule(ISRHandler handler, t_registers *regs);
+int		signal_dispatch_next(void);
 
 #endif

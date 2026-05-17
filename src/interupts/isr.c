@@ -381,7 +381,7 @@ void	__attribute__((cdecl)) ISR_Handler(t_registers* regs)
 
 	if (kernel.ISRhandlers[isr] != NULL)
 	{
-		if (isr < 32)
+		if (isr < 32 || isr == ISR_SYSCALL)
 		{
 			kernel.ISRhandlers[isr](regs);
 			return ;
@@ -391,7 +391,6 @@ void	__attribute__((cdecl)) ISR_Handler(t_registers* regs)
 			switch (irq)
 			{
 				case 0:
-					kernel.tick++;
 					kernel.ISRhandlers[isr](regs);
 					PIC_SendEOF(irq);
 					return ;
@@ -405,22 +404,10 @@ void	__attribute__((cdecl)) ISR_Handler(t_registers* regs)
 			}
 		}
 
-		if (kernel.signalSize < SIGNAL_QUEUE_SIZE)
+		if (signal_schedule(kernel.ISRhandlers[isr], regs) != 0)
 		{
-			ft_memcpy(&kernel.signalEnd->regs, regs, sizeof(t_registers));
-			kernel.signalEnd->ISRsignals = kernel.ISRhandlers[isr];
-			kernel.signalEnd = kernel.signalEnd->next;
-			kernel.signalSize++;
+			terminal_writestring("Signal queue full or invalid handler\n");
 		}
-
-		/*
-		if (kernel.signal_ptr < SIGNAL_QUEUE_SIZE)
-		{
-			ft_memcpy(&kernel.signal_regs[kernel.signal_ptr], regs, sizeof(t_registers));
-			kernel.ISRSignalsQueue[kernel.signal_ptr] = kernel.ISRhandlers[isr];
-			kernel.signal_ptr++;
-		}
-		*/
 
 		if (irq >= 0 && irq < 16)
 		{
