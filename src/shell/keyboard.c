@@ -12,7 +12,7 @@
 
 #include "../include/kernel.h"
 
-static const char g_qwerty[] = {
+static const char g_qwerty[128] = {
 	[1] = 27, [2] = '1', [3] = '2', [4] = '3', [5] = '4', [6] = '5',
 	[7] = '6', [8] = '7', [9] = '8', [10] = '9', [11] = '0', [12] = '-',
 	[13] = '=', [14] = '\b', [15] = '\t', [16] = 'q', [17] = 'w',
@@ -26,7 +26,7 @@ static const char g_qwerty[] = {
 	[57] = ' '
 };
 
-static const char g_qwerty_shift[] = {
+static const char g_qwerty_shift[128] = {
 	[1] = 27, [2] = '!', [3] = '@', [4] = '#', [5] = '$', [6] = '%',
 	[7] = '^', [8] = '&', [9] = '*', [10] = '(', [11] = ')', [12] = '_',
 	[13] = '+', [14] = '\b', [15] = '\t', [16] = 'Q', [17] = 'W',
@@ -40,7 +40,7 @@ static const char g_qwerty_shift[] = {
 	[57] = ' '
 };
 
-static const char g_azerty[] = {
+static const char g_azerty[128] = {
 	[1] = 27, [2] = '&', [3] = 'e', [4] = '"', [5] = '\'', [6] = '(',
 	[7] = '-', [8] = 'e', [9] = '_', [10] = 'c', [11] = 'a', [12] = ')',
 	[13] = '=', [14] = '\b', [15] = '\t', [16] = 'a', [17] = 'z',
@@ -54,7 +54,7 @@ static const char g_azerty[] = {
 	[57] = ' '
 };
 
-static const char g_azerty_shift[] = {
+static const char g_azerty_shift[128] = {
 	[1] = 27, [2] = '1', [3] = '2', [4] = '3', [5] = '4', [6] = '5',
 	[7] = '6', [8] = '7', [9] = '8', [10] = '9', [11] = '0', [12] = 'o',
 	[13] = '+', [14] = '\b', [15] = '\t', [16] = 'A', [17] = 'Z',
@@ -244,6 +244,8 @@ int keyboard_readline(char *buffer, size_t size)
 		i++;
 	}
 	buffer[i] = '\0';
+	kernel.keyboard_read = kernel.keyboard_write;
+	kernel.keyboard_count = 0;
 	kernel.keyboard_line_len = 0;
 	kernel.keyboard_line_cursor = 0;
 	kernel.keyboard_line_ready = 0;

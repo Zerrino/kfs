@@ -127,8 +127,6 @@ typedef struct s_kernel
 	uint8_t				terminal_shift;
 	uint8_t				screen_index;
 	uint16_t			*terminal_buffer;
-	char				command_buffer[COMMAND_BUFFER_SIZE];
-	int					buffer_pos;
 	char				keyboard_buffer[KEYBOARD_BUFFER_SIZE];
 	uint32_t			keyboard_read;
 	uint32_t			keyboard_write;

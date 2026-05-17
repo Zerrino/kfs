@@ -87,7 +87,6 @@
 }
 
 /* ──────────── Shell Constants ──────────── */
-#define COMMAND_BUFFER_SIZE     256
 #define KEYBOARD_BUFFER_SIZE    256
 #define KEYBOARD_LINE_SIZE      256
 

@@ -52,13 +52,15 @@ current KFS4 interrupt work.
 - Multi-layout keyboard support is started.
   - QWERTY and AZERTY keymaps exist.
   - The active layout can be switched with `layout qwerty` or `layout azerty`.
-- `get_line`-style input is started.
+- `get_line`-style input is implemented in the kernel keyboard layer.
   - `keyboard_readline()` returns a completed kernel input line without blocking.
   - `keyboard_getline()` blocks with `hlt` until Enter completes a line.
-- Improve keyboard editing behavior.
-  - Backspace exists in the shell path.
-  - Useful bonus polish would include left/right movement inside the current
-    input line, delete, home/end, and safe buffer bounds.
+  - `kbdtest` uses `keyboard_getline()` and prints exactly what the kernel captured.
+- Keyboard editing is kernel-side.
+  - Backspace edits the kernel line buffer and redraws VGA.
+  - Left/right move inside the current kernel line.
+  - Up/down do not move through the VGA buffer.
+  - Remaining polish: delete, home/end, and optional command history.
 - Syscall bonus is started but not complete.
   - `int 0x80` and syscall number `1` / write exist.
   - A fuller base should define syscall numbers, argument conventions, return
@@ -68,7 +70,5 @@ current KFS4 interrupt work.
 
 1. Add an explicit signal scheduling function and use it from ISR/IRQ code.
 2. Implement panic register cleanup plus stack snapshot/dump.
-3. Expand keyboard editing beyond backspace, especially in-line left/right edits.
-4. Decide whether the shell should keep consuming characters or move fully to
-   `keyboard_getline()`.
-5. Boot-test timer, keyboard, shell commands, page fault panic, and `int 0x80`.
+3. Add optional keyboard editing polish: delete, home/end, and command history.
+4. Boot-test timer, keyboard, shell commands, page fault panic, and `int 0x80`.

@@ -34,6 +34,5 @@ command_type_t get_general_command_type(const char* command);
 bool handle_general_commands(command_type_t cmd_type, const char* arg);
 command_type_t get_command_type(const char* command);
 void shell_process_command(const char* cmd);
-void shell_handle_input(char c);
 
 #endif

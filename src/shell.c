@@ -22,12 +22,24 @@ void handle_help() {
     terminal_writestring("Available commands:\n");
     terminal_writestring("  help         - Display this help message\n");
     terminal_writestring("  layout       - Set keyboard layout: qwerty or azerty\n");
+    terminal_writestring("  kbdtest      - Read and echo one kernel input line\n");
     display_kfs2_help(); // Display KFS2 advanced commands
 }
 
 void handle_unknown(const char* command) {
     terminal_writestring("Unknown command: ");
     terminal_writestring(command);
+    terminal_writestring("\n");
+}
+
+static void handle_keyboard_test(void)
+{
+    char line[KEYBOARD_LINE_SIZE];
+
+    terminal_writestring("keyboard test> ");
+    keyboard_getline(line, sizeof(line));
+    terminal_writestring("kernel captured: ");
+    terminal_writestring(line);
     terminal_writestring("\n");
 }
 
@@ -108,6 +120,11 @@ void shell_process_command(const char* cmd) {
         terminal_writestring("> ");
         return;
     }
+    if (ft_strcmp(command, "kbdtest") == 0) {
+        handle_keyboard_test();
+        terminal_writestring("> ");
+        return;
+    }
 
     command_type_t cmd_type = get_command_type(command);
     if (handle_general_commands(cmd_type, arg)) {
@@ -120,21 +137,4 @@ void shell_process_command(const char* cmd) {
     }
 
     terminal_writestring("> ");
-}
-
-void shell_handle_input(char c) {
-    if (c == '\n') {
-        terminal_putchar('\n');
-        kernel.command_buffer[kernel.buffer_pos] = '\0';
-        shell_process_command(kernel.command_buffer);
-        kernel.buffer_pos = 0;
-    } else if (c == '\b' && 0 < kernel.buffer_pos) {
-        kernel.buffer_pos--;
-        terminal_putchar('\b');
-        terminal_putchar(' ');
-        terminal_putchar('\b');
-    } else if (' ' <= c && c <= '~' && kernel.buffer_pos < COMMAND_BUFFER_SIZE - 1) {
-        kernel.command_buffer[kernel.buffer_pos++] = c;
-        terminal_putchar(c);
-    }
 }
