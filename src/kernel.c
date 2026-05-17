@@ -118,10 +118,10 @@ void kernel_main(uint32_t magic, uint32_t multiboot_info_ptr)
 
 	while (1)
 	{
-		char c;
+		char line[KEYBOARD_LINE_SIZE];
 
-		while (keyboard_read_char(&c))
-			shell_handle_input(c);
+		if (keyboard_readline(line, sizeof(line)))
+			shell_process_command(line);
 		__asm__("hlt");
 	}
 }

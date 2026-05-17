@@ -74,6 +74,7 @@ void keyboard_init()
 	kernel.keyboard_write = 0;
 	kernel.keyboard_count = 0;
 	kernel.keyboard_line_len = 0;
+	kernel.keyboard_line_cursor = 0;
 	kernel.keyboard_line_ready = 0;
 	kernel.keyboard_extended = 0;
 	kernel.keyboard_caps = 0;
@@ -95,6 +96,113 @@ void keyboard_set_layout(keyboard_layout_t layout)
 	kernel.keyboard_layout = layout;
 }
 
+static void keyboard_cursor_left(void)
+{
+	t_screens *screen;
+
+	screen = &kernel.screens[kernel.screen_index];
+	if (screen->column > 0)
+		screen->column--;
+	else if (screen->row > 0)
+	{
+		screen->row--;
+		screen->column = VGA_WIDTH - 1;
+	}
+	vga_set_cursor(screen->row, screen->column);
+}
+
+static void keyboard_cursor_right(void)
+{
+	t_screens *screen;
+
+	screen = &kernel.screens[kernel.screen_index];
+	if (screen->column < VGA_WIDTH - 1)
+		screen->column++;
+	else if (screen->row < VGA_HEIGHT - 1)
+	{
+		screen->row++;
+		screen->column = 0;
+	}
+	vga_set_cursor(screen->row, screen->column);
+}
+
+static void keyboard_complete_line(void)
+{
+	if (kernel.keyboard_line_ready)
+		return ;
+	kernel.keyboard_line[kernel.keyboard_line_len] = '\0';
+	while (kernel.keyboard_line_cursor < kernel.keyboard_line_len)
+	{
+		kernel.keyboard_line_cursor++;
+		keyboard_cursor_right();
+	}
+	kernel.keyboard_line_ready = 1;
+	terminal_putchar('\n');
+}
+
+static void keyboard_put_printable(char c)
+{
+	if (kernel.keyboard_line_ready)
+		return ;
+	if (kernel.keyboard_line_cursor == kernel.keyboard_line_len)
+	{
+		if (kernel.keyboard_line_len >= KEYBOARD_LINE_SIZE - 1)
+			return ;
+		kernel.keyboard_line_len++;
+	}
+	kernel.keyboard_line[kernel.keyboard_line_cursor] = c;
+	terminal_putchar(c);
+	kernel.keyboard_line_cursor++;
+}
+
+static void keyboard_redraw_from_cursor(void)
+{
+	uint32_t cursor;
+	uint32_t moves;
+
+	cursor = kernel.keyboard_line_cursor;
+	for (uint32_t i = cursor; i < kernel.keyboard_line_len; i++)
+		terminal_putchar(kernel.keyboard_line[i]);
+	terminal_putchar(' ');
+	moves = kernel.keyboard_line_len - cursor + 1;
+	while (moves-- > 0)
+		keyboard_cursor_left();
+}
+
+static void keyboard_backspace(void)
+{
+	uint32_t cursor;
+
+	if (kernel.keyboard_line_ready || kernel.keyboard_line_cursor == 0)
+		return ;
+	keyboard_cursor_left();
+	kernel.keyboard_line_cursor--;
+	cursor = kernel.keyboard_line_cursor;
+	while (cursor + 1 < kernel.keyboard_line_len)
+	{
+		kernel.keyboard_line[cursor] = kernel.keyboard_line[cursor + 1];
+		cursor++;
+	}
+	kernel.keyboard_line_len--;
+	keyboard_redraw_from_cursor();
+}
+
+static void keyboard_move_left(void)
+{
+	if (kernel.keyboard_line_ready || kernel.keyboard_line_cursor == 0)
+		return ;
+	kernel.keyboard_line_cursor--;
+	keyboard_cursor_left();
+}
+
+static void keyboard_move_right(void)
+{
+	if (kernel.keyboard_line_ready || kernel.keyboard_line_cursor >= kernel.keyboard_line_len)
+		return ;
+	kernel.keyboard_line_cursor++;
+	keyboard_cursor_right();
+}
+
 static void keyboard_push_char(char c)
 {
 	if (kernel.keyboard_count == KEYBOARD_BUFFER_SIZE)
@@ -105,21 +213,12 @@ static void keyboard_push_char(char c)
 	kernel.keyboard_buffer[kernel.keyboard_write] = c;
 	kernel.keyboard_write = (kernel.keyboard_write + 1) % KEYBOARD_BUFFER_SIZE;
 	kernel.keyboard_count++;
-	if (!kernel.keyboard_line_ready)
-	{
-		if (c == '\n')
-		{
-			kernel.keyboard_line[kernel.keyboard_line_len] = '\0';
-			kernel.keyboard_line_ready = 1;
-		}
-		else if (c == '\b')
-		{
-			if (kernel.keyboard_line_len > 0)
-				kernel.keyboard_line_len--;
-		}
-		else if (kernel.keyboard_line_len < KEYBOARD_LINE_SIZE - 1)
-			kernel.keyboard_line[kernel.keyboard_line_len++] = c;
-	}
+	if (c == '\n')
+		keyboard_complete_line();
+	else if (c == '\b')
+		keyboard_backspace();
+	else if (' ' <= c && c <= '~')
+		keyboard_put_printable(c);
 }
 
 int keyboard_read_char(char *c)
@@ -146,6 +245,7 @@ int keyboard_readline(char *buffer, size_t size)
 	}
 	buffer[i] = '\0';
 	kernel.keyboard_line_len = 0;
+	kernel.keyboard_line_cursor = 0;
 	kernel.keyboard_line_ready = 0;
 	return (1);
 }
@@ -157,84 +257,19 @@ size_t keyboard_getline(char *buffer, size_t size)
 	return (strlen(buffer));
 }
 
-static void left_arrow()
-{
-	if (kernel.terminal_ctrl && kernel.terminal_shift)
-	{
-		if (0 < kernel.screen_index)
-		{
-			kernel.screen_index--;
-			terminal_restore();
-			vga_cursor_restore();
-			return ;
-		}
-	}
-	else if (0 < kernel.screens[kernel.screen_index].column)
-		kernel.screens[kernel.screen_index].column--;
-	else if (0 < kernel.screens[kernel.screen_index].row)
-	{
-		kernel.screens[kernel.screen_index].row--;
-		kernel.screens[kernel.screen_index].column = VGA_WIDTH - 1;
-	}
-}
-
-static void right_arrow()
-{
-	if (kernel.terminal_ctrl && kernel.terminal_shift)
-	{
-		if (kernel.screen_index < NB_SCREEN - 1)
-		{
-			kernel.screen_index++;
-			terminal_restore();
-			vga_cursor_restore();
-			return;
-		}
-	}
-	else if (kernel.screens[kernel.screen_index].column < VGA_WIDTH - 1)
-		kernel.screens[kernel.screen_index].column++;
-	else if (kernel.screens[kernel.screen_index].row < VGA_HEIGHT - 1)
-	{
-		kernel.screens[kernel.screen_index].row++;
-		kernel.screens[kernel.screen_index].column = 0;
-	}
-}
-
-static void down_arrow()
-{
-	if (kernel.screens[kernel.screen_index].row < VGA_HEIGHT - 1)
-		kernel.screens[kernel.screen_index].row++;
-	else if (kernel.screens[kernel.screen_index].offset < (VGA_HEIGHT * (NB_SCROLL - 1)) - 1)
-		terminal_offset(++kernel.screens[kernel.screen_index].offset);
-}
-
-static void up_arrow()
-{
-	if (0 < kernel.screens[kernel.screen_index].row)
-		kernel.screens[kernel.screen_index].row--;
-	else if (0 < kernel.screens[kernel.screen_index].offset)
-		terminal_offset(--kernel.screens[kernel.screen_index].offset);
-}
-
 void update_cursor(int scancode)
 {
 	switch (scancode)
 	{
 		case SCANCODE_LEFT_ARROW:
-			left_arrow();
+			keyboard_move_left();
 			break;
 		case SCANCODE_RIGHT_ARROW:
-			right_arrow();
-			break;
-		case SCANCODE_DOWN_ARROW:
-			down_arrow();
-			break;
-		case SCANCODE_UP_ARROW:
-			up_arrow();
+			keyboard_move_right();
 			break;
 		default:
 			break;
 	}
-	vga_set_cursor(kernel.screens[kernel.screen_index].row, kernel.screens[kernel.screen_index].column);
 }
 
 static char keyboard_translate(uint8_t scancode)

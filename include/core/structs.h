@@ -135,6 +135,7 @@ typedef struct s_kernel
 	uint32_t			keyboard_count;
 	char				keyboard_line[KEYBOARD_LINE_SIZE];
 	uint32_t			keyboard_line_len;
+	uint32_t			keyboard_line_cursor;
 	uint8_t				keyboard_line_ready;
 	uint8_t				keyboard_extended;
 	uint8_t				keyboard_caps;
