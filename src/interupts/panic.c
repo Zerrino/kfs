@@ -116,7 +116,7 @@ void	kernel_panic(const char *reason, t_registers *regs)
 	panic_save_stack(regs);
 	panic_dump_stack();
 	terminal_writestring("\nSystem halted.\n");
-	kernelPanic();
+	kernel_halt();
 	while (1)
 		__asm__ volatile ("hlt");
 }

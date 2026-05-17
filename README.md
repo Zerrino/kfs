@@ -32,7 +32,7 @@ current KFS4 interrupt work.
   - `kernel_panic(reason, regs)` disables interrupts, prints the reason, prints
     interrupt/error/eip/esp/eflags and general registers, saves a stack snapshot,
     dumps it, and halts forever.
-  - The low-level ASM `kernelPanic()` is now only the final halt loop.
+  - The low-level ASM `kernel_halt()` is now only the final halt loop.
 - Stack-save interface for panic is implemented.
   - `panic_save_stack(regs)` stores `PANIC_STACK_WORDS` from the panic stack.
   - `panic_dump_stack()` prints the saved snapshot.

@@ -29,7 +29,7 @@ extern void gdt_flush(t_gdt_ptr *gdt_ptr);
 
 /* ──────────── IDT Assembly Functions (idt.s) ──────────── */
 extern void IDT_Load(t_idt_descryptor *idt_descriptor);
-extern void kernelPanic(void);
+extern void kernel_halt(void);
 
 /* ──────────── Utility Assembly Functions (utils.s) ──────────── */
 extern void EnableInterrupts(void);
