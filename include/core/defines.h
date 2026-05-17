@@ -89,6 +89,7 @@
 /* ──────────── Shell Constants ──────────── */
 #define KEYBOARD_BUFFER_SIZE    256
 #define KEYBOARD_LINE_SIZE      256
+#define PANIC_STACK_WORDS      32
 
 /* ──────────── Stack Constants ──────────── */
 #define KERNEL_STACK_SIZE           1024    /* Software stack size (entries) */

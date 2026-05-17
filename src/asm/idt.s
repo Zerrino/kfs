@@ -17,4 +17,6 @@ IDT_Load:
 global  kernelPanic
 kernelPanic:
     cli
+.halt:
     hlt
+    jmp .halt

@@ -28,15 +28,14 @@ current KFS4 interrupt work.
   - `signal_schedule(handler, regs)` queues a deferred callback.
   - `signal_dispatch_next()` runs one queued callback from the timer path.
   - Exceptions, IRQ0, IRQ1, and syscalls stay immediate.
-- Finish the panic / halt cleanup interface.
-  - `kernelPanic()` currently disables interrupts and halts.
-  - The subject asks for an interface to clean registers before panic / halt.
-    That behavior should be explicit and easy to defend.
-- Finish the stack-save interface for panic.
-  - ISR entry saves registers with `pusha`, but there is no dedicated panic
-    stack snapshot/dump path.
-  - Add a function that copies or prints the relevant stack/register state before
-    stopping the kernel.
+- Panic / halt cleanup interface is implemented.
+  - `kernel_panic(reason, regs)` disables interrupts, prints the reason, prints
+    interrupt/error/eip/esp/eflags and general registers, saves a stack snapshot,
+    dumps it, and halts forever.
+  - The low-level ASM `kernelPanic()` is now only the final halt loop.
+- Stack-save interface for panic is implemented.
+  - `panic_save_stack(regs)` stores `PANIC_STACK_WORDS` from the panic stack.
+  - `panic_dump_stack()` prints the saved snapshot.
 - Verify keyboard IRQ acknowledgement and dispatch behavior.
   - IRQ1 is queued as a signal and EOI is sent, then the actual keyboard handler
     runs later from the timer path.
@@ -69,6 +68,5 @@ current KFS4 interrupt work.
 
 ## Suggested Next Order
 
-1. Implement panic register cleanup plus stack snapshot/dump.
-2. Add optional keyboard editing polish: delete, home/end, and command history.
-3. Boot-test timer, keyboard, shell commands, page fault panic, and `int 0x80`.
+1. Add optional keyboard editing polish: delete, home/end, and command history.
+2. Boot-test timer, keyboard, shell commands, page fault panic, and `int 0x80`.

@@ -30,7 +30,7 @@ static void page_fault_handler(t_registers *regs)
 	if (regs->error & 0x8) terminal_writestring("  - reserve\n");
 	if (regs->error & 0x10)terminal_writestring("  - fetch instr\n");
 
-	kernelPanic();                         /* ou tentative de map */
+	kernel_panic("PAGE FAULT", regs);
 }
 
 
@@ -426,8 +426,7 @@ void	__attribute__((cdecl)) ISR_Handler(t_registers* regs)
 		printnbr(isr, 10);
 		terminal_writestring("  ");
 		terminal_writestring(get_exception_message(isr));
-		terminal_writestring("\nKERNEL PANIC!\n");
-		kernelPanic();
+		kernel_panic(get_exception_message(isr), regs);
 	}
 }
 

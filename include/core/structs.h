@@ -107,6 +107,15 @@ typedef struct s_signal {
 	struct	s_signal	*next;
 }	t_signal;
 
+typedef struct s_panic_snapshot {
+	const char	*reason;
+	uint8_t		has_regs;
+	t_registers	regs;
+	uint32_t	stack_base;
+	uint32_t	stack_words[PANIC_STACK_WORDS];
+	uint32_t	stack_count;
+} t_panic_snapshot;
+
 /* ──────────── Main Kernel Structure ──────────── */
 typedef struct s_kernel
 {
@@ -138,6 +147,7 @@ typedef struct s_kernel
 	uint32_t			kernel_stack[KERNEL_STACK_SIZE];
 	int					stack_pointer;
 	t_gdt_ptr			gdt_pointer;
+	t_panic_snapshot	panic;
 } t_kernel;
 
 #endif

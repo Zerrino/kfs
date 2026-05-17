@@ -60,6 +60,11 @@ void iowait(void);
 void	init_syscall();
 void	syscall_handler(t_registers *regs);
 
+/* ──────────── Functions from src/interupts/panic.c ──────────── */
+void	panic_save_stack(t_registers *regs);
+void	panic_dump_stack(void);
+void	kernel_panic(const char *reason, t_registers *regs);
+
 /* ──────────── Functions from src/interupts/signals.c ──────────── */
 void	init_signals(void);
 int		signal_schedule(ISRHandler handler, t_registers *regs);
