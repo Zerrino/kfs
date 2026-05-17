@@ -129,6 +129,16 @@ typedef struct s_kernel
 	uint16_t			*terminal_buffer;
 	char				command_buffer[COMMAND_BUFFER_SIZE];
 	int					buffer_pos;
+	char				keyboard_buffer[KEYBOARD_BUFFER_SIZE];
+	uint32_t			keyboard_read;
+	uint32_t			keyboard_write;
+	uint32_t			keyboard_count;
+	char				keyboard_line[KEYBOARD_LINE_SIZE];
+	uint32_t			keyboard_line_len;
+	uint8_t				keyboard_line_ready;
+	uint8_t				keyboard_extended;
+	uint8_t				keyboard_caps;
+	keyboard_layout_t	keyboard_layout;
 	uint32_t			kernel_stack[KERNEL_STACK_SIZE];
 	int					stack_pointer;
 	t_gdt_ptr			gdt_pointer;

@@ -21,6 +21,7 @@ void shell_initialize() {
 void handle_help() {
     terminal_writestring("Available commands:\n");
     terminal_writestring("  help         - Display this help message\n");
+    terminal_writestring("  layout       - Set keyboard layout: qwerty or azerty\n");
     display_kfs2_help(); // Display KFS2 advanced commands
 }
 
@@ -28,6 +29,24 @@ void handle_unknown(const char* command) {
     terminal_writestring("Unknown command: ");
     terminal_writestring(command);
     terminal_writestring("\n");
+}
+
+static bool handle_layout_command(const char *arg)
+{
+    if (ft_strcmp(arg, "qwerty") == 0)
+    {
+        keyboard_set_layout(KEYBOARD_LAYOUT_QWERTY);
+        terminal_writestring("Keyboard layout: qwerty\n");
+        return true;
+    }
+    if (ft_strcmp(arg, "azerty") == 0)
+    {
+        keyboard_set_layout(KEYBOARD_LAYOUT_AZERTY);
+        terminal_writestring("Keyboard layout: azerty\n");
+        return true;
+    }
+    terminal_writestring("Usage: layout qwerty|azerty\n");
+    return true;
 }
 
 command_type_t get_general_command_type(const char* command) {
@@ -83,6 +102,12 @@ void shell_process_command(const char* cmd) {
         j++;
     }
     arg[j] = '\0';
+
+    if (ft_strcmp(command, "layout") == 0) {
+        handle_layout_command(arg);
+        terminal_writestring("> ");
+        return;
+    }
 
     command_type_t cmd_type = get_command_type(command);
     if (handle_general_commands(cmd_type, arg)) {

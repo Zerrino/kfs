@@ -32,6 +32,8 @@ void handle_clear() {
 
 	kernel.screens[kernel.screen_index].row = 0;
 	kernel.screens[kernel.screen_index].column = 0;
+	kernel.screens[kernel.screen_index].offset = 0;
+	vga_set_cursor(0, 0);
 }
 
 void handle_reboot() {

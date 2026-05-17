@@ -190,4 +190,10 @@ typedef enum {
 	ISR_SYSCALL = 0x80
 } isr_calls_t;
 
+typedef enum {
+	KEYBOARD_LAYOUT_QWERTY,
+	KEYBOARD_LAYOUT_AZERTY
+} keyboard_layout_t;
+
+
 #endif

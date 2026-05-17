@@ -47,6 +47,10 @@ void		initMemory();
 
 void keyboard_init(void);
 void keyboard_handler(t_registers *regs);
+void keyboard_set_layout(keyboard_layout_t layout);
+int keyboard_read_char(char *c);
+int keyboard_readline(char *buffer, size_t size);
+size_t keyboard_getline(char *buffer, size_t size);
 void update_cursor(int scancode);
 
 /* ──────────── Functions from src/shell/shell_write.c ──────────── */

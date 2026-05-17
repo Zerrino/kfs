@@ -395,11 +395,11 @@ void	__attribute__((cdecl)) ISR_Handler(t_registers* regs)
 					kernel.ISRhandlers[isr](regs);
 					PIC_SendEOF(irq);
 					return ;
-					break;
 				case 1:
 					regs->edi = inb(KEYBOARD_DATA_PORT);
-					break;
-
+					kernel.ISRhandlers[isr](regs);
+					PIC_SendEOF(irq);
+					return ;
 				default:
 					break;
 			}

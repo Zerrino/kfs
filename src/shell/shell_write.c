@@ -24,8 +24,34 @@ size_t strlen(const char* str)
 void terminal_putentryat(char c, uint8_t color, size_t x, size_t y)
 {
 	const size_t index = y * VGA_WIDTH + x;
+
+	if (x >= VGA_WIDTH || y >= VGA_HEIGHT)
+		return ;
 	kernel.terminal_buffer[index] = vga_entry(c, color);
-	kernel.screens[kernel.screen_index].content[index + (kernel.screens[kernel.screen_index].offset * VGA_WIDTH)] = vga_entry(c, color);
+	kernel.screens[kernel.screen_index].content[index +
+		(kernel.screens[kernel.screen_index].offset * VGA_WIDTH)] = vga_entry(c, color);
+}
+
+void terminal_scroll_up(void)
+{
+	size_t		index;
+	size_t		last_line;
+	t_screens	*screen;
+
+	screen = &kernel.screens[kernel.screen_index];
+	for (size_t y = 1; y < VGA_HEIGHT * NB_SCROLL; y++)
+	{
+		for (size_t x = 0; x < VGA_WIDTH; x++)
+		{
+			index = y * VGA_WIDTH + x;
+			screen->content[index - VGA_WIDTH] = screen->content[index];
+		}
+	}
+	last_line = (VGA_HEIGHT * NB_SCROLL - 1) * VGA_WIDTH;
+	for (size_t x = 0; x < VGA_WIDTH; x++)
+		screen->content[last_line + x] = vga_entry(' ', screen->color);
+	screen->offset = 0;
+	terminal_restore();
 }
 
 void terminal_putchar(char c)
@@ -37,13 +63,10 @@ void terminal_putchar(char c)
 	{
 		if (0 < kernel.screens[kernel.screen_index].column)
 			kernel.screens[kernel.screen_index].column--;
-		else
+		else if (0 < kernel.screens[kernel.screen_index].row)
 		{
-			if (0 < kernel.screens[kernel.screen_index].row)
-			{
-				kernel.screens[kernel.screen_index].row--;
-				kernel.screens[kernel.screen_index].column = VGA_WIDTH;
-			}
+			kernel.screens[kernel.screen_index].row--;
+			kernel.screens[kernel.screen_index].column = VGA_WIDTH - 1;
 		}
 		terminal_putentryat(' ', kernel.screens[kernel.screen_index].color, kernel.screens[kernel.screen_index].column, kernel.screens[kernel.screen_index].row);
 	}
@@ -51,19 +74,23 @@ void terminal_putchar(char c)
 	{
 		if (c == '\n')
 		{
-			if (++kernel.screens[kernel.screen_index].row == VGA_HEIGHT)
-				kernel.screens[kernel.screen_index].row = 0;
 			kernel.screens[kernel.screen_index].column = 0;
+			if (++kernel.screens[kernel.screen_index].row == VGA_HEIGHT)
+			{
+				terminal_scroll_up();
+				kernel.screens[kernel.screen_index].row = VGA_HEIGHT - 1;
+			}
 		}
 		else
 		{
-			if (kernel.terminal_shift && 'a' <= c && c <= 'z')
-				c -= 32;
 			terminal_putentryat(c, kernel.screens[kernel.screen_index].color, kernel.screens[kernel.screen_index].column, kernel.screens[kernel.screen_index].row);
 			if (++kernel.screens[kernel.screen_index].column == VGA_WIDTH) {
 				kernel.screens[kernel.screen_index].column = 0;
 				if (++kernel.screens[kernel.screen_index].row == VGA_HEIGHT)
-					kernel.screens[kernel.screen_index].row = 0;
+				{
+					terminal_scroll_up();
+					kernel.screens[kernel.screen_index].row = VGA_HEIGHT - 1;
+				}
 			}
 		}
 	}

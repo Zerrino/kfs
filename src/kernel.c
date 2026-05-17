@@ -57,7 +57,7 @@ void terminal_offset(uint16_t offset)
 	for (size_t y = 0; y < VGA_HEIGHT; y++) {
 		for (size_t x = 0; x < VGA_WIDTH; x++) {
 			const size_t index = y * VGA_WIDTH + x;
-			kernel.terminal_buffer[index] = vga_entry(kernel.screens[kernel.screen_index].content[index + (VGA_WIDTH * offset)], kernel.screens[kernel.screen_index].color);
+			kernel.terminal_buffer[index] = kernel.screens[kernel.screen_index].content[index + (VGA_WIDTH * offset)];
 		}
 	}
 }
@@ -69,7 +69,7 @@ void terminal_restore()
 		for (size_t x = 0; x < VGA_WIDTH; x++)
 		{
 			const size_t index = y * VGA_WIDTH + x;
-			kernel.terminal_buffer[index] = vga_entry(kernel.screens[kernel.screen_index].content[index + (VGA_WIDTH * kernel.screens[kernel.screen_index].offset)], kernel.screens[kernel.screen_index].color);
+			kernel.terminal_buffer[index] = kernel.screens[kernel.screen_index].content[index + (VGA_WIDTH * kernel.screens[kernel.screen_index].offset)];
 		}
 	}
 }
@@ -118,6 +118,10 @@ void kernel_main(uint32_t magic, uint32_t multiboot_info_ptr)
 
 	while (1)
 	{
+		char c;
+
+		while (keyboard_read_char(&c))
+			shell_handle_input(c);
 		__asm__("hlt");
 	}
 }

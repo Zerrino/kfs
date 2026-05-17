@@ -88,6 +88,8 @@
 
 /* ──────────── Shell Constants ──────────── */
 #define COMMAND_BUFFER_SIZE     256
+#define KEYBOARD_BUFFER_SIZE    256
+#define KEYBOARD_LINE_SIZE      256
 
 /* ──────────── Stack Constants ──────────── */
 #define KERNEL_STACK_SIZE           1024    /* Software stack size (entries) */
@@ -104,13 +106,17 @@
 #define KEYBOARD_ACK            0xFA    /* Keyboard acknowledgment */
 
 /* ──────────── Keyboard Scancodes ──────────── */
-#define SCANCODE_ESC            27      /* ESC key scancode */
+#define SCANCODE_ESC            1       /* ESC key scancode */
+#define SCANCODE_BACKSPACE      14      /* Backspace key scancode */
+#define SCANCODE_ENTER          28      /* Enter key scancode */
 #define SCANCODE_CTRL_PRESS     29      /* Ctrl key press */
 #define SCANCODE_CTRL_RELEASE   157     /* Ctrl key release */
 #define SCANCODE_LSHIFT_PRESS   42      /* Left Shift key press */
 #define SCANCODE_LSHIFT_RELEASE 170     /* Left Shift key release */
 #define SCANCODE_RSHIFT_PRESS   54      /* Right Shift key press */
 #define SCANCODE_RSHIFT_RELEASE 182     /* Right Shift key release */
+#define SCANCODE_CAPS_LOCK      58      /* Caps lock key */
+#define SCANCODE_E0_PREFIX      224     /* Extended scancode prefix */
 #define SCANCODE_LEFT_ARROW     75      /* Left arrow key */
 #define SCANCODE_RIGHT_ARROW    77      /* Right arrow key */
 #define SCANCODE_UP_ARROW       72      /* Up arrow key */
