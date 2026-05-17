@@ -16,5 +16,6 @@ void	timer(t_registers* regs)
 {
 	(void)regs;
 	kernel.tick++;
+	vga_cursor_blink();
 	signal_dispatch_next();
 }

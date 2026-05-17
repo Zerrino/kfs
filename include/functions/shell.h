@@ -69,6 +69,10 @@ uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg);
 uint16_t vga_entry(unsigned char uc, uint8_t color);
 void vga_set_cursor(size_t row, size_t col);
 void vga_cursor_restore(void);
+void vga_cursor_show(void);
+void vga_cursor_hide(void);
+void vga_cursor_sync(void);
+void vga_cursor_blink(void);
 
 /* ──────────── Functions from src/shell/mem_utils.c ──────────── */
 

@@ -34,12 +34,14 @@ void terminal_initialize()
 		kernel.screens[i].shell_mode = 1;
 	}
 	kernel.screen_index = 0;
+	vga_cursor_hide();
 	for (size_t y = 0; y < VGA_HEIGHT; y++) {
 		for (size_t x = 0; x < VGA_WIDTH; x++) {
 			const size_t index = y * VGA_WIDTH + x;
 			kernel.terminal_buffer[index] = kernel.screens[kernel.screen_index].content[index];
 		}
 	}
+	vga_cursor_sync();
 
 	DisableInterrupts();
 	init_signals();
@@ -54,16 +56,19 @@ void terminal_initialize()
 
 void terminal_offset(uint16_t offset)
 {
+	vga_cursor_hide();
 	for (size_t y = 0; y < VGA_HEIGHT; y++) {
 		for (size_t x = 0; x < VGA_WIDTH; x++) {
 			const size_t index = y * VGA_WIDTH + x;
 			kernel.terminal_buffer[index] = kernel.screens[kernel.screen_index].content[index + (VGA_WIDTH * offset)];
 		}
 	}
+	vga_cursor_sync();
 }
 
 void terminal_restore()
 {
+	vga_cursor_hide();
 	for (size_t y = 0; y < VGA_HEIGHT; y++)
 	{
 		for (size_t x = 0; x < VGA_WIDTH; x++)
@@ -72,6 +77,7 @@ void terminal_restore()
 			kernel.terminal_buffer[index] = kernel.screens[kernel.screen_index].content[index + (VGA_WIDTH * kernel.screens[kernel.screen_index].offset)];
 		}
 	}
+	vga_cursor_sync();
 }
 
 extern uint32_t _kernel_start;

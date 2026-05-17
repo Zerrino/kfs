@@ -61,6 +61,7 @@ current KFS4 interrupt work.
   - Left/right move inside the current kernel line.
   - Up/down do not move through the VGA buffer.
   - Delete, Home, End, and Alt press/release tracking are implemented.
+  - Blinking block cursor shows the current edited cell.
   - Remaining optional polish: command history.
 - Syscall bonus base is implemented.
   - `SYS_WRITE` is defined as syscall number `1`.

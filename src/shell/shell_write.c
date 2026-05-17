@@ -27,6 +27,7 @@ void terminal_putentryat(char c, uint8_t color, size_t x, size_t y)
 
 	if (x >= VGA_WIDTH || y >= VGA_HEIGHT)
 		return ;
+	vga_cursor_hide();
 	kernel.terminal_buffer[index] = vga_entry(c, color);
 	kernel.screens[kernel.screen_index].content[index +
 		(kernel.screens[kernel.screen_index].offset * VGA_WIDTH)] = vga_entry(c, color);
@@ -38,6 +39,7 @@ void terminal_scroll_up(void)
 	size_t		last_line;
 	t_screens	*screen;
 
+	vga_cursor_hide();
 	screen = &kernel.screens[kernel.screen_index];
 	for (size_t y = 1; y < VGA_HEIGHT * NB_SCROLL; y++)
 	{
@@ -52,12 +54,14 @@ void terminal_scroll_up(void)
 		screen->content[last_line + x] = vga_entry(' ', screen->color);
 	screen->offset = 0;
 	terminal_restore();
+	vga_cursor_sync();
 }
 
 void terminal_putchar(char c)
 {
 	if (c == '\0')
 		return ;
+	vga_cursor_hide();
 
 	if (c == '\b')
 	{

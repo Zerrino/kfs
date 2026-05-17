@@ -22,6 +22,7 @@
 # define VGA_CRSR_HIGH  0x0E
 # define VGA_PORT_INDEX 0x3D4
 # define VGA_PORT_DATA  0x3D5
+# define CURSOR_BLINK_TICKS 9
 
 /* ──────────── IDT Constants ──────────── */
 # define IDT_ENTRIES 256
